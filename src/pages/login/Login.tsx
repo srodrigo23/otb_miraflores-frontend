@@ -21,12 +21,13 @@ export function Login() {
             Nombre de Usuario
           </Typography>
           <Input
-            size="lg"
+            // size="lg"
+            label="Ingresa su nombre"
             placeholder="name@mail.com"
-            className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
+            // className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+            // labelProps={{
+            //   className: "before:content-none after:content-none",
+            // }}
           />
           {/* <Typography variant="h6" color="blue-gray" className="-mb-3">
             Your Email

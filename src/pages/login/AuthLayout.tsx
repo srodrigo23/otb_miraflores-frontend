@@ -1,7 +1,7 @@
 import { Typography } from '@material-tailwind/react';
 import { Outlet } from 'react-router';
 
-const AuthLayout =()=>{
+const AuthLayout = () => {
   return(
     <>
       <nav className='p-5 bg-black'>
