@@ -12,6 +12,7 @@ import { ThemeProvider } from '@material-tailwind/react'
 // import Debts from './pages/debts/Debts.tsx';
 // import Receipts from './pages/receipts/Receipts.tsx';
 import CheckNeighborDebts from './pages/checkDebts/CheckNeighborsDebts.tsx';
+import CheckLayout from './pages/checkDebts/CheckLayout.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -30,8 +31,8 @@ createRoot(document.getElementById('root')!).render(
         {/* <Route element={<AuthLayout />}>
           <Route path="login" element={<Login />} />
         </Route> */}
-        <Route >
-          <Route path="deudas" element={<CheckNeighborDebts />} />
+        <Route element={<CheckLayout/>}>
+          <Route index element={<CheckNeighborDebts />} />
         </Route>
 
       </Routes>
