@@ -5,8 +5,8 @@ import './index.css'
 
 import { BrowserRouter, Routes, Route } from "react-router";
 import { ThemeProvider } from '@material-tailwind/react'
-// import { Login } from './pages/login/Login.tsx';
-// import AuthLayout from './pages/login/AuthLayout.tsx';
+import { Login } from './pages/login/Login.tsx';
+import AuthLayout from './pages/login/AuthLayout.tsx';
 // import Neighbors from './pages/neighbors/Neighbors.tsx';
 // import Attendance from './pages/attendance/Attendance.tsx';
 // import Debts from './pages/debts/Debts.tsx';
@@ -28,9 +28,9 @@ createRoot(document.getElementById('root')!).render(
           {/* <Route path="/deudas" element={<CheckNeighborDebts />} /> */}
           
         {/* </Route> */}
-        {/* <Route element={<AuthLayout />}>
-          <Route path="login" element={<Login />} />
-        </Route> */}
+        <Route element={<AuthLayout />}>
+          <Route path="login" element={<Login />} />23w`1 
+        </Route>
         <Route element={<CheckLayout/>}>
           <Route index element={<CheckNeighborDebts />} />
         </Route>
