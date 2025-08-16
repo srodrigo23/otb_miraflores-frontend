@@ -14,7 +14,10 @@ type Inputs = {
  
 export function Login() {
 
-  const { register, handleSubmit, watch, formState: { errors }, } = useForm<Inputs>()
+  const { 
+    register, handleSubmit, 
+    // watch, 
+    formState: { errors }, } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log(data)
@@ -27,7 +30,7 @@ export function Login() {
      <Card className="m-auto px-6 py-3 border " color="transparent" shadow={true}>
       
       <Typography  className='text-center mt-10' variant="h3" color="blue-gray">
-        Administrador
+        Iniciar Sesión
       </Typography>
 
       <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96" onSubmit={handleSubmit(onSubmit)}>
@@ -37,12 +40,12 @@ export function Login() {
           </Typography>
           <Input
             label="Ingresa su nombre"
-            placeholder="name@mail.com"
+            placeholder="nombre.apellido"
             className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
             labelProps={{
               className: "hidden",
             }}
-            defaultValue={'admin'}
+            defaultValue={''}
             {...register("userName", {required:true})}
           />
           {errors.userName && <span className="text-red-400 text-xs">Debes ingresar el nombre de usuario</span>}
@@ -53,12 +56,12 @@ export function Login() {
           <Input
             type="password"
             size="lg"
-            placeholder="********"
+            placeholder="*******************"
             className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
             labelProps={{
               className: "hidden",
             }}
-            defaultValue={'admin'}
+            defaultValue={''}
             {...register("password", {required:true})}
           />
           {errors.password && <span className="text-red-400 text-xs">Debes ingresar la contraseña</span>}

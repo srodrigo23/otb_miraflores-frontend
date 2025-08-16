@@ -8,48 +8,58 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useEffect } from "react";
- 
-function NavList() {
-  const items = [
+import { useLocation } from 'react-router'
+
+const items = [
     {
       label:"Deudas",
-      path:"deudas"
+      path:"/deudas"
     },
     {
       label: "Recibos",
-      path:"recibos"
+      path:"/recibos"
     },
     {
       label:"Asistencia",
-      path:"asistencia"
+      path:"/asistencia"
     },
     {
       label: "Vecinos",
-      path:"vecinos"
+      path:"/vecinos"
     },
   ]
-  return (
-    <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      {
-        items.map((el, index)=>(
-          <Typography
-            key={index}
-            as="li"
-            variant="small"
-            color="blue-gray"
-            className="p-1 font-medium"
-          >
-            <a  href={el.path} className="flex items-center hover:text-blue-500 transition-colors">
-              {el.label}
-            </a>
-          </Typography>
-        ))
-      }
-    </ul>
-  );
+
+
+type NavBarProps = {
+  pathname:string
 }
- 
+
+const NavBar: React.FC<NavBarProps> = ({pathname})=>{
+  return(
+    <>
+      <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+          {
+            items.map((el, index)=>(
+              <Typography
+                key={index}
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className="p-1 font-medium"
+              >
+                <a href={el.path} className={`flex items-center hover:text-blue-500 transition-color ${pathname===el.path?'text-red-500':''}`}>
+                  {el.label}
+                </a>
+              </Typography>
+            ))
+          }
+        </ul>
+    </>
+  )
+}
+  
 export function NavbarApp() {
+  const {pathname} = useLocation()
   const [openNav, setOpenNav] = React.useState(false);
  
   const handleWindowResize = () =>
@@ -74,7 +84,7 @@ export function NavbarApp() {
           OTB - Miraflores
         </Typography>
         <div className="hidden lg:block">
-          <NavList />
+          <NavBar pathname={pathname}/>
         </div>
         <IconButton
           variant="text"
@@ -90,7 +100,7 @@ export function NavbarApp() {
         </IconButton>
       </div>
       <Collapse open={openNav}>
-        <NavList />
+        <NavBar pathname={pathname}/>
       </Collapse>
     </Navbar>
   );

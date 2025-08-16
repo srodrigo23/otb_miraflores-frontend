@@ -1,4 +1,4 @@
-// import { Typography } from '@material-tailwind/react';
+
 import { Outlet } from 'react-router';
 
 export default function CheckLayout (){

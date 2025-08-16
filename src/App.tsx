@@ -1,4 +1,3 @@
-// import { Button } from '@material-tailwind/react'
 import './App.css'
 
 import { NavbarApp } from './components/NavbarApp'
@@ -7,7 +6,7 @@ import { Outlet } from 'react-router'
 function App() {
   return (
     <>
-      <NavbarApp></NavbarApp>
+      <NavbarApp></NavbarApp>      
       <Outlet/>
     </>
   )
