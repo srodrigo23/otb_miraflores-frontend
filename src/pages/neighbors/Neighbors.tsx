@@ -21,7 +21,7 @@ const Neighbors = ()=>{
   
   return(
     <>
-      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : 'Loading...'}
+      {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : 'Loading...'} */}
       <Typography className='text-center' variant="h3" color="black">Vecinos</Typography>
     </>
   )

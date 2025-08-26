@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate} from "react-router";
 import { ThemeProvider } from '@material-tailwind/react'
 import { Login } from './pages/login/Login.tsx';
 import AuthLayout from './pages/login/AuthLayout.tsx';
@@ -20,12 +20,21 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
       <Routes>
         <Route element={<App />}>
-          <Route index element={<Neighbors />} />
-          <Route path="/asistencia" element={<Attendance />} /> 
-          <Route path="/deudas" element={<Debts />} />
-          <Route path="/recibos" element={<Receipts />} />
-          <Route path="/vecinos" element={<Neighbors />} /> 
+          
+          <Route 
+            path="/asistencia" 
+            element={<Attendance />} /> 
+          <Route 
+            path="/deudas" 
+            element={<Debts />} />
+          <Route 
+            path="/recibos" 
+            element={<Receipts />} />
+          <Route 
+            path="/vecinos" 
+            element={<Neighbors />} /> 
           <Route path="/deudas" element={<CheckNeighborDebts />} /> 
+          <Route path='/' element={<Navigate to='/deudas' /> } />
         </Route>
 
         <Route element={<AuthLayout />}>
