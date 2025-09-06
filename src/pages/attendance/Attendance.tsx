@@ -1,9 +1,7 @@
 import { Typography } from "@material-tailwind/react";
-import { useLocation } from 'react-router'
-const Attendance = () =>{
+// import { useLocation } from 'react-router'
 
-  let location = useLocation()
-  console.log(location.pathname)
+const Attendance = () =>{
   return(
     <>
       <Typography className='text-center' variant="h3" color="black">Asistencia</Typography>

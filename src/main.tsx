@@ -10,7 +10,9 @@ import Neighbors from './pages/neighbors/Neighbors.tsx';
 import Attendance from './pages/attendance/Attendance.tsx';
 import Debts from './pages/debts/Debts.tsx';
 import Receipts from './pages/receipts/Receipts.tsx';
-import CheckNeighborDebts from './pages/checkDebts/CheckNeighborsDebts.tsx';
+import Measures from './pages/measures/Measures.tsx';
+
+// import CheckNeighborDebts from './pages/checkDebts/CheckNeighborsDebts.tsx';
 
 import App from './App.tsx';
 
@@ -21,25 +23,20 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<App />}>
             
-            <Route 
-              path="/asistencia" 
-              element={<Attendance />} /> 
-            <Route 
-              path="/deudas" 
-              element={<Debts />} />
-            <Route 
-              path="/recibos" 
-              element={<Receipts />} />
-            <Route 
-              path="/vecinos" 
-              element={<Neighbors />} /> 
-            <Route path="/deudas" element={<CheckNeighborDebts />} /> 
-            <Route path='/' element={<Navigate to='/deudas' /> } />
+            <Route path="/asistencia" element={<Attendance />} /> 
+            <Route path="/deudas" element={<Debts />} />
+            <Route path="/recibos" element={<Receipts />} />
+            <Route path="/vecinos" element={<Neighbors />} /> 
+            <Route path="/mediciones" element={<Measures />} /> 
+            {/* <Route path="/deudas" element={<CheckNeighborDebts />} /> */}
+
+            {/* <Route path='/' element={<Navigate to='/deudas' /> } /> */}
           </Route>
 
           <Route element={<AuthLayout />}>
-            <Route path="login" element={<Login />} />23w`1 
+            <Route path="/login" element={<Login />} />
           </Route>
+
           {/* <Route element={<CheckLayout/>}>
             <Route index element={<CheckNeighborDebts />} />
           </Route> */}

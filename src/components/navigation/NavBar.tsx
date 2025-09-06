@@ -1,14 +1,16 @@
 
 import { Button, Typography } from '@material-tailwind/react'
 import {User, Users, Ruler, Invoice, ListChecks, MoneyWavy} from '@phosphor-icons/react'
+import { useLocation } from 'react-router'
+
 
 const NavBar = () => {
-
+    const {pathname} = useLocation()
     const iconsSize = 32
     const navigationItems = [
         {
             label:'Vecinos',
-            path:'/vecionos',
+            path:'/vecinos',
             icon:<Users size={iconsSize} />
         },
         {
@@ -40,11 +42,11 @@ const NavBar = () => {
               <Typography className='text-center text-black' variant='h3'>OTB MIRAFLORES</Typography>
             </div>
 
-            <div className='border p-5 rounded-md'>
-              <ul className=' flex flex-col gap-7'>
+            <div className='border p-2 rounded-md'>
+              <ul className=' flex flex-col gap-3'>
               {
                 navigationItems.map((element, index)=>{
-                  return <li key={index} className='hover:bg-red-600 rounded-xl cursor-pointer hover:text-white p-3'>
+                  return <li key={index} className={`${pathname === element.path? 'bg-blue-400 text-white':''} rounded-xl cursor-pointer p-3`}>
                     <a href={element.path} className='flex'>
                       <span className='mr-4'>{element.icon}</span>
                       <Typography variant='h4'>

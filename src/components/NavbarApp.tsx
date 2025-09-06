@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
+import { NavBarProps } from "../types/NavBarTypes";
 import { useEffect } from "react";
 import { useLocation } from 'react-router'
 
@@ -30,9 +31,7 @@ const items = [
   ]
 
 
-type NavBarProps = {
-  pathname:string
-}
+
 
 const NavBar: React.FC<NavBarProps> = ({pathname})=>{
   return(
