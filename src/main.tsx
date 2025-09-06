@@ -18,33 +18,33 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>  
       <BrowserRouter>
-      <Routes>
-        <Route element={<App />}>
-          
-          <Route 
-            path="/asistencia" 
-            element={<Attendance />} /> 
-          <Route 
-            path="/deudas" 
-            element={<Debts />} />
-          <Route 
-            path="/recibos" 
-            element={<Receipts />} />
-          <Route 
-            path="/vecinos" 
-            element={<Neighbors />} /> 
-          <Route path="/deudas" element={<CheckNeighborDebts />} /> 
-          <Route path='/' element={<Navigate to='/deudas' /> } />
-        </Route>
+        <Routes>
+          <Route element={<App />}>
+            
+            <Route 
+              path="/asistencia" 
+              element={<Attendance />} /> 
+            <Route 
+              path="/deudas" 
+              element={<Debts />} />
+            <Route 
+              path="/recibos" 
+              element={<Receipts />} />
+            <Route 
+              path="/vecinos" 
+              element={<Neighbors />} /> 
+            <Route path="/deudas" element={<CheckNeighborDebts />} /> 
+            <Route path='/' element={<Navigate to='/deudas' /> } />
+          </Route>
 
-        <Route element={<AuthLayout />}>
-          <Route path="login" element={<Login />} />23w`1 
-        </Route>
-        {/* <Route element={<CheckLayout/>}>
-          <Route index element={<CheckNeighborDebts />} />
-        </Route> */}
+          <Route element={<AuthLayout />}>
+            <Route path="login" element={<Login />} />23w`1 
+          </Route>
+          {/* <Route element={<CheckLayout/>}>
+            <Route index element={<CheckNeighborDebts />} />
+          </Route> */}
 
-      </Routes>
+        </Routes>
       </BrowserRouter>
     </ThemeProvider>
   </StrictMode>,
