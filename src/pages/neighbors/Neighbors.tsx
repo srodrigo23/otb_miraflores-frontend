@@ -1,23 +1,23 @@
 
 import { Typography } from "@material-tailwind/react";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 
 
 const Neighbors = ()=>{
-  const [data, setData] = useState(null);
-  const apiLink = "http://127.0.0.1:8000/users"
+  // const [data, setData] = useState(null);
+  // const apiLink = "http://127.0.0.1:8000/users"
 
-  useEffect(() => {
-    fetch(apiLink, {    
-        method: 'GET',
-        // crossorigin: true,    
-        mode: 'no-cors',       
-      })
-      .then(response => response.json())
-      .then(json => setData(json))
-      .catch(error => console.error(error));
+  // useEffect(() => {
+  //   fetch(apiLink, {    
+  //       method: 'GET',
+  //       // crossorigin: true,    
+  //       mode: 'no-cors',       
+  //     })
+  //     .then(response => response.json())
+  //     .then(json => setData(json))
+  //     .catch(error => console.error(error));
         
-  }, []);
+  // }, []);
   
   return(
     <>
