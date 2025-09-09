@@ -1,11 +1,13 @@
 
 import { Button, Typography } from '@material-tailwind/react'
 import {User, Users, Ruler, Invoice, ListChecks, MoneyWavy} from '@phosphor-icons/react'
-import { useLocation } from 'react-router'
+// import { useLocation } from 'react-router-dom'
 
 
-const NavBar = () => {
-    const {pathname} = useLocation()
+const NavBar = ({pathNameee}) => {
+    // const {pathname} = useLocation()
+
+    const pathName = pathNameee
     const iconsSize = 32
     const navigationItems = [
         {
@@ -46,7 +48,7 @@ const NavBar = () => {
               <ul className=' flex flex-col gap-3'>
               {
                 navigationItems.map((element, index)=>{
-                  return <li key={index} className={`${pathname === element.path? 'bg-blue-400 text-white':''} rounded-xl cursor-pointer p-3`}>
+                  return <li key={index} className={`${pathName === element.path? 'bg-blue-400 text-white':''} rounded-xl cursor-pointer p-3`}>
                     <a href={element.path} className='flex'>
                       <span className='mr-4'>{element.icon}</span>
                       <Typography variant='h4'>
