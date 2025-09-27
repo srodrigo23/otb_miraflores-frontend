@@ -2,7 +2,8 @@ import {
     Input,
     DialogBody,
     DialogFooter,
-    Button
+    Button,
+    Dialog
 } from "@material-tailwind/react"
 
 import { useForm, SubmitHandler } from "react-hook-form"
@@ -17,7 +18,12 @@ type InputsNewNeighborForm = {
   email:string
 }
 
-const NewNeighborForm = () => {
+type NewNeighborModalFormType = {
+    openModalState:boolean,
+    handleSubmitMethod:()=>void
+}
+
+const NewNeighborModalForm: React.FC<NewNeighborModalFormType> = ({openModalState, handleSubmitMethod}) => {
 
     const { 
         register, handleSubmit, 
@@ -29,10 +35,9 @@ const NewNeighborForm = () => {
     }
 
     return(
-        <>
+        <Dialog open={openModalState} handler={handleSubmitMethod}>
             <DialogBody >
                 <form className="flex flex-col gap-5 mx-4" onSubmit={handleSubmit(onSubmitMethod)}>
-                    
                     <div className="flex gap-5">
                         <Input
                             label="Primer nombre"
@@ -118,8 +123,8 @@ const NewNeighborForm = () => {
                     <span>Confirmar</span>
                 </Button>
             </DialogFooter>
-        </>
+        </Dialog>
     )
 }
 
-export default NewNeighborForm
+export default NewNeighborModalForm

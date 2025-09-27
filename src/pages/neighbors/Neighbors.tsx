@@ -2,14 +2,14 @@
 import { 
   Button, 
   Typography, 
-  Dialog, 
-  DialogHeader, 
-  DialogBody,
-  DialogFooter 
+  // Dialog, 
+  // DialogHeader, 
+  // DialogBody,
+  // DialogFooter 
 } from "@material-tailwind/react";
-import { useEffect, useState } from "react";
-import NewNeighborForm from "../../components/forms/NewNeighborForm";
 
+import { useEffect, useState } from "react";
+import NewNeighborModalForm from "../../components/forms/NewNeighborModalForm";
 
 const Neighbors = ()=>{
   const [data, setData] = useState([]);
@@ -21,13 +21,13 @@ const Neighbors = ()=>{
 
   useEffect(() => {
     fetch(apiLink, {    
-        method: 'GET',
-        // crossorigin: true,    
-        // mode: 'no-cors', 
-      })
-      .then(response => response.json())
-      .then(json => setData(json.data))
-      .catch(error => console.error(error));
+      method: 'GET',
+      // crossorigin: true,    
+      // mode: 'no-cors', 
+    })
+    .then(response => response.json())
+    .then(json => setData(json.data))
+    .catch(error => console.error(error));
   }, []);
   
   return(
@@ -35,16 +35,11 @@ const Neighbors = ()=>{
       <Typography className='text-center' variant="h3" color="black">
         Vecinos
       </Typography>
+
       <Button onClick={handleOpenModal}>NUEVO VECINO</Button>
 
-      <Dialog open={openModal} handler={handleOpenModal}>
-        
-        <DialogHeader>Registro de Datos</DialogHeader>
-        <NewNeighborForm/>
-        
-      </Dialog>
+      <NewNeighborModalForm openModalState={openModal} handleSubmitMethod={handleOpenModal}/>
 
-      
       {!data ? 'Cargando...' : 
         <ul>
           {/* {
