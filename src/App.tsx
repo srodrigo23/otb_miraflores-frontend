@@ -11,7 +11,7 @@ function App() {
     <>
       <div className='h-dvh grid grid-cols-12 gap-2'>
          <div className="col-span-2 h-dvh border-r overflow-y-auto">
-          <NavBar pathNameee={pathname}/>
+          <NavBar pathName={pathname}/>
         </div>
         <div className="col-start-3 col-end-13 border overflow-y-auto h-dvh">
           <Outlet/>

@@ -4,12 +4,15 @@ import {User, Users, Ruler, Invoice, ListChecks, MoneyWavy} from '@phosphor-icon
 // import { useLocation } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
 
+interface NavBarType{
+  pathName:string
+}
 
-const NavBar = ({pathNameee}) => {
+const NavBar : React.FC<NavBarType>= ({pathName}) => {
     // const {pathname} = useLocation()
 
-    const pathName = pathNameee
-    console.log(pathName)
+    const localPathName = pathName
+    
     const iconsSize = 32
     const navigationItems = [
         {
@@ -55,7 +58,7 @@ const NavBar = ({pathNameee}) => {
                       key={index} 
                       // className={`${pathName === element.path? 'bg-blue-400 text-white':''} rounded-xl cursor-pointer p-3`}
                       >
-                      <NavLink to={element.path} className={`flex ${pathName === element.path? 'bg-blue-400 text-white':''} rounded-xl cursor-pointer p-3`}>
+                      <NavLink to={element.path} className={`flex ${localPathName === element.path? 'bg-blue-400 text-white':''} rounded-xl cursor-pointer p-3`}>
                         <span className='mr-4'>{element.icon}</span>
                         <Typography variant='h4'>
                           {element.label}
