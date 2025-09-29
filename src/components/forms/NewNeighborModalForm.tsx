@@ -3,7 +3,8 @@ import {
     DialogBody,
     DialogFooter,
     Button,
-    Dialog
+    Dialog,
+    Typography
 } from "@material-tailwind/react"
 
 import { useForm, SubmitHandler } from "react-hook-form"
@@ -38,6 +39,10 @@ const NewNeighborModalForm: React.FC<NewNeighborModalFormType> = ({openModalStat
         <Dialog open={openModalState} handler={handleSubmitMethod}>
             <DialogBody >
                 <form className="flex flex-col gap-5 mx-4" onSubmit={handleSubmit(onSubmitMethod)}>
+
+                    <Typography variant="h2" color="black">
+                        Nuevo Vecino
+                    </Typography>
                     <div className="flex gap-5">
                         <Input
                             label="Primer nombre"
@@ -110,7 +115,7 @@ const NewNeighborModalForm: React.FC<NewNeighborModalFormType> = ({openModalStat
                 <Button
                     variant="text"
                     color="red"
-                    // onClick={handleOpenModal}
+                    onClick={()=>{handleSubmitMethod()}}
                     className="mr-1"
                 >
                     <span>Cancelar</span>
@@ -118,7 +123,7 @@ const NewNeighborModalForm: React.FC<NewNeighborModalFormType> = ({openModalStat
                 <Button 
                     variant="gradient" 
                     color="green" 
-                    // onClick={handleOpenModal}
+                     onClick={()=>{handleSubmitMethod()}}
                 >
                     <span>Confirmar</span>
                 </Button>
