@@ -1,17 +1,17 @@
 import {CSSProperties} from 'react'
 
 import {
-  Button,
   Typography,
 } from "@material-tailwind/react";
 
 import { useEffect, useState } from "react";
-import NewNeighborModalForm from "../../components/forms/NewNeighborModalForm";
+
 import EditNeighborModalForm from "../../components/forms/EditNeighborModalForm";
 import DeleteNeighborModal from "../../components/modals/DeleteNeighborModal";
 import NeighborTable from "../../components/tables/NeighborTable";
 
 import { ClipLoader } from "react-spinners";
+import { toast } from "react-toastify";
 
 interface NeighborType {
   id: number;
@@ -33,11 +33,7 @@ const Neighbors = ()=>{
   const [data, setData] = useState<NeighborType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const apiLink = "http://127.0.0.1:8000/users"
-
-  // Modal para nuevo vecino
-  const [openModal, setOpenModal] = useState(false)
-  const handleOpenModal = ()=> setOpenModal(!openModal)
+  const apiLink = "http://127.0.0.1:8000/neighbors"
 
   // Modal para editar vecino
   const [openEditModal, setOpenEditModal] = useState(false)
@@ -102,9 +98,11 @@ const Neighbors = ()=>{
       // Recargar la lista de vecinos
       fetchNeighbors();
       handleCloseEditModal();
+      toast.success('Vecino actualizado exitosamente');
     })
     .catch(error => {
       console.error('Error al actualizar vecino:', error);
+      toast.error('Error al actualizar el vecino');
     });
   };
 
@@ -130,24 +128,52 @@ const Neighbors = ()=>{
       // Recargar la lista de vecinos
       fetchNeighbors();
       handleCloseDeleteModal();
+      toast.success('Vecino eliminado exitosamente');
     })
     .catch(error => {
       console.error('Error al eliminar vecino:', error);
+      toast.error('Error al eliminar el vecino');
+    });
+  };
+
+  // Handler para crear nuevo vecino
+  const handleCreateNeighbor = (formData: any) => {
+    // Llamada a la API para crear
+    fetch(apiLink, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        first_name: formData.firstName,
+        second_name: formData.secondName,
+        last_name: formData.lastName,
+        ci: formData.ci,
+        phone_number: formData.phonenumber,
+        email: formData.email,
+      }),
+    })
+    .then(response => response.json())
+    .then(() => {
+      // Recargar la lista de vecinos
+      fetchNeighbors();
+      toast.success('Vecino creado exitosamente');
+    })
+    .catch(error => {
+      console.error('Error al crear vecino:', error);
+      toast.error('Error al crear el vecino');
     });
   };
   
   return(
     <>
       <Typography 
-        className='text-center py-5' 
+        className='text-center mb-2' 
         variant="h3" 
         color="black"
       >
         Vecinos
       </Typography>
-      <div className="flex gap-5 px-10">
-        <Button onClick={handleOpenModal}>NUEVO VECINO</Button>
-      </div>
 
       {loading ? (
         <div className="flex justify-center items-center py-20">
@@ -160,19 +186,15 @@ const Neighbors = ()=>{
           />
         </div>
       ) : (
-        <div className="p-10">
+        <div className="">
           <NeighborTable
             tableData={data}
             onEdit={handleEditNeighbor}
             onDelete={handleDeleteNeighbor}
+            onCreate={handleCreateNeighbor}
           />
         </div>
       )}
-
-      <NewNeighborModalForm
-        openModalState={openModal}
-        handleSubmitMethod={handleOpenModal}
-      />
 
       <EditNeighborModalForm
         openModalState={openEditModal}

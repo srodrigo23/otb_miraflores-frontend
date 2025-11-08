@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
 import { useState } from 'react'
 import { ListBullets, XCircle } from '@phosphor-icons/react'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
 
@@ -15,6 +17,18 @@ function App() {
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className='h-dvh flex flex-col lg:grid lg:grid-cols-12 bg-gray-50'>
         {/* Mobile Header */}
         <div className="lg:hidden bg-gradient-to-r from-blue-600 to-blue-800 p-4 flex items-center justify-between shadow-lg z-20">
@@ -51,7 +65,7 @@ function App() {
 
         {/* Main Content */}
         <div className="lg:col-span-9 xl:col-span-10 flex-1 overflow-y-auto bg-white lg:border-l lg:shadow-inner">
-          <div className="p-4 lg:p-6">
+          <div className="p-3 h-full">
             <Outlet/>
           </div>
         </div>

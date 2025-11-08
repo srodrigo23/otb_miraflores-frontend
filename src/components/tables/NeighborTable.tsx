@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
-import { Typography, Input, IconButton } from '@material-tailwind/react';
+import { Typography, Input, IconButton, Button} from '@material-tailwind/react';
 import { MagnifyingGlassIcon, ChevronUpDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import NewNeighborModalForm from '../forms/NewNeighborModalForm';
 
 interface NeighborType {
   id: number;
@@ -16,6 +17,7 @@ type NeighborTableProps = {
   tableData: NeighborType[];
   onEdit?: (neighbor: NeighborType) => void;
   onDelete?: (neighbor: NeighborType) => void;
+  onCreate?: (data: any) => void;
 };
 
 type SortField = 'id' | 'last_name' | 'first_name' | 'ci' | 'phone_number' | 'email';
@@ -31,17 +33,22 @@ const TABLE_HEAD = [
   { label: 'Acciones', field: null, sortable: false },
 ];
 
-const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDelete }) => {
+const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDelete, onCreate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('id');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
+
+  // Modal para nuevo vecino
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(!openModal);
 
   // Filtrar datos por búsqueda
   const filteredData = useMemo(() => {
     return tableData.filter((neighbor) => {
-      const fullName = `${neighbor.first_name} ${neighbor.second_name} ${neighbor.last_name}`.toLowerCase();
+      const fullName =
+        `${neighbor.first_name} ${neighbor.second_name} ${neighbor.last_name}`.toLowerCase();
       return fullName.includes(searchTerm.toLowerCase());
     });
   }, [tableData, searchTerm]);
@@ -102,8 +109,8 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
   return (
     <div className='flex flex-col h-full'>
       {/* Campo de búsqueda */}
-      <div className='mb-4 px-4'>
-        <div className='w-full md:w-96'>
+      <div className='flex mb-4 justify-center gap-3'>
+        <div className='flex w-full md:w-96'>
           <Input
             label='Buscar vecino'
             icon={<MagnifyingGlassIcon className='h-5 w-5' />}
@@ -111,7 +118,11 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
             onChange={(e) => handleSearch(e.target.value)}
             crossOrigin={undefined}
           />
+          {/* <div className='flex gap-5 px-10 justify-end'>  </div>*/}
         </div>
+        <Button className='' onClick={handleOpenModal}>
+          NUEVO VECINO
+        </Button>
       </div>
 
       {/* Tabla con scroll interno */}
@@ -123,9 +134,13 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                 <th
                   key={head.label}
                   className={`border-b border-blue-gray-100 bg-blue-gray-50 p-3 ${
-                    head.sortable ? 'cursor-pointer hover:bg-blue-gray-100 transition-colors' : ''
+                    head.sortable
+                      ? 'cursor-pointer hover:bg-blue-gray-100 transition-colors'
+                      : ''
                   }`}
-                  onClick={() => head.sortable && head.field && handleSort(head.field)}
+                  onClick={() =>
+                    head.sortable && head.field && handleSort(head.field)
+                  }
                 >
                   <div className='flex items-center gap-2'>
                     <Typography
@@ -137,7 +152,9 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                     </Typography>
                     {head.sortable && (
                       <ChevronUpDownIcon
-                        className={`h-4 w-4 ${sortField === head.field ? 'text-blue-500' : ''}`}
+                        className={`h-4 w-4 ${
+                          sortField === head.field ? 'text-blue-500' : ''
+                        }`}
                       />
                     )}
                   </div>
@@ -264,10 +281,21 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
         </table>
       </div>
 
+      <NewNeighborModalForm
+        openModalState={openModal}
+        handleCloseModal={handleOpenModal}
+        onSubmit={(data) => {
+          if (onCreate) {
+            onCreate(data);
+          }
+        }}
+      />
+
       {/* Controles de paginación */}
       <div className='flex items-center justify-between border-t border-blue-gray-100 p-4'>
         <Typography variant='small' color='blue-gray' className='font-normal'>
-          Página {currentPage} de {totalPages} - Total: {filteredData.length} vecinos
+          Página {currentPage} de {totalPages} - Total: {filteredData.length}{' '}
+          vecinos
         </Typography>
         <div className='flex gap-2'>
           <IconButton
@@ -279,15 +307,18 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
             <span>←</span>
           </IconButton>
           {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter(page => {
+            .filter((page) => {
               // Mostrar primeras 2, últimas 2, y páginas cercanas a la actual
-              return page === 1 ||
-                     page === totalPages ||
-                     (page >= currentPage - 1 && page <= currentPage + 1);
+              return (
+                page === 1 ||
+                page === totalPages ||
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              );
             })
             .map((page, index, array) => {
               // Añadir puntos suspensivos si hay saltos
-              const showEllipsisBefore = index > 0 && page - array[index - 1] > 1;
+              const showEllipsisBefore =
+                index > 0 && page - array[index - 1] > 1;
               return (
                 <div key={page} className='flex gap-2'>
                   {showEllipsisBefore && <span className='px-2'>...</span>}
