@@ -232,23 +232,23 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                     </td>
                     <td className={classes}>
                       <div className='flex gap-2'>
-                        {(
+                        {onEdit && (
                           <IconButton
                             size='sm'
                             variant='text'
                             color='blue'
-                            // onClick={() => onEdit(neighbor)}
+                            onClick={() => onEdit(neighbor)}
                             title='Editar'
                           >
                             <PencilIcon className='h-4 w-4 text-black' />
                           </IconButton>
                         )}
-                        {(
+                        {onDelete && (
                           <IconButton
                             size='sm'
                             variant='text'
                             color='red'
-                            // onClick={() => onDelete(neighbor)}
+                            onClick={() => onDelete(neighbor)}
                             title='Eliminar'
                           >
                             <TrashIcon className='h-4 w-4' />
