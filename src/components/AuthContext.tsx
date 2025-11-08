@@ -9,6 +9,7 @@ type AuthContextType = {
     user: User | null
     login: (user: User) => void
     logout: () => void
+    loading: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -16,11 +17,13 @@ const AuthContext = createContext<AuthContextType>({
     user: null,
     login: () => {},
     logout: () => {},
+    loading: true,
 });
 
 export const AuthProvider = ({ children }: {children: ReactNode}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     // Check localStorage on mount
     useEffect(() => {
@@ -29,6 +32,7 @@ export const AuthProvider = ({ children }: {children: ReactNode}) => {
             setUser(JSON.parse(storedUser));
             setIsAuthenticated(true);
         }
+        setLoading(false);
     }, []);
 
     const login = (userData: User) => {
@@ -44,7 +48,7 @@ export const AuthProvider = ({ children }: {children: ReactNode}) => {
     };
 
     return(
-        <AuthContext.Provider value={{isAuthenticated, user, login, logout}}>
+        <AuthContext.Provider value={{isAuthenticated, user, login, logout, loading}}>
             {children}
         </AuthContext.Provider>
     )
