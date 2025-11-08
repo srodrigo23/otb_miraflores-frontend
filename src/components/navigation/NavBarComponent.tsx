@@ -1,7 +1,8 @@
 
 import { Button, Typography } from '@material-tailwind/react'
 import {User, Users, Ruler, Invoice, ListChecks, MoneyWavy, SignOut} from '@phosphor-icons/react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../AuthContext'
 
 interface NavBarType{
   pathName:string
@@ -9,6 +10,13 @@ interface NavBarType{
 
 const NavBarComponent : React.FC<NavBarType>= ({pathName}) => {
     const localPathName = pathName
+    const navigate = useNavigate()
+    const { logout, user } = useAuth()
+
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
 
     const iconsSize = 24
     const navigationItems = [
@@ -96,8 +104,8 @@ const NavBarComponent : React.FC<NavBarType>= ({pathName}) => {
                   <User size={28} weight="duotone" className="text-white"/>
                 </div>
                 <div className='flex-1'>
-                  <Typography variant='paragraph' className='font-semibold text-gray-800'>
-                    Miriam Lucana
+                  <Typography variant='paragraph' className='font-semibold text-gray-800 capitalize'>
+                    {user?.userName || 'Usuario'}
                   </Typography>
                   <Typography variant='small' className='text-gray-500 text-xs'>
                     Administrador
@@ -105,6 +113,7 @@ const NavBarComponent : React.FC<NavBarType>= ({pathName}) => {
                 </div>
               </div>
               <Button
+                onClick={handleLogout}
                 className='w-full rounded-none rounded-b-2xl flex items-center justify-center gap-2 py-3 normal-case text-sm font-medium
                           bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700
                           transition-all duration-300 shadow-none hover:shadow-lg'
