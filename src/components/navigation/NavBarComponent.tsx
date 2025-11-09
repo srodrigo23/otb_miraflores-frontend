@@ -41,8 +41,8 @@ const NavBarComponent : React.FC<NavBarType>= ({pathName}) => {
             icon:<ListChecks size={iconsSize} weight="duotone" />
         },
         {
-            label:'Deudas',
-            path:'/deudas',
+            label:'Recaudaciones',
+            path:'/recaudaciones',
             icon:<MoneyWavy size={iconsSize} weight="duotone" />
         },
     ]

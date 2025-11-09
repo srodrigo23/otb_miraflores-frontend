@@ -87,7 +87,7 @@ const ReceiptDocument = ({ receiptData, qrCodeData }) => (
 
 
 
-const Debts = () =>{
+const Collections = () =>{
 
   const [qrCodeData, setQrCodeData] = useState('');
 
@@ -200,4 +200,4 @@ const Debts = () =>{
   )
 }
 
-export default Debts;
+export default Collections;

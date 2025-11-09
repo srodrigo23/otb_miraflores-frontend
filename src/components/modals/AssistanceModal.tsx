@@ -7,10 +7,8 @@ import {
   Button,
   Typography,
   Checkbox,
-  IconButton,
   Input,
 } from '@material-tailwind/react';
-import { PencilIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 
@@ -30,6 +28,23 @@ interface AssistanceType {
   notes: string | null;
 }
 
+interface NeighborType {
+  id: number;
+  first_name: string;
+  second_name: string;
+  last_name: string;
+  ci: string;
+  phone_number: string;
+  email: string;
+}
+
+interface NeighborWithAssistance extends NeighborType {
+  assistance?: AssistanceType;
+  is_present: boolean;
+  is_on_time: boolean;
+  notes: string;
+}
+
 interface MeetType {
   id: number;
   title: string;
@@ -47,76 +62,177 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({
   onClose,
   meet,
 }) => {
-  const [assistances, setAssistances] = useState<AssistanceType[]>([]);
+  const [neighbors, setNeighbors] = useState<NeighborWithAssistance[]>([]);
   const [loading, setLoading] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState<Partial<AssistanceType>>({});
+  const [saving, setSaving] = useState<number | null>(null);
 
   const apiLink = 'http://127.0.0.1:8000';
 
-  // Cargar asistencias cuando se abre el modal
   useEffect(() => {
     if (open && meet) {
-      fetchAssistances();
+      fetchData();
     }
   }, [open, meet]);
 
-  const fetchAssistances = () => {
+  const fetchData = async () => {
     if (!meet) return;
 
     setLoading(true);
-    fetch(`${apiLink}/meets/${meet.id}/assistances`, {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setAssistances(json);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-        toast.error('Error al cargar las asistencias');
+    try {
+      // Cargar vecinos y asistencias en paralelo
+      const [neighborsResponse, assistancesResponse] = await Promise.all([
+        fetch(`${apiLink}/neighbors/`),
+        fetch(`${apiLink}/meets/${meet.id}/assistances`),
+      ]);
+
+      const neighborsData = await neighborsResponse.json();
+      const assistancesData = await assistancesResponse.json();
+
+      // Crear un mapa de asistencias por neighbor_id
+      const assistanceMap = new Map<number, AssistanceType>();
+      assistancesData.forEach((assistance: AssistanceType) => {
+        assistanceMap.set(assistance.neighbor_id, assistance);
       });
+
+      // Combinar vecinos con sus asistencias
+      const combinedData: NeighborWithAssistance[] = (neighborsData.data || []).map(
+        (neighbor: NeighborType) => {
+          const assistance = assistanceMap.get(neighbor.id);
+          return {
+            ...neighbor,
+            assistance,
+            is_present: assistance?.is_present || false,
+            is_on_time: assistance?.is_on_time || false,
+            notes: assistance?.notes || '',
+          };
+        }
+      );
+
+      setNeighbors(combinedData);
+    } catch (error) {
+      console.error(error);
+      toast.error('Error al cargar los datos');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEdit = (assistance: AssistanceType) => {
-    setEditingId(assistance.id);
-    setEditForm({
-      is_present: assistance.is_present,
-      is_on_time: assistance.is_on_time,
-      excuse_reason: assistance.excuse_reason,
-      has_excuse: assistance.has_excuse,
-      represented_by: assistance.represented_by,
-      has_representative: assistance.has_representative,
-      notes: assistance.notes,
-    });
+  const handleTogglePresent = async (neighbor: NeighborWithAssistance) => {
+    const newValue = !neighbor.is_present;
+
+    // Actualizar UI optimísticamente
+    setNeighbors((prev) =>
+      prev.map((n) =>
+        n.id === neighbor.id ? { ...n, is_present: newValue } : n
+      )
+    );
+
+    setSaving(neighbor.id);
+
+    try {
+      if (neighbor.assistance) {
+        // Actualizar asistencia existente
+        await fetch(`${apiLink}/assistances/${neighbor.assistance.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ is_present: newValue }),
+        });
+      } else {
+        // Crear nueva asistencia
+        await fetch(`${apiLink}/meets/${meet?.id}/assistances`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            neighbor_id: neighbor.id,
+            is_present: newValue,
+            is_on_time: false,
+          }),
+        });
+      }
+
+      // Recargar datos para obtener el ID de la asistencia creada
+      await fetchData();
+    } catch (error) {
+      console.error(error);
+      toast.error('Error al guardar la asistencia');
+      // Revertir el cambio en caso de error
+      setNeighbors((prev) =>
+        prev.map((n) =>
+          n.id === neighbor.id ? { ...n, is_present: !newValue } : n
+        )
+      );
+    } finally {
+      setSaving(null);
+    }
   };
 
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditForm({});
-  };
+  const handleToggleOnTime = async (neighbor: NeighborWithAssistance) => {
+    if (!neighbor.assistance) {
+      toast.warning('Primero marque al vecino como presente');
+      return;
+    }
 
-  const handleSaveEdit = (assistanceId: number) => {
-    fetch(`${apiLink}/assistances/${assistanceId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(editForm),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        toast.success('Asistencia actualizada');
-        setEditingId(null);
-        setEditForm({});
-        fetchAssistances();
-      })
-      .catch((error) => {
-        console.error('Error al actualizar asistencia:', error);
-        toast.error('Error al actualizar la asistencia');
+    const newValue = !neighbor.is_on_time;
+
+    // Actualizar UI optimísticamente
+    setNeighbors((prev) =>
+      prev.map((n) =>
+        n.id === neighbor.id ? { ...n, is_on_time: newValue } : n
+      )
+    );
+
+    setSaving(neighbor.id);
+
+    try {
+      await fetch(`${apiLink}/assistances/${neighbor.assistance.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_on_time: newValue }),
       });
+    } catch (error) {
+      console.error(error);
+      toast.error('Error al actualizar la puntualidad');
+      setNeighbors((prev) =>
+        prev.map((n) =>
+          n.id === neighbor.id ? { ...n, is_on_time: !newValue } : n
+        )
+      );
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const handleNotesChange = async (neighbor: NeighborWithAssistance, notes: string) => {
+    if (!neighbor.assistance) return;
+
+    // Actualizar UI
+    setNeighbors((prev) =>
+      prev.map((n) => (n.id === neighbor.id ? { ...n, notes } : n))
+    );
+  };
+
+  const handleNotesBlur = async (neighbor: NeighborWithAssistance) => {
+    if (!neighbor.assistance) return;
+
+    setSaving(neighbor.id);
+
+    try {
+      await fetch(`${apiLink}/assistances/${neighbor.assistance.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: neighbor.notes }),
+      });
+      toast.success('Notas guardadas');
+    } catch (error) {
+      console.error(error);
+      toast.error('Error al guardar las notas');
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const getFullName = (neighbor: NeighborType) => {
+    return `${neighbor.first_name} ${neighbor.second_name || ''} ${neighbor.last_name}`.trim();
   };
 
   const formatDateTime = (dateString: string | null) => {
@@ -131,14 +247,29 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({
     });
   };
 
+  const presentCount = neighbors.filter((n) => n.is_present).length;
+  const onTimeCount = neighbors.filter((n) => n.is_on_time).length;
+
   return (
     <Dialog open={open} handler={onClose} size="xl">
       <DialogHeader>
-        <div>
-          <Typography variant="h4">Asistencias - {meet?.title}</Typography>
-          <Typography variant="small" color="gray" className="font-normal">
-            Fecha: {meet?.meet_date ? formatDateTime(meet.meet_date) : ''}
-          </Typography>
+        <div className="w-full">
+          <div className="flex justify-between items-start">
+            <div>
+              <Typography variant="h4">Registro de Asistencia - {meet?.title}</Typography>
+              <Typography variant="small" color="gray" className="font-normal">
+                Fecha: {meet?.meet_date ? formatDateTime(meet.meet_date) : ''}
+              </Typography>
+            </div>
+            <div className="text-right">
+              <Typography variant="small" color="blue-gray" className="font-semibold">
+                Presentes: {presentCount} / {neighbors.length}
+              </Typography>
+              <Typography variant="small" color="green" className="font-semibold">
+                Puntuales: {onTimeCount}
+              </Typography>
+            </div>
+          </div>
         </div>
       </DialogHeader>
       <DialogBody className="overflow-auto max-h-[60vh]">
@@ -146,174 +277,96 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({
           <div className="flex justify-center items-center py-10">
             <ClipLoader size={50} />
           </div>
-        ) : assistances.length === 0 ? (
+        ) : neighbors.length === 0 ? (
           <Typography className="text-center py-10" color="gray">
-            No hay registros de asistencia para esta reunión
+            No hay vecinos registrados en el sistema
           </Typography>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-max table-auto text-left">
               <thead>
                 <tr>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4 w-12">
+                    <Typography variant="small" color="blue-gray" className="font-semibold">
+                      #
+                    </Typography>
+                  </th>
                   <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                    <Typography variant="small" color="blue-gray" className="font-semibold">
                       Vecino
                     </Typography>
                   </th>
-                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-center">
+                    <Typography variant="small" color="blue-gray" className="font-semibold">
                       Presente
                     </Typography>
                   </th>
-                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-center">
+                    <Typography variant="small" color="blue-gray" className="font-semibold">
                       Puntual
                     </Typography>
                   </th>
                   <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                      Justificación
-                    </Typography>
-                  </th>
-                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                      Representante
-                    </Typography>
-                  </th>
-                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
+                    <Typography variant="small" color="blue-gray" className="font-semibold">
                       Notas
-                    </Typography>
-                  </th>
-                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
-                      Acciones
                     </Typography>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {assistances.map((assistance, index) => {
-                  const isLast = index === assistances.length - 1;
+                {neighbors.map((neighbor, index) => {
+                  const isLast = index === neighbors.length - 1;
                   const classes = isLast ? 'p-4' : 'p-4 border-b border-blue-gray-50';
-                  const isEditing = editingId === assistance.id;
+                  const isSaving = saving === neighbor.id;
 
                   return (
-                    <tr key={assistance.id} className="hover:bg-blue-gray-50/50">
+                    <tr
+                      key={neighbor.id}
+                      className={`hover:bg-blue-gray-50/50 ${
+                        neighbor.is_present ? 'bg-green-50' : ''
+                      } ${isSaving ? 'opacity-50' : ''}`}
+                    >
                       <td className={classes}>
                         <Typography variant="small" color="blue-gray" className="font-normal">
-                          {assistance.neighbor_name}
+                          {index + 1}
                         </Typography>
                       </td>
                       <td className={classes}>
-                        {isEditing ? (
-                          <Checkbox
-                            checked={editForm.is_present || false}
-                            onChange={(e) =>
-                              setEditForm({ ...editForm, is_present: e.target.checked })
-                            }
-                            crossOrigin={undefined}
-                          />
-                        ) : (
-                          <Checkbox
-                            checked={assistance.is_present}
-                            disabled
-                            crossOrigin={undefined}
-                          />
-                        )}
+                        <Typography variant="small" color="blue-gray" className="font-medium">
+                          {getFullName(neighbor)}
+                        </Typography>
+                        <Typography variant="small" color="gray" className="font-normal">
+                          CI: {neighbor.ci}
+                        </Typography>
+                      </td>
+                      <td className={`${classes} text-center`}>
+                        <Checkbox
+                          checked={neighbor.is_present}
+                          onChange={() => handleTogglePresent(neighbor)}
+                          disabled={isSaving}
+                          crossOrigin={undefined}
+                          color="green"
+                        />
+                      </td>
+                      <td className={`${classes} text-center`}>
+                        <Checkbox
+                          checked={neighbor.is_on_time}
+                          onChange={() => handleToggleOnTime(neighbor)}
+                          disabled={isSaving || !neighbor.assistance}
+                          crossOrigin={undefined}
+                          color="blue"
+                        />
                       </td>
                       <td className={classes}>
-                        {isEditing ? (
-                          <Checkbox
-                            checked={editForm.is_on_time || false}
-                            onChange={(e) =>
-                              setEditForm({ ...editForm, is_on_time: e.target.checked })
-                            }
-                            crossOrigin={undefined}
-                          />
-                        ) : (
-                          <Checkbox
-                            checked={assistance.is_on_time}
-                            disabled
-                            crossOrigin={undefined}
-                          />
-                        )}
-                      </td>
-                      <td className={classes}>
-                        {isEditing ? (
-                          <Input
-                            size="sm"
-                            value={editForm.excuse_reason || ''}
-                            onChange={(e) =>
-                              setEditForm({ ...editForm, excuse_reason: e.target.value })
-                            }
-                            crossOrigin={undefined}
-                          />
-                        ) : (
-                          <Typography variant="small" color="blue-gray" className="font-normal">
-                            {assistance.excuse_reason || '-'}
-                          </Typography>
-                        )}
-                      </td>
-                      <td className={classes}>
-                        {isEditing ? (
-                          <Input
-                            size="sm"
-                            value={editForm.represented_by || ''}
-                            onChange={(e) =>
-                              setEditForm({ ...editForm, represented_by: e.target.value })
-                            }
-                            crossOrigin={undefined}
-                          />
-                        ) : (
-                          <Typography variant="small" color="blue-gray" className="font-normal">
-                            {assistance.represented_by || '-'}
-                          </Typography>
-                        )}
-                      </td>
-                      <td className={classes}>
-                        {isEditing ? (
-                          <Input
-                            size="sm"
-                            value={editForm.notes || ''}
-                            onChange={(e) =>
-                              setEditForm({ ...editForm, notes: e.target.value })
-                            }
-                            crossOrigin={undefined}
-                          />
-                        ) : (
-                          <Typography variant="small" color="blue-gray" className="font-normal">
-                            {assistance.notes || '-'}
-                          </Typography>
-                        )}
-                      </td>
-                      <td className={classes}>
-                        {isEditing ? (
-                          <div className="flex gap-2">
-                            <IconButton
-                              size="sm"
-                              color="green"
-                              onClick={() => handleSaveEdit(assistance.id)}
-                            >
-                              <CheckIcon className="h-4 w-4" />
-                            </IconButton>
-                            <IconButton
-                              size="sm"
-                              color="red"
-                              onClick={handleCancelEdit}
-                            >
-                              <XMarkIcon className="h-4 w-4" />
-                            </IconButton>
-                          </div>
-                        ) : (
-                          <IconButton
-                            size="sm"
-                            variant="text"
-                            onClick={() => handleEdit(assistance)}
-                          >
-                            <PencilIcon className="h-4 w-4" />
-                          </IconButton>
-                        )}
+                        <Input
+                          value={neighbor.notes}
+                          onChange={(e) => handleNotesChange(neighbor, e.target.value)}
+                          onBlur={() => handleNotesBlur(neighbor)}
+                          disabled={isSaving || !neighbor.assistance}
+                          placeholder="Agregar notas..."
+                          crossOrigin={undefined}
+                          className="!min-w-[200px]"
+                        />
                       </td>
                     </tr>
                   );
@@ -323,7 +376,13 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({
           </div>
         )}
       </DialogBody>
-      <DialogFooter>
+      <DialogFooter className="flex justify-between">
+        <div>
+          <Typography variant="small" color="gray">
+            Total vecinos: {neighbors.length} | Presentes: {presentCount} | Ausentes:{' '}
+            {neighbors.length - presentCount}
+          </Typography>
+        </div>
         <Button variant="gradient" color="blue" onClick={onClose}>
           <span>Cerrar</span>
         </Button>
