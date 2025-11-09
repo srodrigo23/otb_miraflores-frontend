@@ -9,7 +9,7 @@ import { ThemeProvider } from '@material-tailwind/react'
 
 // import CheckNeighborDebts from './pages/checkDebts/CheckNeighborsDebts.tsx';
 import Neighbors from './pages/neighbors/Neighbors.tsx';
-import Attendance from './pages/attendance/Attendance.tsx';
+import Meetings from './pages/meetings/Meetings.tsx';
 import Debts from './pages/debts/Debts.tsx';
 import Receipts from './pages/receipts/Receipts.tsx';
 import Measures from './pages/measures/Measures.tsx';
@@ -40,7 +40,7 @@ createRoot(document.getElementById('root')!).render(
                 
                 <Route path="/" element={<Neighbors />} />
 
-                <Route path="/asistencia" element={<Attendance />} /> 
+                <Route path="/Reuniones" element={<Meetings />} /> 
                 <Route path="/deudas" element={<Debts />} />
                 <Route path="/recibos" element={<Receipts />} />
                 <Route path="/vecinos" element={<Neighbors />} /> 
