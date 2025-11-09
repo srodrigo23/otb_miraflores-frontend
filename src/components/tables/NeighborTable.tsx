@@ -8,8 +8,8 @@ interface NeighborType {
   first_name: string;
   second_name: string;
   last_name: string;
-  ci: string;
-  phone_number: string;
+  ci: number;
+  phone_number: number;
   email: string;
 }
 

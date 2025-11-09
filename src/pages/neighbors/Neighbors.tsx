@@ -186,14 +186,14 @@ const Neighbors = ()=>{
           />
         </div>
       ) : (
-        <div className="">
+        <>
           <NeighborTable
             tableData={data}
             onEdit={handleEditNeighbor}
             onDelete={handleDeleteNeighbor}
             onCreate={handleCreateNeighbor}
           />
-        </div>
+        </>
       )}
 
       <EditNeighborModalForm
