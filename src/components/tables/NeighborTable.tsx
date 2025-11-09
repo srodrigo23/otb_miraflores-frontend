@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Typography, Input, IconButton, Button} from '@material-tailwind/react';
-import { MagnifyingGlassIcon, ChevronUpDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, ChevronUpDownIcon, PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import NewNeighborModalForm from '../forms/NewNeighborModalForm';
 
 interface NeighborType {
@@ -18,6 +18,7 @@ type NeighborTableProps = {
   onEdit?: (neighbor: NeighborType) => void;
   onDelete?: (neighbor: NeighborType) => void;
   onCreate?: (data: any) => void;
+  onView?: (neighbor: NeighborType) => void;
 };
 
 type SortField = 'id' | 'last_name' | 'first_name' | 'ci' | 'phone_number' | 'email';
@@ -33,7 +34,7 @@ const TABLE_HEAD = [
   { label: 'Acciones', field: null, sortable: false },
 ];
 
-const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDelete, onCreate }) => {
+const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDelete, onCreate, onView }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('id');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -249,6 +250,17 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                     </td>
                     <td className={classes}>
                       <div className='flex gap-2'>
+                        {onView && (
+                          <IconButton
+                            size='sm'
+                            variant='text'
+                            color='blue'
+                            onClick={() => onView(neighbor)}
+                            title='Ver detalles'
+                          >
+                            <EyeIcon className='h-4 w-4' />
+                          </IconButton>
+                        )}
                         {onEdit && (
                           <IconButton
                             size='sm'

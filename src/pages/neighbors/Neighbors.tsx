@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 import EditNeighborModalForm from "../../components/forms/EditNeighborModalForm";
 import DeleteNeighborModal from "../../components/modals/DeleteNeighborModal";
+import NeighborDetailModal from "../../components/modals/NeighborDetailModal";
 import NeighborTable from "../../components/tables/NeighborTable";
 
 import { ClipLoader } from "react-spinners";
@@ -42,6 +43,10 @@ const Neighbors = ()=>{
   // Modal para eliminar vecino
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const [neighborToDelete, setNeighborToDelete] = useState<NeighborType | null>(null)
+
+  // Modal para ver detalles del vecino
+  const [openDetailModal, setOpenDetailModal] = useState(false)
+  const [neighborToView, setNeighborToView] = useState<NeighborType | null>(null)
 
   // Cargar datos de vecinos
   const fetchNeighbors = () => {
@@ -164,6 +169,17 @@ const Neighbors = ()=>{
       toast.error('Error al crear el vecino');
     });
   };
+
+  // Handler para ver detalles del vecino
+  const handleViewNeighbor = (neighbor: NeighborType) => {
+    setNeighborToView(neighbor);
+    setOpenDetailModal(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setOpenDetailModal(false);
+    setNeighborToView(null);
+  };
   
   return(
     <>
@@ -192,6 +208,7 @@ const Neighbors = ()=>{
             onEdit={handleEditNeighbor}
             onDelete={handleDeleteNeighbor}
             onCreate={handleCreateNeighbor}
+            onView={handleViewNeighbor}
           />
         </>
       )}
@@ -208,6 +225,12 @@ const Neighbors = ()=>{
         handleCloseModal={handleCloseDeleteModal}
         neighbor={neighborToDelete}
         onConfirmDelete={handleConfirmDelete}
+      />
+
+      <NeighborDetailModal
+        open={openDetailModal}
+        onClose={handleCloseDetailModal}
+        neighbor={neighborToView}
       />
     </>
   )
