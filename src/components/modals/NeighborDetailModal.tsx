@@ -190,7 +190,7 @@ const NeighborDetailModal: React.FC<NeighborDetailModalProps> = ({
   };
 
   const formatCurrency = (amount: number) => {
-    return `Bs ${(amount / 100).toFixed(2)}`;
+    return `Bs. ${amount.toFixed(2)}`;
   };
 
   const getFullName = () => {

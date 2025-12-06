@@ -30,11 +30,11 @@ const NavBarComponent : React.FC<NavBarType>= ({pathName}) => {
             path:'/mediciones',
             icon:<Ruler size={iconsSize} weight="duotone" />
         },
-        {
-            label:'Recibos',
-            path:'/recibos',
-            icon:<Invoice size={iconsSize} weight="duotone" />
-        },
+        // {
+        //     label:'Recibos',
+        //     path:'/recibos',
+        //     icon:<Invoice size={iconsSize} weight="duotone" />
+        // },
         {
             label:'Reuniones',
             path:'/reuniones',

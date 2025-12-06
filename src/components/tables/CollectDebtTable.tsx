@@ -10,53 +10,54 @@ import {
   PencilIcon,
   TrashIcon,
   EyeIcon,
-  DocumentMagnifyingGlassIcon,
-  CurrencyDollarIcon,
-  XCircleIcon,
+  BanknotesIcon,
 } from '@heroicons/react/24/outline';
-import NewMeasureModalForm from '../forms/NewMeasureModalForm';
+import NewCollectDebtModalForm from '../forms/NewCollectDebtModalForm';
 
-interface MeasureType {
+interface CollectDebtType {
   id: number;
-  measure_date: string;
+  collect_date: string;
   period: string | null;
-  reader_name: string | null;
+  collector_name: string | null;
+  location: string | null;
   status: string;
-  total_meters: number;
-  meters_read: number;
-  meters_pending: number;
+  total_payments: number;
+  total_collected: number;
+  total_neighbors_paid: number;
+  start_time: string | null;
+  end_time: string | null;
   notes: string | null;
   created_at: string;
   updated_at: string;
 }
 
-type MeasureTableProps = {
-  tableData: MeasureType[];
-  onEdit?: (measure: MeasureType) => void;
-  onDelete?: (measure: MeasureType) => void;
+type CollectDebtTableProps = {
+  tableData: CollectDebtType[];
+  onEdit?: (collectDebt: CollectDebtType) => void;
+  onDelete?: (collectDebt: CollectDebtType) => void;
   onCreate?: (data: any) => void;
-  onView?: (measure: MeasureType) => void;
-  onViewReadings?: (measure: MeasureType) => void;
-  onGenerateDebts?: (measure: MeasureType) => void;
-  onDeleteDebts?: (measure: MeasureType) => void;
+  onView?: (collectDebt: CollectDebtType) => void;
+  onViewPayments?: (collectDebt: CollectDebtType) => void;
 };
 
-type SortField = 'id' | 'measure_date' | 'period' | 'reader_name' | 'status' | 'created_at';
+type SortField = 'id' | 'collect_date' | 'period' | 'status' | 'created_at';
 type SortOrder = 'asc' | 'desc';
 
 const TABLE_HEAD = [
   { label: 'ID', field: 'id' as SortField, sortable: true },
-  { label: 'Fecha de Medición', field: 'measure_date' as SortField, sortable: true },
+  { label: 'Fecha', field: 'collect_date' as SortField, sortable: true },
   { label: 'Periodo', field: 'period' as SortField, sortable: true },
-  { label: 'Responsable', field: 'reader_name' as SortField, sortable: true },
+  { label: 'Cobrador', field: null, sortable: false },
+  { label: 'Lugar', field: null, sortable: false },
   { label: 'Estado', field: 'status' as SortField, sortable: true },
-  { label: 'Medidores', field: null, sortable: false },
-  { label: 'Fecha Creación', field: 'created_at' as SortField, sortable: true },
+  { label: 'Recaudado', field: null, sortable: false },
+  { label: 'Vecinos', field: null, sortable: false },
+  { label: 'Pagos', field: null, sortable: false },
   { label: 'Acciones', field: null, sortable: false },
 ];
 
 const STATUS_COLORS: { [key: string]: string } = {
-  in_progress: 'blue',
+  in_progress: 'amber',
   completed: 'green',
   cancelled: 'red',
 };
@@ -67,22 +68,20 @@ const STATUS_LABELS: { [key: string]: string } = {
   cancelled: 'Cancelada',
 };
 
-const MeasureTable: React.FC<MeasureTableProps> = ({
+const CollectDebtTable: React.FC<CollectDebtTableProps> = ({
   tableData,
   onEdit,
   onDelete,
   onCreate,
   onView,
-  onViewReadings,
-  onGenerateDebts,
-  onDeleteDebts,
+  onViewPayments,
 }) => {
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Modal para nueva medición
+  // Modal para nueva recaudación
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(!openModal);
 
@@ -137,11 +136,15 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
     });
   };
 
+  const formatCurrency = (amount: number) => {
+    return amount.toFixed(2);
+  };
+
   return (
     <div className='flex flex-col h-full'>
-      {/* Botón para crear nueva medición */}
+      {/* Botón para crear nueva recaudación */}
       <div className='flex mb-4 justify-end'>
-        <Button onClick={handleOpenModal}>NUEVA MEDICIÓN</Button>
+        <Button onClick={handleOpenModal}>NUEVA RECAUDACIÓN</Button>
       </div>
 
       {/* Tabla con scroll interno */}
@@ -182,30 +185,21 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map((measure, index) => {
+            {paginatedData.map((collectDebt, index) => {
               const isLast = index === paginatedData.length - 1;
               const classes = isLast
                 ? 'p-3'
                 : 'p-3 border-b border-blue-gray-50';
 
               return (
-                <tr key={measure.id} className='hover:bg-blue-gray-50/50'>
+                <tr key={collectDebt.id} className='hover:bg-blue-gray-50/50'>
                   <td className={classes}>
                     <Typography
                       variant='small'
                       color='blue-gray'
                       className='font-normal'
                     >
-                      {measure.id}
-                    </Typography>
-                  </td>
-                  <td className={classes}>
-                    <Typography
-                      variant='small'
-                      color='blue-gray'
-                      className='font-medium'
-                    >
-                      {formatDate(measure.measure_date)}
+                      {collectDebt.id}
                     </Typography>
                   </td>
                   <td className={classes}>
@@ -214,7 +208,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                       color='blue-gray'
                       className='font-normal'
                     >
-                      {measure.period || '-'}
+                      {formatDate(collectDebt.collect_date)}
                     </Typography>
                   </td>
                   <td className={classes}>
@@ -223,23 +217,41 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                       color='blue-gray'
                       className='font-normal'
                     >
-                      {measure.reader_name || '-'}
+                      {collectDebt.period || '-'}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant='small'
+                      color='blue-gray'
+                      className='font-normal'
+                    >
+                      {collectDebt.collector_name || '-'}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant='small'
+                      color='blue-gray'
+                      className='font-normal'
+                    >
+                      {collectDebt.location || '-'}
                     </Typography>
                   </td>
                   <td className={classes}>
                     <Chip
                       size='sm'
-                      value={STATUS_LABELS[measure.status] || measure.status}
-                      color={STATUS_COLORS[measure.status] || 'gray'}
+                      value={STATUS_LABELS[collectDebt.status] || collectDebt.status}
+                      color={(STATUS_COLORS[collectDebt.status] as any) || 'gray'}
                     />
                   </td>
                   <td className={classes}>
                     <Typography
                       variant='small'
                       color='blue-gray'
-                      className='font-normal'
+                      className='font-semibold'
                     >
-                      {measure.meters_read}/{measure.total_meters}
+                      Bs. {formatCurrency(collectDebt.total_collected)}
                     </Typography>
                   </td>
                   <td className={classes}>
@@ -248,42 +260,29 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                       color='blue-gray'
                       className='font-normal'
                     >
-                      {formatDate(measure.created_at)}
+                      {collectDebt.total_neighbors_paid}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant='small'
+                      color='blue-gray'
+                      className='font-normal'
+                    >
+                      {collectDebt.total_payments}
                     </Typography>
                   </td>
                   <td className={classes}>
                     <div className='flex gap-2'>
-                      {onGenerateDebts && (
-                        <IconButton
-                          size='sm'
-                          variant='text'
-                          color='green'
-                          onClick={() => onGenerateDebts(measure)}
-                          title='Generar deudas'
-                        >
-                          <CurrencyDollarIcon className='h-4 w-4' />
-                        </IconButton>
-                      )}
-                      {onDeleteDebts && (
-                        <IconButton
-                          size='sm'
-                          variant='text'
-                          color='orange'
-                          onClick={() => onDeleteDebts(measure)}
-                          title='Eliminar deudas'
-                        >
-                          <XCircleIcon className='h-4 w-4' />
-                        </IconButton>
-                      )}
-                      {onViewReadings && (
+                      {onViewPayments && (
                         <IconButton
                           size='sm'
                           variant='text'
                           color='purple'
-                          onClick={() => onViewReadings(measure)}
-                          title='Ver lecturas'
+                          onClick={() => onViewPayments(collectDebt)}
+                          title='Ver pagos'
                         >
-                          <DocumentMagnifyingGlassIcon className='h-4 w-4' />
+                          <BanknotesIcon className='h-4 w-4' />
                         </IconButton>
                       )}
                       {onView && (
@@ -291,7 +290,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                           size='sm'
                           variant='text'
                           color='blue'
-                          onClick={() => onView(measure)}
+                          onClick={() => onView(collectDebt)}
                           title='Ver detalles'
                         >
                           <EyeIcon className='h-4 w-4' />
@@ -302,7 +301,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                           size='sm'
                           variant='text'
                           color='blue'
-                          onClick={() => onEdit(measure)}
+                          onClick={() => onEdit(collectDebt)}
                           title='Editar'
                         >
                           <PencilIcon className='h-4 w-4 text-black' />
@@ -313,7 +312,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                           size='sm'
                           variant='text'
                           color='red'
-                          onClick={() => onDelete(measure)}
+                          onClick={() => onDelete(collectDebt)}
                           title='Eliminar'
                         >
                           <TrashIcon className='h-4 w-4' />
@@ -328,7 +327,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
         </table>
       </div>
 
-      <NewMeasureModalForm
+      <NewCollectDebtModalForm
         openModalState={openModal}
         handleCloseModal={handleOpenModal}
         onSubmit={(data) => {
@@ -342,7 +341,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
       <div className='flex items-center justify-between border-t border-blue-gray-100 p-4'>
         <Typography variant='small' color='blue-gray' className='font-normal'>
           Página {currentPage} de {totalPages} - Total: {sortedData.length}{' '}
-          mediciones
+          recaudaciones
         </Typography>
         <div className='flex gap-2'>
           <IconButton
@@ -391,4 +390,4 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
   );
 };
 
-export default MeasureTable;
+export default CollectDebtTable;

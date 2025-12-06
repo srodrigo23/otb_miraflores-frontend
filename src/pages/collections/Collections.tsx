@@ -1,203 +1,170 @@
-import React from 'react';
-import { Typography, Button, Input, Checkbox } from "@material-tailwind/react";
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { CSSProperties, useEffect, useState } from 'react';
+import { Typography } from '@material-tailwind/react';
+import CollectDebtTable from '../../components/tables/CollectDebtTable';
+import CollectDebtPaymentsModal from '../../components/modals/CollectDebtPaymentsModal';
+import { ClipLoader } from 'react-spinners';
+import { toast } from 'react-toastify';
 
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import QrInvoiceCode from "../../components/receipts/qrInvoiceCode";
-import QRCode from 'qrcode';
-// import ReceiptDocument from './ReceiptDocument'; // Assuming you saved the above component as ReceiptDocument.js
+interface CollectDebtType {
+  id: number;
+  collect_date: string;
+  period: string | null;
+  collector_name: string | null;
+  location: string | null;
+  status: string;
+  total_payments: number;
+  total_collected: number;
+  total_neighbors_paid: number;
+  start_time: string | null;
+  end_time: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
-import { useEffect, useState } from 'react';
-import { ClipLoader } from "react-spinners";
-
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: 'column',
-    backgroundColor: '#FFFFFF',
-    padding: 30,
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-  },
-  header: {
-    fontSize: 24,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5,
-  },
-  total: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'right',
-  },
-  qrCode: {
-    width: 100,
-    height: 100,
-    marginTop: 20,
-    alignSelf: 'center',
-  },
-});
-
-
-const receiptData = {
-  invoiceId: 'INV-001',
-  date: '2025-09-27',
-  customerName: 'John Doe',
-  items: [
-    { description: 'Product A', amount: 15.00 },
-    { description: 'Product B', amount: 25.50 },
-  ],
-  total: 40.50,
+const override: CSSProperties = {
+  display: 'block',
+  margin: '0 auto',
+  borderColor: 'red',
 };
 
+const Collections = () => {
+  const [data, setData] = useState<CollectDebtType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCollectDebt, setSelectedCollectDebt] = useState<CollectDebtType | null>(null);
+  const [openPaymentsModal, setOpenPaymentsModal] = useState(false);
 
-const ReceiptDocument = ({ receiptData, qrCodeData }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text style={styles.header}>Pago de agua</Text>
-        {/* Optional: Add a logo */}
-        {/* <Image src="path/to/your/logo.png" style={{ width: 50, height: 50, marginBottom: 10 }} /> */}
-        <Text>Num. de Factura: {receiptData.invoiceId}</Text>
-        <Text>Fecha: {receiptData.date}</Text>
-        <Text>Usuario: {receiptData.customerName}</Text>
-        <View style={{ marginTop: 20 }}>
-          {receiptData.items.map((item, index) => (
-            <View key={index} style={styles.item}>
-              <Text>{item.description}</Text>
-              <Text>Bs. {item.amount}</Text>
-            </View>
-          ))}
-        </View>
-        <Text style={styles.total}>Total: Bs.- {receiptData.total}</Text>
-        {qrCodeData && (
-          <Image src={qrCodeData} style={styles.qrCode} />
-        )}
-      </View>
-    </Page>
-  </Document>
-);
+  const apiLink = 'http://127.0.0.1:8000/collect-debts';
 
-
-
-const Collections = () =>{
-
-  const [qrCodeData, setQrCodeData] = useState('');
+  // Cargar datos de recaudaciones
+  const fetchCollectDebts = () => {
+    setLoading(true);
+    fetch(apiLink, {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        setData(json);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+        toast.error('Error al cargar las recaudaciones');
+      });
+  };
 
   useEffect(() => {
-    const generateQRCode = async () => {
-      try {
-        const qrCodeUrl = `Invoice: ${receiptData.invoiceId}, Total: $${receiptData.total}`;
-        const qrDataURL = await QRCode.toDataURL(qrCodeUrl, { errorCorrectionLevel: 'H' });
-        setQrCodeData(qrDataURL);
-      } catch (error) {
-        console.error('Error generating QR code:', error);
-      }
-    };
+    fetchCollectDebts();
+  }, []);
 
-    generateQRCode();
-  }, [receiptData]);
+  // Handler para crear nueva recaudación
+  const handleCreateCollectDebt = (formData: any) => {
+    fetch(apiLink, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        collect_date: formData.collectDate,
+        period: formData.period,
+        collector_name: formData.collectorName,
+        location: formData.location,
+        notes: formData.notes,
+      }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetchCollectDebts();
+        toast.success('Recaudación creada exitosamente');
+      })
+      .catch((error) => {
+        console.error('Error al crear recaudación:', error);
+        toast.error('Error al crear la recaudación');
+      });
+  };
 
-  return(
+  // Handler para ver detalles
+  const handleViewCollectDebt = (collectDebt: CollectDebtType) => {
+    // TODO: Implementar vista de detalles
+    console.log('Ver recaudación:', collectDebt);
+    toast.info('Función de vista de detalles en desarrollo');
+  };
+
+  // Handler para editar
+  const handleEditCollectDebt = (collectDebt: CollectDebtType) => {
+    // TODO: Implementar edición
+    console.log('Editar recaudación:', collectDebt);
+    toast.info('Función de edición en desarrollo');
+  };
+
+  // Handler para eliminar
+  const handleDeleteCollectDebt = (collectDebt: CollectDebtType) => {
+    if (window.confirm(`¿Está seguro de eliminar la recaudación del ${collectDebt.collect_date}?`)) {
+      fetch(`${apiLink}/${collectDebt.id}`, {
+        method: 'DELETE',
+      })
+        .then(() => {
+          fetchCollectDebts();
+          toast.success('Recaudación eliminada exitosamente');
+        })
+        .catch((error) => {
+          console.error('Error al eliminar recaudación:', error);
+          toast.error('Error al eliminar la recaudación');
+        });
+    }
+  };
+
+  // Handler para ver pagos
+  const handleViewPayments = (collectDebt: CollectDebtType) => {
+    setSelectedCollectDebt(collectDebt);
+    setOpenPaymentsModal(true);
+  };
+
+  // Handler para cerrar modal de pagos
+  const handleClosePaymentsModal = () => {
+    setOpenPaymentsModal(false);
+    setSelectedCollectDebt(null);
+    // Recargar datos para actualizar estadísticas
+    fetchCollectDebts();
+  };
+
+  return (
     <>
-      <Typography className='text-center' variant="h1" color="black">Deudas</Typography>
-        <div className='flex justify-center'>
-          <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
-            <div className="mb-1 flex flex-col gap-6">
-              <Typography variant="h6" color="blue-gray" className="-mb-3">
-                Nombre
-              </Typography>
-              <Input
-                size="lg"
-                placeholder="name@mail.com"
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-              />
-              <Typography variant="h6" color="blue-gray" className="-mb-3">
-                Monto a pagar
-              </Typography>
-              <Input
-                size="lg"
-                placeholder="name@mail.com"
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-              />
-              {/* <Typography variant="h6" color="blue-gray" className="-mb-3">
-                Password
-              </Typography>
-              <Input
-                type="password"
-                size="lg"
-                placeholder="********"
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-              /> */}
-            </div>
-            {/* <Checkbox
-              label={
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="flex items-center font-normal"
-                >
-                  I agree the
-                  <a
-                    href="#"
-                    className="font-medium transition-colors hover:text-gray-900"
-                  >
-                    &nbsp;Terms and Conditions
-                  </a>
-                </Typography>
-              }
-              containerProps={{ className: "-ml-2.5" }}
-            /> */}
-      <PDFDownloadLink
-        document={
-          <ReceiptDocument
-            receiptData={receiptData} 
-            qrCodeData={qrCodeData} />
-        }
-        fileName="receipt.pdf"
-      >
-        {
-          ({ blob, url, loading, error }) => {
-            return loading ? 
-              <ClipLoader
-                loading={loading}
-                // cssOverride={override}
-                size={150}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-               : <Button fullWidth> Pagar Deuda </Button>
-          }
-        }
-      </PDFDownloadLink>
+      <Typography className='text-center mb-2' variant='h3' color='black'>
+        Recaudaciones
+      </Typography>
 
-            {/* <Typography color="gray" className="mt-4 text-center font-normal">
-              Already have an account?{" "}
-              <a href="#" className="font-medium text-gray-900">
-                Sign In
-              </a>
-            </Typography> */}
-          </form>
+      {loading ? (
+        <div className='flex justify-center items-center py-20'>
+          <ClipLoader
+            loading={loading}
+            cssOverride={override}
+            size={150}
+            aria-label='Loading Spinner'
+            data-testid='loader'
+          />
         </div>
+      ) : (
+        <div className='p-10'>
+          <CollectDebtTable
+            tableData={data}
+            onCreate={handleCreateCollectDebt}
+            onView={handleViewCollectDebt}
+            onEdit={handleEditCollectDebt}
+            onDelete={handleDeleteCollectDebt}
+            onViewPayments={handleViewPayments}
+          />
+        </div>
+      )}
 
+      <CollectDebtPaymentsModal
+        open={openPaymentsModal}
+        onClose={handleClosePaymentsModal}
+        collectDebt={selectedCollectDebt}
+      />
     </>
-  )
-}
+  );
+};
 
 export default Collections;

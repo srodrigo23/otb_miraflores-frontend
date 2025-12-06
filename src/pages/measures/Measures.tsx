@@ -1,6 +1,7 @@
 import { CSSProperties, useEffect, useState } from 'react';
 import { Typography } from '@material-tailwind/react';
 import MeasureTable from '../../components/tables/MeasureTable';
+import MeasureReadingsModal from '../../components/modals/MeasureReadingsModal';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 
@@ -27,6 +28,8 @@ const override: CSSProperties = {
 const Measures = () => {
   const [data, setData] = useState<MeasureType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMeasure, setSelectedMeasure] = useState<MeasureType | null>(null);
+  const [openReadingsModal, setOpenReadingsModal] = useState(false);
 
   const apiLink = 'http://127.0.0.1:8000/measures';
 
@@ -108,6 +111,70 @@ const Measures = () => {
     }
   };
 
+  // Handler para ver lecturas
+  const handleViewReadings = (measure: MeasureType) => {
+    setSelectedMeasure(measure);
+    setOpenReadingsModal(true);
+  };
+
+  // Handler para cerrar modal de lecturas
+  const handleCloseReadingsModal = () => {
+    setOpenReadingsModal(false);
+    setSelectedMeasure(null);
+  };
+
+  // Handler para generar deudas
+  const handleGenerateDebts = async (measure: MeasureType) => {
+    if (!window.confirm(`¿Está seguro de generar deudas para la medición del ${measure.measure_date}?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/measures/${measure.id}/generate-debts`, {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(
+          `Deudas generadas exitosamente: ${data.debts_created} creadas, ${data.debts_skipped} omitidas`
+        );
+      } else {
+        toast.error(data.detail || 'Error al generar deudas');
+      }
+    } catch (error) {
+      console.error('Error al generar deudas:', error);
+      toast.error('Error al generar deudas');
+    }
+  };
+
+  // Handler para eliminar deudas
+  const handleDeleteDebts = async (measure: MeasureType) => {
+    if (!window.confirm(`¿Está seguro de eliminar las deudas pendientes de la medición del ${measure.measure_date}?\nSolo se eliminarán las deudas que no hayan sido pagadas.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/measures/${measure.id}/debts`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(
+          `Deudas eliminadas exitosamente: ${data.debts_deleted} deudas pendientes eliminadas`
+        );
+      } else {
+        toast.error(data.detail || 'Error al eliminar deudas');
+      }
+    } catch (error) {
+      console.error('Error al eliminar deudas:', error);
+      toast.error('Error al eliminar deudas');
+    }
+  };
+
   return (
     <>
       <Typography className='text-center mb-2' variant='h3' color='black'>
@@ -132,9 +199,18 @@ const Measures = () => {
             onView={handleViewMeasure}
             onEdit={handleEditMeasure}
             onDelete={handleDeleteMeasure}
+            onViewReadings={handleViewReadings}
+            onGenerateDebts={handleGenerateDebts}
+            onDeleteDebts={handleDeleteDebts}
           />
         </div>
       )}
+
+      <MeasureReadingsModal
+        open={openReadingsModal}
+        onClose={handleCloseReadingsModal}
+        measure={selectedMeasure}
+      />
     </>
   );
 };

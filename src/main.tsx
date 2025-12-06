@@ -11,7 +11,7 @@ import { ThemeProvider } from '@material-tailwind/react'
 import Neighbors from './pages/neighbors/Neighbors.tsx';
 import Meetings from './pages/meetings/Meetings.tsx';
 import Collections from './pages/collections/Collections.tsx';
-import Receipts from './pages/receipts/Receipts.tsx';
+// import Receipts from './pages/receipts/Receipts.tsx';
 import Measures from './pages/measures/Measures.tsx';
 
 import { AuthProvider } from './components/AuthContext.tsx';
@@ -31,9 +31,7 @@ createRoot(document.getElementById('root')!).render(
           <BrowserRouter>
             <Routes>
               {/* <Route element={<App />}/> */}
-              
-
-              
+                            
               <Route path="/login" element={<Login />} />
 
               <Route element={<ProtectedRoute />}>
@@ -42,7 +40,7 @@ createRoot(document.getElementById('root')!).render(
 
                 <Route path="/Reuniones" element={<Meetings />} /> 
                 <Route path="/recaudaciones" element={<Collections />}/>
-                <Route path="/recibos" element={<Receipts />} />
+                {/* <Route path="/recibos" element={<Receipts />} /> */}
                 <Route path="/vecinos" element={<Neighbors />} /> 
                 <Route path="/mediciones" element={<Measures />} /> 
               </Route>
