@@ -1,7 +1,7 @@
 // import NavBarComponent from './components/navigation/NavBarComponent'
 import { useLocation } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
-import { useState } from 'react'
+// import { useState } from 'react'
 // import { ListBullets, XCircle } from '@phosphor-icons/react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -10,11 +10,11 @@ import TopNavBar from './components/navigation/TopNavBar'
 function App() {
 
   const {pathname} = useLocation()
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  // const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
+  // const toggleSidebar = () => {
+  //   setIsSidebarOpen(!isSidebarOpen)
+  // }
 
   return (
     <>

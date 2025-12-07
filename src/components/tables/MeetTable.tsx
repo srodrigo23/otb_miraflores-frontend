@@ -241,7 +241,7 @@ const MeetTable: React.FC<MeetTableProps> = ({
                     <Chip
                       size='sm'
                       value={MEET_TYPE_LABELS[meet.meet_type] || meet.meet_type}
-                      color={MEET_TYPE_COLORS[meet.meet_type] || 'gray'}
+                      color={(MEET_TYPE_COLORS[meet.meet_type] || 'gray') as any}
                     />
                   </td>
                   <td className={classes}>
@@ -257,7 +257,7 @@ const MeetTable: React.FC<MeetTableProps> = ({
                     <Chip
                       size='sm'
                       value={STATUS_LABELS[meet.status] || meet.status}
-                      color={STATUS_COLORS[meet.status] || 'gray'}
+                      color={(STATUS_COLORS[meet.status] || 'gray') as any}
                     />
                   </td>
                   <td className={classes}>

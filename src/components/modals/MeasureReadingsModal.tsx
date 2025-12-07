@@ -10,6 +10,7 @@ import {
 } from '@material-tailwind/react';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
+import { color } from '@material-tailwind/react/types/components/alert';
 
 interface MeterReadingType {
   id: number;
@@ -42,7 +43,7 @@ type MeasureReadingsModalProps = {
   measure: MeasureType | null;
 };
 
-const STATUS_COLORS: { [key: string]: string } = {
+const STATUS_COLORS: { [key: string]: color } = {
   normal: 'green',
   estimated: 'amber',
   not_read: 'red',
@@ -229,7 +230,7 @@ const MeasureReadingsModal: React.FC<MeasureReadingsModalProps> = ({
                             <Chip
                               size="sm"
                               value={STATUS_LABELS[reading.status] || reading.status}
-                              color={STATUS_COLORS[reading.status] || 'gray'}
+                              color={STATUS_COLORS[reading.status]}
                             />
                           </td>
                           <td className={classes}>

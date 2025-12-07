@@ -1,5 +1,4 @@
 import { CSSProperties, useEffect, useState } from 'react';
-import { Typography } from '@material-tailwind/react';
 import MeasureTable from '../../components/tables/MeasureTable';
 import MeasureReadingsModal from '../../components/modals/MeasureReadingsModal';
 import { ClipLoader } from 'react-spinners';

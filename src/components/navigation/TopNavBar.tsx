@@ -8,7 +8,7 @@ interface TopNavBarProps {
 const TopNavBar: React.FC<TopNavBarProps> = ({pathName}) => {
   const localPathName = pathName;
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();

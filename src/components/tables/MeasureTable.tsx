@@ -9,7 +9,7 @@ import {
   ChevronUpDownIcon,
   PencilIcon,
   TrashIcon,
-  EyeIcon,
+  // EyeIcon,
   DocumentMagnifyingGlassIcon,
   CurrencyDollarIcon,
   XCircleIcon,
@@ -48,7 +48,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
   onEdit,
   onDelete,
   onCreate,
-  onView,
+  // onView,
   onViewReadings,
   onGenerateDebts,
   onDeleteDebts,
@@ -202,7 +202,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                         // className='w-fit'
                         size='sm'
                         value={STATUS_LABELS[measure.status] || measure.status}
-                        color={STATUS_COLORS[measure.status] || 'gray'}
+                        color={(STATUS_COLORS[measure.status] || 'gray') as any}
                       />
                     </div>
                   </td>
