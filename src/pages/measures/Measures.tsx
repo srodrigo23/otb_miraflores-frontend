@@ -4,20 +4,8 @@ import MeasureTable from '../../components/tables/MeasureTable';
 import MeasureReadingsModal from '../../components/modals/MeasureReadingsModal';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
+import { MeasureType } from '../../interfaces/measuresIterfaces';
 
-interface MeasureType {
-  id: number;
-  measure_date: string;
-  period: string | null;
-  reader_name: string | null;
-  status: string;
-  total_meters: number;
-  meters_read: number;
-  meters_pending: number;
-  notes: string | null;
-  created_at: string;
-  updated_at: string;
-}
 
 const override: CSSProperties = {
   display: 'block',
@@ -177,10 +165,6 @@ const Measures = () => {
 
   return (
     <>
-      <Typography className='text-center mb-2' variant='h3' color='black'>
-        Mediciones
-      </Typography>
-
       {loading ? (
         <div className='flex justify-center items-center py-20'>
           <ClipLoader
@@ -192,7 +176,7 @@ const Measures = () => {
           />
         </div>
       ) : (
-        <div className='p-10'>
+        <div className=''>
           <MeasureTable
             tableData={data}
             onCreate={handleCreateMeasure}

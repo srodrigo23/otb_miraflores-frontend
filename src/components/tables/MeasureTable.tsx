@@ -15,31 +15,7 @@ import {
   XCircleIcon,
 } from '@heroicons/react/24/outline';
 import NewMeasureModalForm from '../forms/NewMeasureModalForm';
-
-interface MeasureType {
-  id: number;
-  measure_date: string;
-  period: string | null;
-  reader_name: string | null;
-  status: string;
-  total_meters: number;
-  meters_read: number;
-  meters_pending: number;
-  notes: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-type MeasureTableProps = {
-  tableData: MeasureType[];
-  onEdit?: (measure: MeasureType) => void;
-  onDelete?: (measure: MeasureType) => void;
-  onCreate?: (data: any) => void;
-  onView?: (measure: MeasureType) => void;
-  onViewReadings?: (measure: MeasureType) => void;
-  onGenerateDebts?: (measure: MeasureType) => void;
-  onDeleteDebts?: (measure: MeasureType) => void;
-};
+import { MeasureTableProps } from '../../types/MeasuresTypes';
 
 type SortField = 'id' | 'measure_date' | 'period' | 'reader_name' | 'status' | 'created_at';
 type SortOrder = 'asc' | 'desc';
@@ -48,9 +24,9 @@ const TABLE_HEAD = [
   { label: 'ID', field: 'id' as SortField, sortable: true },
   { label: 'Fecha de Medición', field: 'measure_date' as SortField, sortable: true },
   { label: 'Periodo', field: 'period' as SortField, sortable: true },
-  { label: 'Responsable', field: 'reader_name' as SortField, sortable: true },
+  // { label: 'Responsable', field: 'reader_name' as SortField, sortable: true },
   { label: 'Estado', field: 'status' as SortField, sortable: true },
-  { label: 'Medidores', field: null, sortable: false },
+  { label: 'Núm. de Medidores', field: null, sortable: false },
   { label: 'Fecha Creación', field: 'created_at' as SortField, sortable: true },
   { label: 'Acciones', field: null, sortable: false },
 ];
@@ -79,8 +55,8 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
 }) => {
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 10;
 
   // Modal para nueva medición
   const [openModal, setOpenModal] = useState(false);
@@ -107,14 +83,6 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
     return sorted;
   }, [tableData, sortField, sortOrder]);
 
-  // Paginación
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return sortedData.slice(startIndex, endIndex);
-  }, [sortedData, currentPage]);
-
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -122,10 +90,6 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
       setSortField(field);
       setSortOrder('asc');
     }
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
   };
 
   const formatDate = (dateString: string) => {
@@ -140,8 +104,14 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
   return (
     <div className='flex flex-col h-full'>
       {/* Botón para crear nueva medición */}
-      <div className='flex mb-4 justify-end'>
-        <Button onClick={handleOpenModal}>NUEVA MEDICIÓN</Button>
+      <div className='flex justify-between py-3 px-5 flex-shrink-0'>
+        <Typography className='text-center mb-2' variant='h3' color='black'>
+          Mediciones
+        </Typography>
+
+        <div className='flex mb-4 justify-end'>
+          <Button onClick={handleOpenModal}>NUEVA MEDICIÓN</Button>
+        </div>
       </div>
 
       {/* Tabla con scroll interno */}
@@ -152,7 +122,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
               {TABLE_HEAD.map((head) => (
                 <th
                   key={head.label}
-                  className={`border-b border-blue-gray-100 bg-blue-gray-50 p-3 ${
+                  className={`border-b border-blue-gray-100 bg-blue-gray-50 py-1 ${
                     head.sortable
                       ? 'cursor-pointer hover:bg-blue-gray-100 transition-colors'
                       : ''
@@ -161,7 +131,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                     head.sortable && head.field && handleSort(head.field)
                   }
                 >
-                  <div className='flex items-center gap-2'>
+                  <div className='flex justify-center items-center gap-2'>
                     <Typography
                       variant='small'
                       color='blue-gray'
@@ -182,8 +152,8 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map((measure, index) => {
-              const isLast = index === paginatedData.length - 1;
+            {sortedData.map((measure, index) => {
+              const isLast = index === sortedData.length - 1;
               const classes = isLast
                 ? 'p-3'
                 : 'p-3 border-b border-blue-gray-50';
@@ -194,7 +164,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                     <Typography
                       variant='small'
                       color='blue-gray'
-                      className='font-normal'
+                      className='font-normal text-center'
                     >
                       {measure.id}
                     </Typography>
@@ -203,7 +173,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                     <Typography
                       variant='small'
                       color='blue-gray'
-                      className='font-medium'
+                      className='font-medium text-center'
                     >
                       {formatDate(measure.measure_date)}
                     </Typography>
@@ -212,12 +182,12 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                     <Typography
                       variant='small'
                       color='blue-gray'
-                      className='font-normal'
+                      className='font-normal text-center'
                     >
                       {measure.period || '-'}
                     </Typography>
                   </td>
-                  <td className={classes}>
+                  {/* <td className={classes}>
                     <Typography
                       variant='small'
                       color='blue-gray'
@@ -225,19 +195,22 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                     >
                       {measure.reader_name || '-'}
                     </Typography>
-                  </td>
+                  </td> */}
                   <td className={classes}>
-                    <Chip
-                      size='sm'
-                      value={STATUS_LABELS[measure.status] || measure.status}
-                      color={STATUS_COLORS[measure.status] || 'gray'}
-                    />
+                    <div className='flex justify-center'>
+                      <Chip
+                        // className='w-fit'
+                        size='sm'
+                        value={STATUS_LABELS[measure.status] || measure.status}
+                        color={STATUS_COLORS[measure.status] || 'gray'}
+                      />
+                    </div>
                   </td>
                   <td className={classes}>
                     <Typography
                       variant='small'
                       color='blue-gray'
-                      className='font-normal'
+                      className='font-normal text-center'
                     >
                       {measure.meters_read}/{measure.total_meters}
                     </Typography>
@@ -246,13 +219,13 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                     <Typography
                       variant='small'
                       color='blue-gray'
-                      className='font-normal'
+                      className='font-normal text-center'
                     >
                       {formatDate(measure.created_at)}
                     </Typography>
                   </td>
                   <td className={classes}>
-                    <div className='flex gap-2'>
+                    <div className='flex justify-center gap-2'>
                       {onGenerateDebts && (
                         <IconButton
                           size='sm'
@@ -286,7 +259,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                           <DocumentMagnifyingGlassIcon className='h-4 w-4' />
                         </IconButton>
                       )}
-                      {onView && (
+                      {/* {onView && (
                         <IconButton
                           size='sm'
                           variant='text'
@@ -296,7 +269,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                         >
                           <EyeIcon className='h-4 w-4' />
                         </IconButton>
-                      )}
+                      )} */}
                       {onEdit && (
                         <IconButton
                           size='sm'
@@ -338,54 +311,10 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
         }}
       />
 
-      {/* Controles de paginación */}
-      <div className='flex items-center justify-between border-t border-blue-gray-100 p-4'>
+      <div className='flex items-center justify-between border-t border-blue-gray-100 p-4 flex-shrink-0'>
         <Typography variant='small' color='blue-gray' className='font-normal'>
-          Página {currentPage} de {totalPages} - Total: {sortedData.length}{' '}
-          mediciones
+          Total: {sortedData.length} mediciones
         </Typography>
-        <div className='flex gap-2'>
-          <IconButton
-            size='sm'
-            variant='outlined'
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <span>←</span>
-          </IconButton>
-          {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter((page) => {
-              return (
-                page === 1 ||
-                page === totalPages ||
-                (page >= currentPage - 1 && page <= currentPage + 1)
-              );
-            })
-            .map((page, index, array) => {
-              const showEllipsisBefore =
-                index > 0 && page - array[index - 1] > 1;
-              return (
-                <div key={page} className='flex gap-2'>
-                  {showEllipsisBefore && <span className='px-2'>...</span>}
-                  <IconButton
-                    size='sm'
-                    variant={currentPage === page ? 'filled' : 'outlined'}
-                    onClick={() => handlePageChange(page)}
-                  >
-                    {page}
-                  </IconButton>
-                </div>
-              );
-            })}
-          <IconButton
-            size='sm'
-            variant='outlined'
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            <span>→</span>
-          </IconButton>
-        </div>
       </div>
     </div>
   );
