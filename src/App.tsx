@@ -67,7 +67,7 @@ function App() {
         </div> */}
 
         {/* Main Content */}
-        <TopNavBar/>
+        <TopNavBar pathName={pathname}/>
         <div 
           // className="lg:col-span-9 xl:col-span-10 flex-1 overflow-y-auto bg-white lg:border-l lg:shadow-inner"
           className='h-screen'

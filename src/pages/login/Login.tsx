@@ -135,9 +135,9 @@ export function Login() {
           </Button>
 
           {/* Info minimalista */}
-          <Typography variant="small" className="text-gray-400 text-center mt-6 text-xs">
+          {/* <Typography variant="small" className="text-gray-400 text-center mt-6 text-xs">
             Prueba con <span className="text-blue-600 font-medium">admin</span>
-          </Typography>
+          </Typography> */}
         </form>
       </Card>
     </div>

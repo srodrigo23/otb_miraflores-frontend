@@ -1,7 +1,19 @@
-interface TopNavBarProps {}
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../AuthContext';
 
-const TopNavBar: React.FC<TopNavBarProps> = () => {
-  // const iconsSize = 10;
+interface TopNavBarProps {
+  pathName: string;
+}
+
+const TopNavBar: React.FC<TopNavBarProps> = ({pathName}) => {
+  const localPathName = pathName;
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   const navigationItems = [
     {
       label: 'Vecinos',
@@ -37,16 +49,30 @@ const TopNavBar: React.FC<TopNavBarProps> = () => {
       <div className='flex flex-row gap-10'>
         <ul className="flex gap-3 text-sm justify-center items-center">
           {navigationItems.map((element) => {
+            const isActive = localPathName === element.path;
             return (
-              <li className='cursor-pointer  border-t-indigo-500'>
-                {element.label}
-                {/* <div className="mx-1 h-0.5 rounded-sm bg-yellow-400"> </div> */}
+              <li>
+                <NavLink
+                  className={`cursor-pointer ${
+                    isActive
+                      ? 'text-yellow-500 font-semibold'
+                      : ''
+                  }`}
+                  to={element.path}
+                >
+                  {element.label}
+                  {/* <div className="mx-1 h-0.5 rounded-sm bg-yellow-400"> </div> */}
+                </NavLink>
               </li>
             );
           })}
         </ul>
 
-        <div className="text-red-500 cursor-pointer">Cerrar sesion</div>
+        <div 
+          className="text-red-500 cursor-pointer font-bold" 
+          onClick={handleLogout}>
+            Cerrar sesión
+        </div>
       </div>
     </nav>
   );
