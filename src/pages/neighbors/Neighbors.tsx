@@ -1,52 +1,46 @@
-import {CSSProperties} from 'react'
+import { CSSProperties } from 'react';
 
-import {
-  Typography,
-} from "@material-tailwind/react";
+import { useEffect, useState } from 'react';
 
-import { useEffect, useState } from "react";
+import EditNeighborModalForm from '../../components/forms/EditNeighborModalForm';
+import DeleteNeighborModal from '../../components/modals/DeleteNeighborModal';
+import NeighborDetailModal from '../../components/modals/NeighborDetailModal';
+import NeighborTable from '../../components/tables/NeighborTable';
 
-import EditNeighborModalForm from "../../components/forms/EditNeighborModalForm";
-import DeleteNeighborModal from "../../components/modals/DeleteNeighborModal";
-import NeighborDetailModal from "../../components/modals/NeighborDetailModal";
-import NeighborTable from "../../components/tables/NeighborTable";
+import { ClipLoader } from 'react-spinners';
+import { toast } from 'react-toastify';
 
-import { ClipLoader } from "react-spinners";
-import { toast } from "react-toastify";
-
-interface NeighborType {
-  id: number;
-  first_name: string;
-  second_name: string;
-  last_name: string;
-  ci: string;
-  phone_number: string;
-  email: string;
-}
+import { NeighborType } from '../../interfaces/neighborsInterfaces';
 
 const override: CSSProperties = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "red",
+  display: 'block',
+  margin: '0 auto',
+  borderColor: 'red',
 };
 
-const Neighbors = ()=>{
+const Neighbors = () => {
   const [data, setData] = useState<NeighborType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const apiLink = "http://127.0.0.1:8000/neighbors"
+  const apiLink = 'http://127.0.0.1:8000/neighbors';
 
   // Modal para editar vecino
-  const [openEditModal, setOpenEditModal] = useState(false)
-  const [selectedNeighbor, setSelectedNeighbor] = useState<NeighborType | null>(null)
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedNeighbor, setSelectedNeighbor] = useState<NeighborType | null>(
+    null
+  );
 
   // Modal para eliminar vecino
-  const [openDeleteModal, setOpenDeleteModal] = useState(false)
-  const [neighborToDelete, setNeighborToDelete] = useState<NeighborType | null>(null)
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [neighborToDelete, setNeighborToDelete] = useState<NeighborType | null>(
+    null
+  );
 
   // Modal para ver detalles del vecino
-  const [openDetailModal, setOpenDetailModal] = useState(false)
-  const [neighborToView, setNeighborToView] = useState<NeighborType | null>(null)
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [neighborToView, setNeighborToView] = useState<NeighborType | null>(
+    null
+  );
 
   // Cargar datos de vecinos
   const fetchNeighbors = () => {
@@ -54,15 +48,15 @@ const Neighbors = ()=>{
     fetch(apiLink, {
       method: 'GET',
     })
-    .then(response => response.json())
-    .then(json => {
-      setData(json.data);
-      setLoading(false);
-    })
-    .catch(error => {
-      console.error(error);
-      setLoading(false);
-    });
+      .then((response) => response.json())
+      .then((json) => {
+        setData(json.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -98,17 +92,17 @@ const Neighbors = ()=>{
         email: formData.email,
       }),
     })
-    .then(response => response.json())
-    .then(() => {
-      // Recargar la lista de vecinos
-      fetchNeighbors();
-      handleCloseEditModal();
-      toast.success('Vecino actualizado exitosamente');
-    })
-    .catch(error => {
-      console.error('Error al actualizar vecino:', error);
-      toast.error('Error al actualizar el vecino');
-    });
+      .then((response) => response.json())
+      .then(() => {
+        // Recargar la lista de vecinos
+        fetchNeighbors();
+        handleCloseEditModal();
+        toast.success('Vecino actualizado exitosamente');
+      })
+      .catch((error) => {
+        console.error('Error al actualizar vecino:', error);
+        toast.error('Error al actualizar el vecino');
+      });
   };
 
   // Handlers para eliminar
@@ -129,16 +123,16 @@ const Neighbors = ()=>{
     fetch(`${apiLink}/${neighborToDelete.id}`, {
       method: 'DELETE',
     })
-    .then(() => {
-      // Recargar la lista de vecinos
-      fetchNeighbors();
-      handleCloseDeleteModal();
-      toast.success('Vecino eliminado exitosamente');
-    })
-    .catch(error => {
-      console.error('Error al eliminar vecino:', error);
-      toast.error('Error al eliminar el vecino');
-    });
+      .then(() => {
+        // Recargar la lista de vecinos
+        fetchNeighbors();
+        handleCloseDeleteModal();
+        toast.success('Vecino eliminado exitosamente');
+      })
+      .catch((error) => {
+        console.error('Error al eliminar vecino:', error);
+        toast.error('Error al eliminar el vecino');
+      });
   };
 
   // Handler para crear nuevo vecino
@@ -158,16 +152,16 @@ const Neighbors = ()=>{
         email: formData.email,
       }),
     })
-    .then(response => response.json())
-    .then(() => {
-      // Recargar la lista de vecinos
-      fetchNeighbors();
-      toast.success('Vecino creado exitosamente');
-    })
-    .catch(error => {
-      console.error('Error al crear vecino:', error);
-      toast.error('Error al crear el vecino');
-    });
+      .then((response) => response.json())
+      .then(() => {
+        // Recargar la lista de vecinos
+        fetchNeighbors();
+        toast.success('Vecino creado exitosamente');
+      })
+      .catch((error) => {
+        console.error('Error al crear vecino:', error);
+        toast.error('Error al crear el vecino');
+      });
   };
 
   // Handler para ver detalles del vecino
@@ -180,25 +174,17 @@ const Neighbors = ()=>{
     setOpenDetailModal(false);
     setNeighborToView(null);
   };
-  
-  return(
-    <>
-      <Typography 
-        className='text-center mb-2' 
-        variant="h3" 
-        color="black"
-      >
-        Vecinos
-      </Typography>
 
+  return (
+    <>
       {loading ? (
-        <div className="flex justify-center items-center py-20">
+        <div className='flex justify-center items-center py-20'>
           <ClipLoader
             loading={loading}
             cssOverride={override}
             size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
+            aria-label='Loading Spinner'
+            data-testid='loader'
           />
         </div>
       ) : (
@@ -233,6 +219,6 @@ const Neighbors = ()=>{
         neighbor={neighborToView}
       />
     </>
-  )
-}
+  );
+};
 export default Neighbors;

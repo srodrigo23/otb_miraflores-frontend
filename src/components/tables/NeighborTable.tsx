@@ -3,23 +3,8 @@ import { Typography, Input, IconButton, Button} from '@material-tailwind/react';
 import { MagnifyingGlassIcon, ChevronUpDownIcon, PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import NewNeighborModalForm from '../forms/NewNeighborModalForm';
 
-interface NeighborType {
-  id: number;
-  first_name: string;
-  second_name: string;
-  last_name: string;
-  ci: number;
-  phone_number: number;
-  email: string;
-}
+import { NeighborTableProps } from '../../types/NeighborsTypes';
 
-type NeighborTableProps = {
-  tableData: NeighborType[];
-  onEdit?: (neighbor: NeighborType) => void;
-  onDelete?: (neighbor: NeighborType) => void;
-  onCreate?: (data: any) => void;
-  onView?: (neighbor: NeighborType) => void;
-};
 
 type SortField = 'id' | 'last_name' | 'first_name' | 'ci' | 'phone_number' | 'email';
 type SortOrder = 'asc' | 'desc';
@@ -30,7 +15,7 @@ const TABLE_HEAD = [
   { label: 'Nombres', field: 'first_name' as SortField, sortable: true },
   { label: 'CI', field: 'ci' as SortField, sortable: true },
   { label: 'Celular', field: 'phone_number' as SortField, sortable: true },
-  { label: 'Correo', field: 'email' as SortField, sortable: true },
+  // { label: 'Correo', field: 'email' as SortField, sortable: true },
   { label: 'Acciones', field: null, sortable: false },
 ];
 
@@ -38,8 +23,6 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('id');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
 
   // Modal para nuevo vecino
   const [openModal, setOpenModal] = useState(false);
@@ -80,14 +63,6 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
     return sorted;
   }, [filteredData, sortField, sortOrder]);
 
-  // Paginación
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return sortedData.slice(startIndex, endIndex);
-  }, [sortedData, currentPage]);
-
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -97,44 +72,40 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Resetear página cuando cambia la búsqueda
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    setCurrentPage(1);
-  };
-
   return (
-    <div className='flex flex-col h-full'>
+    <div className='flex flex-col h-screen'>
       {/* Campo de búsqueda */}
-      <div className='flex mb-4 justify-center gap-3'>
-        <div className='flex w-full md:w-96'>
-          <Input
-            label='Buscar vecino'
-            icon={<MagnifyingGlassIcon className='h-5 w-5' />}
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
-            crossOrigin={undefined}
-          />
-          {/* <div className='flex gap-5 px-10 justify-end'>  </div>*/}
+      <div className='flex justify-between py-3 px-5 flex-shrink-0'>
+        <Typography className='text-center mb-2' variant='h3' color='black'>
+          Vecinos
+        </Typography>
+
+        <div className='flex mb-4 justify-center gap-3'>
+          <div className='flex w-full md:w-96'>
+            <Input
+              label='Buscar vecino'
+              icon={<MagnifyingGlassIcon className='h-5 w-5' />}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              crossOrigin={undefined}
+            />
+            {/* <div className='flex gap-5 px-10 justify-end'>  </div>*/}
+          </div>
+          <Button className='' onClick={handleOpenModal}>
+            NUEVO VECINO
+          </Button>
         </div>
-        <Button className='' onClick={handleOpenModal}>
-          NUEVO VECINO
-        </Button>
       </div>
 
       {/* Tabla con scroll interno */}
-      <div className='flex-1 overflow-auto border border-blue-gray-100 rounded-lg'>
+      <div className='flex-1 overflow-auto border border-blue-gray-100 rounded-lg mx-5'>
         <table className='w-full min-w-max table-auto text-left'>
           <thead className='sticky top-0 bg-blue-gray-50 z-10'>
             <tr>
               {TABLE_HEAD.map((head) => (
                 <th
                   key={head.label}
-                  className={`border-b border-blue-gray-100 bg-blue-gray-50 p-3 ${
+                  className={`border-b border-blue-gray-100 bg-blue-gray-50 py-1 ${
                     head.sortable
                       ? 'cursor-pointer hover:bg-blue-gray-100 transition-colors'
                       : ''
@@ -143,7 +114,7 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                     head.sortable && head.field && handleSort(head.field)
                   }
                 >
-                  <div className='flex items-center gap-2'>
+                  <div className='flex justify-center items-center gap-2'>
                     <Typography
                       variant='small'
                       color='blue-gray'
@@ -164,7 +135,7 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map(
+            {sortedData.map(
               (
                 {
                   id,
@@ -177,11 +148,8 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                 },
                 index
               ) => {
-                const isLast = index === paginatedData.length - 1;
-                const classes = isLast
-                  ? 'p-3'
-                  : 'p-3 border-b border-blue-gray-50';
-
+                const isLast = index === sortedData.length - 1;
+                const classes = isLast ? '' : 'border-b border-blue-gray-50';
                 const neighbor = {
                   id,
                   first_name,
@@ -198,7 +166,7 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                       <Typography
                         variant='small'
                         color='blue-gray'
-                        className='font-normal'
+                        className='font-normal text-center'
                       >
                         {id}
                       </Typography>
@@ -225,7 +193,7 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                       <Typography
                         variant='small'
                         color='blue-gray'
-                        className='font-medium'
+                        className='font-medium text-center'
                       >
                         {ci}
                       </Typography>
@@ -234,12 +202,12 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                       <Typography
                         variant='small'
                         color='blue-gray'
-                        className='font-normal'
+                        className='font-normal text-center'
                       >
                         {phone_number}
                       </Typography>
                     </td>
-                    <td className={classes}>
+                    {/* <td className={classes}>
                       <Typography
                         variant='small'
                         color='blue-gray'
@@ -247,9 +215,9 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                       >
                         {email}
                       </Typography>
-                    </td>
+                    </td> */}
                     <td className={classes}>
-                      <div className='flex gap-2'>
+                      <div className='flex gap-2 justify-center'>
                         {onView && (
                           <IconButton
                             size='sm'
@@ -302,57 +270,11 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
           }
         }}
       />
-
-      {/* Controles de paginación */}
-      <div className='flex items-center justify-between border-t border-blue-gray-100 p-4'>
+      
+      <div className='flex items-center justify-between border-t border-blue-gray-100 p-4 flex-shrink-0'>
         <Typography variant='small' color='blue-gray' className='font-normal'>
-          Página {currentPage} de {totalPages} - Total: {filteredData.length}{' '}
-          vecinos
+          Total: {filteredData.length}{' '}vecinos
         </Typography>
-        <div className='flex gap-2'>
-          <IconButton
-            size='sm'
-            variant='outlined'
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <span>←</span>
-          </IconButton>
-          {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter((page) => {
-              // Mostrar primeras 2, últimas 2, y páginas cercanas a la actual
-              return (
-                page === 1 ||
-                page === totalPages ||
-                (page >= currentPage - 1 && page <= currentPage + 1)
-              );
-            })
-            .map((page, index, array) => {
-              // Añadir puntos suspensivos si hay saltos
-              const showEllipsisBefore =
-                index > 0 && page - array[index - 1] > 1;
-              return (
-                <div key={page} className='flex gap-2'>
-                  {showEllipsisBefore && <span className='px-2'>...</span>}
-                  <IconButton
-                    size='sm'
-                    variant={currentPage === page ? 'filled' : 'outlined'}
-                    onClick={() => handlePageChange(page)}
-                  >
-                    {page}
-                  </IconButton>
-                </div>
-              );
-            })}
-          <IconButton
-            size='sm'
-            variant='outlined'
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            <span>→</span>
-          </IconButton>
-        </div>
       </div>
     </div>
   );

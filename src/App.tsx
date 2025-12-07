@@ -1,10 +1,11 @@
-import NavBarComponent from './components/navigation/NavBarComponent'
+// import NavBarComponent from './components/navigation/NavBarComponent'
 import { useLocation } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
 import { useState } from 'react'
-import { ListBullets, XCircle } from '@phosphor-icons/react'
+// import { ListBullets, XCircle } from '@phosphor-icons/react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import TopNavBar from './components/navigation/TopNavBar'
 
 function App() {
 
@@ -29,9 +30,11 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      <div className='h-dvh flex flex-col lg:grid lg:grid-cols-12 bg-gray-50'>
+      <div 
+        // className='h-dvh flex flex-col lg:grid lg:grid-cols-12 bg-gray-50'
+        >
         {/* Mobile Header */}
-        <div className="lg:hidden bg-gradient-to-r from-blue-600 to-blue-800 p-4 flex items-center justify-between shadow-lg z-20">
+        {/* <div className="lg:hidden bg-gradient-to-r from-blue-600 to-blue-800 p-4 flex items-center justify-between shadow-lg z-20">
           <h1 className="text-white font-bold text-lg">OTB MIRAFLORES</h1>
           <button
             onClick={toggleSidebar}
@@ -39,18 +42,18 @@ function App() {
           >
             {isSidebarOpen ? <XCircle size={28} weight="bold" /> : <ListBullets size={28} weight="bold" />}
           </button>
-        </div>
+        </div> */}
 
         {/* Overlay para móvil */}
-        {isSidebarOpen && (
+        {/* {isSidebarOpen && (
           <div
             className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
             onClick={toggleSidebar}
           />
-        )}
+        )} */}
 
         {/* Sidebar */}
-        <div
+        {/* <div
           className={`
             fixed lg:relative lg:col-span-3 xl:col-span-2 h-dvh
             transform transition-transform duration-300 ease-in-out z-40
@@ -61,11 +64,15 @@ function App() {
           <div className="h-full overflow-y-auto">
             <NavBarComponent pathName={pathname}/>
           </div>
-        </div>
+        </div> */}
 
         {/* Main Content */}
-        <div className="lg:col-span-9 xl:col-span-10 flex-1 overflow-y-auto bg-white lg:border-l lg:shadow-inner">
-          <div className="p-3 h-full">
+        <TopNavBar/>
+        <div 
+          // className="lg:col-span-9 xl:col-span-10 flex-1 overflow-y-auto bg-white lg:border-l lg:shadow-inner"
+          className='h-screen'
+          >
+          <div className="mx-auto container pt-16  w-screen">
             <Outlet/>
           </div>
         </div>

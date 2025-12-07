@@ -35,7 +35,6 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/login" element={<Login />} />
 
               <Route element={<ProtectedRoute />}>
-                
                 <Route path="/" element={<Neighbors />} />
 
                 <Route path="/Reuniones" element={<Meetings />} /> 

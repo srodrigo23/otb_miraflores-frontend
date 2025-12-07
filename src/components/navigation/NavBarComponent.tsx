@@ -1,6 +1,6 @@
 
 import { Button, Typography } from '@material-tailwind/react'
-import {User, Users, Ruler, Invoice, ListChecks, MoneyWavy, SignOut} from '@phosphor-icons/react'
+import {User, Users, Ruler, ListChecks, MoneyWavy, SignOut} from '@phosphor-icons/react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
 

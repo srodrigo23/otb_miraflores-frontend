@@ -8,7 +8,6 @@ import App from "../App";
 const ProtectedRoute = () =>{
     const { isAuthenticated, loading } = useAuth();
 
-    // Mostrar un spinner o null mientras carga
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">

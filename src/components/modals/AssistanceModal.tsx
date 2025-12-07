@@ -78,6 +78,7 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({
     if (!meet) return;
 
     setLoading(true);
+    
     try {
       // Cargar vecinos y asistencias en paralelo
       const [neighborsResponse, assistancesResponse] = await Promise.all([
