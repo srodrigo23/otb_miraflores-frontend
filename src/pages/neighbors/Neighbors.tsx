@@ -12,6 +12,8 @@ import { toast } from 'react-toastify';
 
 import { NeighborType } from '../../interfaces/neighborsInterfaces';
 
+import { config } from '../../config';
+
 const override: CSSProperties = {
   display: 'block',
   margin: '0 auto',
@@ -22,7 +24,7 @@ const Neighbors = () => {
   const [data, setData] = useState<NeighborType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const apiLink = 'http://127.0.0.1:8000/neighbors';
+  const apiLink = `${config.production?config.frontURL_PROD:config.frontURL_DEV}/neighbors`;
 
   // Modal para editar vecino
   const [openEditModal, setOpenEditModal] = useState(false);

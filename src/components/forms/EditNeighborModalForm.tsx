@@ -1,14 +1,14 @@
 import {
-    Input,
-    DialogBody,
-    DialogFooter,
-    Button,
-    Dialog,
-    Typography
-} from "@material-tailwind/react"
+  Input,
+  DialogBody,
+  DialogFooter,
+  Button,
+  Dialog,
+  Typography,
+} from '@material-tailwind/react';
 
-import { useForm, SubmitHandler } from "react-hook-form"
-import { useEffect } from "react"
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useEffect } from 'react';
 
 interface NeighborType {
   id: number;
@@ -21,110 +21,109 @@ interface NeighborType {
 }
 
 type InputsEditNeighborForm = {
-  firstName: string
-  secondName: string
-  lastName:string
-  ci:string
-  phonenumber:string
-  email:string
-}
+  firstName: string;
+  secondName: string;
+  lastName: string;
+  ci: string;
+  phonenumber: string;
+  email: string;
+};
 
 type EditNeighborModalFormType = {
-    openModalState: boolean,
-    handleCloseModal: () => void,
-    neighbor: NeighborType | null,
-    onSubmit: (data: InputsEditNeighborForm) => void
-}
+  openModalState: boolean;
+  handleCloseModal: () => void;
+  neighbor: NeighborType | null;
+  onSubmit: (data: InputsEditNeighborForm) => void;
+};
 
 const EditNeighborModalForm: React.FC<EditNeighborModalFormType> = ({
-    openModalState,
-    handleCloseModal,
-    neighbor,
-    onSubmit
+  openModalState,
+  handleCloseModal,
+  neighbor,
+  onSubmit,
 }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<InputsEditNeighborForm>();
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<InputsEditNeighborForm>()
-
-    // Cargar datos del vecino cuando cambia
-    useEffect(() => {
-        if (neighbor) {
-            reset({
-                firstName: neighbor.first_name,
-                secondName: neighbor.second_name,
-                lastName: neighbor.last_name,
-                ci: neighbor.ci,
-                phonenumber: neighbor.phone_number,
-                email: neighbor.email
-            });
-        }
-    }, [neighbor, reset]);
-
-    const onSubmitMethod: SubmitHandler<InputsEditNeighborForm> = (data) => {
-        console.log(data)
-        onSubmit(data);
-        handleCloseModal();
+  // Cargar datos del vecino cuando cambia
+  useEffect(() => {
+    if (neighbor) {
+      reset({
+        firstName: neighbor.first_name,
+        secondName: neighbor.second_name,
+        lastName: neighbor.last_name,
+        ci: neighbor.ci,
+        phonenumber: neighbor.phone_number,
+        email: neighbor.email,
+      });
     }
+  }, [neighbor, reset]);
 
-    return (
-      <Dialog open={openModalState} handler={handleCloseModal}>
-        <DialogBody>
-          <form
-            className='flex flex-col gap-5 mx-4'
-            onSubmit={handleSubmit(onSubmitMethod)}
-          >
-            <Typography variant='h2' color='black'>
-              Editar Vecino Datos de Vecino
-            </Typography>
-            <div className='flex gap-5'>
-              <div className='flex-1'>
-                <Input
-                  label='Primer nombre'
-                  defaultValue={''}
-                  crossOrigin={undefined}
-                  {...register('firstName', { required: true })}
-                />
-                {errors.firstName && (
-                  <span className='text-red-400 text-xs'>Campo requerido</span>
-                )}
-              </div>
+  const onSubmitMethod: SubmitHandler<InputsEditNeighborForm> = (data) => {
+    console.log(data);
+    onSubmit(data);
+    handleCloseModal();
+  };
 
-              <div className='flex-1'>
-                <Input
-                  label='Segundo nombre'
-                  defaultValue={''}
-                  crossOrigin={undefined}
-                  {...register('secondName')}
-                />
-              </div>
-            </div>
-
-            <div>
+  return (
+    <Dialog open={openModalState} handler={handleCloseModal}>
+      <DialogBody>
+        <form
+          className='flex flex-col gap-5 mx-4'
+          onSubmit={handleSubmit(onSubmitMethod)}
+        >
+          <Typography variant='h2' color='black'>
+            Editar Vecino Datos de Vecino
+          </Typography>
+          <div className='flex gap-5'>
+            <div className='flex-1'>
               <Input
-                label='Apellidos'
+                label='Primer nombre'
                 defaultValue={''}
                 crossOrigin={undefined}
-                {...register('lastName', { required: true })}
+                {...register('firstName', { required: true })}
               />
-              {errors.lastName && (
+              {errors.firstName && (
                 <span className='text-red-400 text-xs'>Campo requerido</span>
               )}
             </div>
 
-            <div className='flex gap-5'>
-              <div className='flex-1'>
-                <Input
-                  label='Cédula de identidad'
-                  defaultValue={''}
-                  crossOrigin={undefined}
-                  {...register('ci', { required: true })}
-                />
+            <div className='flex-1'>
+              <Input
+                label='Segundo nombre'
+                defaultValue={''}
+                crossOrigin={undefined}
+                {...register('secondName')}
+              />
+            </div>
+          </div>
 
-                {/* <Input
+          <div>
+            <Input
+              label='Apellidos'
+              defaultValue={''}
+              crossOrigin={undefined}
+              {...register('lastName', { required: true })}
+            />
+            {errors.lastName && (
+              <span className='text-red-400 text-xs'>Campo requerido</span>
+            )}
+          </div>
+
+          <div className='flex gap-5'>
+            <div className='flex-1'>
+              <Input
+                label='Cédula de identidad'
+                defaultValue={''}
+                crossOrigin={undefined}
+                {...register('ci', { required: true })}
+              />
+
+              {/* <Input
                                 type="number"
                                 inputMode="numeric"
                                 label="Cédula de identidad"
@@ -132,52 +131,52 @@ const EditNeighborModalForm: React.FC<EditNeighborModalFormType> = ({
                                 crossOrigin={undefined}
                                 {...register("ci", {required:true})}
                             /> */}
-                {errors.ci && (
-                  <span className='text-red-400 text-xs'>Campo requerido</span>
-                )}
-              </div>
-
-              <div className='flex-1'>
-                <Input
-                  type='number'
-                  inputMode='numeric'
-                  label='Celular'
-                  className='appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-                  crossOrigin={undefined}
-                  {...register('phonenumber', { required: true })}
-                />
-                {errors.phonenumber && (
-                  <span className='text-red-400 text-xs'>Campo requerido</span>
-                )}
-              </div>
+              {errors.ci && (
+                <span className='text-red-400 text-xs'>Campo requerido</span>
+              )}
             </div>
 
-            <div>
+            <div className='flex-1'>
               <Input
-                label='Correo Electrónico'
-                defaultValue={''}
+                type='number'
+                inputMode='numeric'
+                label='Celular'
+                className='appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                 crossOrigin={undefined}
-                {...register('email')}
+                {...register('phonenumber', { required: true })}
               />
+              {errors.phonenumber && (
+                <span className='text-red-400 text-xs'>Campo requerido</span>
+              )}
             </div>
+          </div>
 
-            <DialogFooter className='px-0'>
-              <Button
-                variant='text'
-                color='red'
-                onClick={handleCloseModal}
-                className='mr-1'
-              >
-                <span>Cancelar</span>
-              </Button>
-              <Button variant='gradient' color='green' type='submit'>
-                <span>Guardar Cambios</span>
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogBody>
-      </Dialog>
-    );
-}
+          <div>
+            <Input
+              label='Correo Electrónico'
+              defaultValue={''}
+              crossOrigin={undefined}
+              {...register('email')}
+            />
+          </div>
 
-export default EditNeighborModalForm
+          <DialogFooter className='px-0'>
+            <Button
+              variant='text'
+              color='red'
+              onClick={handleCloseModal}
+              className='mr-1'
+            >
+              <span>Cancelar</span>
+            </Button>
+            <Button variant='gradient' color='green' type='submit'>
+              <span>Guardar Cambios</span>
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogBody>
+    </Dialog>
+  );
+};
+
+export default EditNeighborModalForm;
