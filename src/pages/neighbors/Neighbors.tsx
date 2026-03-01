@@ -24,7 +24,7 @@ const Neighbors = () => {
   const [data, setData] = useState<NeighborType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const apiLink = `${config.production?config.frontURL_PROD:config.frontURL_DEV}/neighbors`;
+  const apiLink = `${JSON.parse(config.production)?config.frontURL_PROD:config.frontURL_DEV}/neighbors`;
 
   // Modal para editar vecino
   const [openEditModal, setOpenEditModal] = useState(false);
