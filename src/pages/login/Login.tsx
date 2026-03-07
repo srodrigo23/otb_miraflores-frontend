@@ -36,16 +36,18 @@ export function Login() {
   const { execute } = useFetchData(apiLinkLogin);
 
   const onSubmit: SubmitHandler<Inputs> = async ({ username, password }) => {
-    const response = await execute({
+    const result = await execute({
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });
-    console.log(response)
-    // if(response.ok){
-    navigate('/vecinos')
-    // }
+    if (result?.ok) {
+      login(result.data);
+      navigate('/vecinos');
+    } else {
+      setLoginError('Usuario o contraseña incorrectos');
+    }
   };
 
   return (

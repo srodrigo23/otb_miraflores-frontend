@@ -31,34 +31,27 @@ export const AuthProvider = ({ children }: {children: ReactNode}) => {
     const apiUserActive = `${JSON.parse(config.production)?config.frontURL_PROD:config.frontURL_DEV}/me`;
     const { execute } = useFetchData(apiUserActive);
     
-    const checkActiveUser = async ()=>{
-        const response = await execute();
-        console.log(response);
-        
-    }
+    const checkActiveUser = async () => {
+        const result = await execute({ credentials: 'include' });
+        if (result?.ok && result.data) {
+            setUser(result.data);
+            setIsAuthenticated(true);
+        }
+        setLoading(false);
+    };
 
-    useEffect (() => {
-        
+    useEffect(() => {
         checkActiveUser();
-        setLoading(false)
-        // const storedUser = localStorage.getItem('user');
-        // if (storedUser) {
-        //     setUser(JSON.parse(storedUser));
-        //     setIsAuthenticated(true);
-        // }
-        // setLoading(false);
     }, []);
 
     const login = (userData: User) => {
-        // setUser(userData);
-        // setIsAuthenticated(true);
-        // localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        setIsAuthenticated(true);
     };
 
     const logout = () => {
-        // setUser(null);
-        // setIsAuthenticated(false);
-        // localStorage.removeItem('user');
+        setUser(null);
+        setIsAuthenticated(false);
     };
 
     return(
