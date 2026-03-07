@@ -1,4 +1,7 @@
 import { useState, createContext, useContext, useEffect, ReactNode } from "react";
+import useFetchData from "../hooks/useFetchData";
+
+import { config } from "../config";
 
 interface User {
     userName: string
@@ -25,26 +28,37 @@ export const AuthProvider = ({ children }: {children: ReactNode}) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // Check localStorage on mount
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
+    const apiUserActive = `${JSON.parse(config.production)?config.frontURL_PROD:config.frontURL_DEV}/me`;
+    const { execute } = useFetchData(apiUserActive);
+    
+    const checkActiveUser = async ()=>{
+        const response = await execute();
+        console.log(response);
+        
+    }
+
+    useEffect (() => {
+        
+        checkActiveUser();
+        setLoading(false)
+        // const storedUser = localStorage.getItem('user');
+        // if (storedUser) {
+        //     setUser(JSON.parse(storedUser));
+        //     setIsAuthenticated(true);
+        // }
+        // setLoading(false);
     }, []);
 
     const login = (userData: User) => {
-        setUser(userData);
-        setIsAuthenticated(true);
-        localStorage.setItem('user', JSON.stringify(userData));
+        // setUser(userData);
+        // setIsAuthenticated(true);
+        // localStorage.setItem('user', JSON.stringify(userData));
     };
 
     const logout = () => {
-        setUser(null);
-        setIsAuthenticated(false);
-        localStorage.removeItem('user');
+        // setUser(null);
+        // setIsAuthenticated(false);
+        // localStorage.removeItem('user');
     };
 
     return(

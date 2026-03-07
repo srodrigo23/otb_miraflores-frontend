@@ -11,9 +11,11 @@ import { useAuth } from "../../components/AuthContext"
 import { useState } from "react"
 
 import { Droplets, User, Lock, LogIn} from "lucide-react";
+import useFetchData from "../../hooks/useFetchData";
+import { config } from '../../config';
 
 type Inputs = {
-  userName: string
+  username: string
   password: string
 }
 
@@ -25,18 +27,26 @@ export function Login() {
   } = useForm<Inputs>()
 
   const navigate = useNavigate()
+  
   const { login } = useAuth()
+  
   const [loginError, setLoginError] = useState<string>("")
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    // Credenciales hardcodeadas
-    if (data.userName === "admin" && data.password === "admin") {
-      login({ userName: data.userName })
-      navigate("/vecinos")
-    } else {
-      setLoginError("Usuario o contraseña incorrectos")
-    }
-  }
+  const apiLinkLogin = `${JSON.parse(config.production)?config.frontURL_PROD:config.frontURL_DEV}/login`;
+  const { execute } = useFetchData(apiLinkLogin);
+
+  const onSubmit: SubmitHandler<Inputs> = async ({ username, password }) => {
+    const response = await execute({
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    console.log(response)
+    // if(response.ok){
+    navigate('/vecinos')
+    // }
+  };
 
   return (
     <div className='min-h-screen flex items-center justify-center  p-4 relative overflow-hidden bg-[#E3F3FA]'>
@@ -77,12 +87,12 @@ export function Login() {
               containerProps={{
                 className: 'min-w-0',
               }}
-              {...register('userName', {
+              {...register('username', {
                 required: true,
                 onChange: () => setLoginError(''),
               })}
             />
-            {errors.userName && (
+            {errors.username && (
               <Typography variant='small' className='text-red-500 mt-1 text-xs'>
                 Campo requerido
               </Typography>

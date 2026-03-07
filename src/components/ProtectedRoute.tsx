@@ -6,6 +6,7 @@ import App from "../App";
 
 
 const ProtectedRoute = () =>{
+    
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
