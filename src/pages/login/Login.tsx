@@ -6,7 +6,7 @@ import {
 } from "@material-tailwind/react";
 
 import { useForm, SubmitHandler } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Navigate } from "react-router-dom"
 import { useAuth } from "../../components/AuthContext"
 import { useState } from "react"
 
@@ -27,8 +27,8 @@ export function Login() {
   } = useForm<Inputs>()
 
   const navigate = useNavigate()
-  
-  const { login } = useAuth()
+
+  const { login, isAuthenticated, loading } = useAuth()
   
   const [loginError, setLoginError] = useState<string>("")
 
@@ -49,6 +49,18 @@ export function Login() {
       setLoginError('Usuario o contraseña incorrectos');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#E3F3FA]">
+        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[#0B81B7] border-r-transparent"></div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/vecinos" replace />;
+  }
 
   return (
     <div className='min-h-screen flex items-center justify-center  p-4 relative overflow-hidden bg-[#E3F3FA]'>
