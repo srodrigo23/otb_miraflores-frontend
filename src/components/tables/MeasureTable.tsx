@@ -2,8 +2,8 @@ import { useState, useMemo } from 'react';
 import {
   Typography,
   IconButton,
-  Button,
-  Chip,
+  // Button,
+  // Chip,
 } from '@material-tailwind/react';
 import {
   ChevronUpDownIcon,
@@ -14,7 +14,7 @@ import {
   CurrencyDollarIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
-import NewMeasureModalForm from '../forms/NewMeasureModalForm';
+
 import { MeasureTableProps } from '../../types/MeasuresTypes';
 
 type SortField = 'id' | 'measure_date' | 'period' | 'reader_name' | 'status' | 'created_at';
@@ -25,42 +25,38 @@ const TABLE_HEAD = [
   { label: 'Fecha de Medición', field: 'measure_date' as SortField, sortable: true },
   { label: 'Periodo', field: 'period' as SortField, sortable: true },
   // { label: 'Responsable', field: 'reader_name' as SortField, sortable: true },
-  { label: 'Estado', field: 'status' as SortField, sortable: true },
-  { label: 'Núm. de Medidores', field: null, sortable: false },
-  { label: 'Fecha Creación', field: 'created_at' as SortField, sortable: true },
+  // { label: 'Estado', field: 'status' as SortField, sortable: true },
+  // { label: 'Núm. de Medidores', field: null, sortable: false },
+  // { label: 'Fecha Creación', field: 'created_at' as SortField, sortable: true },
   { label: 'Acciones', field: null, sortable: false },
 ];
 
-const STATUS_COLORS: { [key: string]: string } = {
-  in_progress: 'blue',
-  completed: 'green',
-  cancelled: 'red',
-};
+// const STATUS_COLORS: { [key: string]: string } = {
+//   in_progress: 'blue',
+//   completed: 'green',
+//   cancelled: 'red',
+// };
 
-const STATUS_LABELS: { [key: string]: string } = {
-  in_progress: 'En Progreso',
-  completed: 'Completada',
-  cancelled: 'Cancelada',
-};
+// const STATUS_LABELS: { [key: string]: string } = {
+//   in_progress: 'En Progreso',
+//   completed: 'Completada',
+//   cancelled: 'Cancelada',
+// };
 
 const MeasureTable: React.FC<MeasureTableProps> = ({
   tableData,
   onEdit,
   onDelete,
-  onCreate,
+  // onCreate,
   // onView,
   onViewReadings,
-  onGenerateDebts,
-  onDeleteDebts,
+  // onGenerateDebts,
+  // onDeleteDebts,
 }) => {
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   // const [currentPage, setCurrentPage] = useState(1);
   // const itemsPerPage = 10;
-
-  // Modal para nueva medición
-  const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => setOpenModal(!openModal);
 
   // Ordenar datos
   const sortedData = useMemo(() => {
@@ -103,16 +99,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
 
   return (
     <div className='flex flex-col h-full'>
-      {/* Botón para crear nueva medición */}
-      <div className='flex justify-between py-3 px-5 flex-shrink-0'>
-        <Typography className='text-center mb-2' variant='h3' color='black'>
-          Mediciones
-        </Typography>
-
-        <div className='flex mb-4 justify-end'>
-          <Button onClick={handleOpenModal}>NUEVA MEDICIÓN</Button>
-        </div>
-      </div>
+      
 
       {/* Tabla con scroll interno */}
       <div className='flex-1 overflow-auto border border-blue-gray-100 rounded-lg'>
@@ -196,7 +183,7 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                       {measure.reader_name || '-'}
                     </Typography>
                   </td> */}
-                  <td className={classes}>
+                  {/* <td className={classes}>
                     <div className='flex justify-center'>
                       <Chip
                         // className='w-fit'
@@ -205,8 +192,8 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                         color={(STATUS_COLORS[measure.status] || 'gray') as any}
                       />
                     </div>
-                  </td>
-                  <td className={classes}>
+                  </td> */}
+                  {/* <td className={classes}>
                     <Typography
                       variant='small'
                       color='blue-gray'
@@ -214,8 +201,8 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                     >
                       {measure.meters_read}/{measure.total_meters}
                     </Typography>
-                  </td>
-                  <td className={classes}>
+                  </td> */}
+                  {/* <td className={classes}>
                     <Typography
                       variant='small'
                       color='blue-gray'
@@ -223,26 +210,30 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
                     >
                       {formatDate(measure.created_at)}
                     </Typography>
-                  </td>
+                  </td> */}
                   <td className={classes}>
                     <div className='flex justify-center gap-2'>
-                      {onGenerateDebts && (
+                      {
+                      // onGenerateDebts && 
+                      (
                         <IconButton
                           size='sm'
                           variant='text'
                           color='green'
-                          onClick={() => onGenerateDebts(measure)}
+                          // onClick={() => onGenerateDebts(measure)}
                           title='Generar deudas'
                         >
                           <CurrencyDollarIcon className='h-4 w-4' />
                         </IconButton>
                       )}
-                      {onDeleteDebts && (
+                      {
+                      // onDeleteDebts && 
+                      (
                         <IconButton
                           size='sm'
                           variant='text'
                           color='orange'
-                          onClick={() => onDeleteDebts(measure)}
+                          // onClick={() => onDeleteDebts(measure)}
                           title='Eliminar deudas'
                         >
                           <XCircleIcon className='h-4 w-4' />
@@ -301,21 +292,11 @@ const MeasureTable: React.FC<MeasureTableProps> = ({
         </table>
       </div>
 
-      <NewMeasureModalForm
-        openModalState={openModal}
-        handleCloseModal={handleOpenModal}
-        onSubmit={(data) => {
-          if (onCreate) {
-            onCreate(data);
-          }
-        }}
-      />
-
-      <div className='flex items-center justify-between border-t border-blue-gray-100 p-4 flex-shrink-0'>
+      {/* <div className='flex items-center justify-between border-t border-blue-gray-100 p-4 flex-shrink-0'>
         <Typography variant='small' color='blue-gray' className='font-normal'>
           Total: {sortedData.length} mediciones
         </Typography>
-      </div>
+      </div> */}
     </div>
   );
 };

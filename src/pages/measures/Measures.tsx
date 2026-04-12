@@ -1,10 +1,16 @@
 import { CSSProperties, useEffect, useState } from 'react';
-import MeasureTable from '../../components/tables/MeasureTable';
+// import MeasureTable from '../../components/tables/MeasureTable';
 import MeasureReadingsModal from '../../components/modals/MeasureReadingsModal';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import { MeasureType } from '../../interfaces/measuresIterfaces';
+import NewMeasureModalForm from '../../components/forms/NewMeasureModalForm';
 
+import {
+  Typography,
+  Button,
+  Select, Option
+} from '@material-tailwind/react';
 
 const override: CSSProperties = {
   display: 'block',
@@ -15,12 +21,16 @@ const override: CSSProperties = {
 const Measures = () => {
   const [data, setData] = useState<MeasureType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMeasure, setSelectedMeasure] = useState<MeasureType | null>(null);
-  const [openReadingsModal, setOpenReadingsModal] = useState(false);
+  const [selectedMeasure, setSelectedMeasure] = useState<string | undefined>('');
+  // const [openReadingsModal, setOpenReadingsModal] = useState(false);
 
   const apiLink = 'http://127.0.0.1:8000/measures';
 
-  // Cargar datos de mediciones
+  // Modal para nueva medición
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(!openModal);
+
+  // Cargar datos de mediciones,
   const fetchMeasures = () => {
     setLoading(true);
     fetch(apiLink, {
@@ -41,6 +51,12 @@ const Measures = () => {
   useEffect(() => {
     fetchMeasures();
   }, []);
+
+  useEffect(()=>{
+    if (data.length > 0) {
+      setSelectedMeasure(data[1].period)
+    }
+  }, [data])
 
   // Handler para crear nueva medición
   const handleCreateMeasure = (formData: any) => {
@@ -68,99 +84,99 @@ const Measures = () => {
   };
 
   // Handler para ver detalles
-  const handleViewMeasure = (measure: MeasureType) => {
-    // TODO: Implementar vista de detalles
-    console.log('Ver medición:', measure);
-    toast.info('Función de vista de detalles en desarrollo');
-  };
+  // const handleViewMeasure = (measure: MeasureType) => {
+  //   // TODO: Implementar vista de detalles
+  //   console.log('Ver medición:', measure);
+  //   toast.info('Función de vista de detalles en desarrollo');
+  // };
 
   // Handler para editar
-  const handleEditMeasure = (measure: MeasureType) => {
-    // TODO: Implementar edición
-    console.log('Editar medición:', measure);
-    toast.info('Función de edición en desarrollo');
-  };
+  // const handleEditMeasure = (measure: MeasureType) => {
+  //   // TODO: Implementar edición
+  //   console.log('Editar medición:', measure);
+  //   toast.info('Función de edición en desarrollo');
+  // };
 
   // Handler para eliminar
-  const handleDeleteMeasure = (measure: MeasureType) => {
-    if (window.confirm(`¿Está seguro de eliminar la medición del ${measure.measure_date}?`)) {
-      fetch(`${apiLink}/${measure.id}`, {
-        method: 'DELETE',
-      })
-        .then(() => {
-          fetchMeasures();
-          toast.success('Medición eliminada exitosamente');
-        })
-        .catch((error) => {
-          console.error('Error al eliminar medición:', error);
-          toast.error('Error al eliminar la medición');
-        });
-    }
-  };
+  // const handleDeleteMeasure = (measure: MeasureType) => {
+  //   if (window.confirm(`¿Está seguro de eliminar la medición del ${measure.measure_date}?`)) {
+  //     fetch(`${apiLink}/${measure.id}`, {
+  //       method: 'DELETE',
+  //     })
+  //       .then(() => {
+  //         fetchMeasures();
+  //         toast.success('Medición eliminada exitosamente');
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error al eliminar medición:', error);
+  //         toast.error('Error al eliminar la medición');
+  //       });
+  //   }
+  // };
 
   // Handler para ver lecturas
-  const handleViewReadings = (measure: MeasureType) => {
-    setSelectedMeasure(measure);
-    setOpenReadingsModal(true);
-  };
+  // const handleViewReadings = (measure: MeasureType) => {
+  //   setSelectedMeasure(measure);
+  //   setOpenReadingsModal(true);
+  // };
 
-  // Handler para cerrar modal de lecturas
-  const handleCloseReadingsModal = () => {
-    setOpenReadingsModal(false);
-    setSelectedMeasure(null);
-  };
+  // // Handler para cerrar modal de lecturas
+  // const handleCloseReadingsModal = () => {
+  //   setOpenReadingsModal(false);
+  //   setSelectedMeasure(null);
+  // };
 
-  // Handler para generar deudas
-  const handleGenerateDebts = async (measure: MeasureType) => {
-    if (!window.confirm(`¿Está seguro de generar deudas para la medición del ${measure.measure_date}?`)) {
-      return;
-    }
+  // // Handler para generar deudas
+  // const handleGenerateDebts = async (measure: MeasureType) => {
+  //   if (!window.confirm(`¿Está seguro de generar deudas para la medición del ${measure.measure_date}?`)) {
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/measures/${measure.id}/generate-debts`, {
-        method: 'POST',
-      });
+  //   try {
+  //     const response = await fetch(`http://127.0.0.1:8000/measures/${measure.id}/generate-debts`, {
+  //       method: 'POST',
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (response.ok) {
-        toast.success(
-          `Deudas generadas exitosamente: ${data.debts_created} creadas, ${data.debts_skipped} omitidas`
-        );
-      } else {
-        toast.error(data.detail || 'Error al generar deudas');
-      }
-    } catch (error) {
-      console.error('Error al generar deudas:', error);
-      toast.error('Error al generar deudas');
-    }
-  };
+  //     if (response.ok) {
+  //       toast.success(
+  //         `Deudas generadas exitosamente: ${data.debts_created} creadas, ${data.debts_skipped} omitidas`
+  //       );
+  //     } else {
+  //       toast.error(data.detail || 'Error al generar deudas');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error al generar deudas:', error);
+  //     toast.error('Error al generar deudas');
+  //   }
+  // };
 
-  // Handler para eliminar deudas
-  const handleDeleteDebts = async (measure: MeasureType) => {
-    if (!window.confirm(`¿Está seguro de eliminar las deudas pendientes de la medición del ${measure.measure_date}?\nSolo se eliminarán las deudas que no hayan sido pagadas.`)) {
-      return;
-    }
+  // // Handler para eliminar deudas
+  // const handleDeleteDebts = async (measure: MeasureType) => {
+  //   if (!window.confirm(`¿Está seguro de eliminar las deudas pendientes de la medición del ${measure.measure_date}?\nSolo se eliminarán las deudas que no hayan sido pagadas.`)) {
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/measures/${measure.id}/debts`, {
-        method: 'DELETE',
-      });
+  //   try {
+  //     const response = await fetch(`http://127.0.0.1:8000/measures/${measure.id}/debts`, {
+  //       method: 'DELETE',
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (response.ok) {
-        toast.success(
-          `Deudas eliminadas exitosamente: ${data.debts_deleted} deudas pendientes eliminadas`
-        );
-      } else {
-        toast.error(data.detail || 'Error al eliminar deudas');
-      }
-    } catch (error) {
-      console.error('Error al eliminar deudas:', error);
-      toast.error('Error al eliminar deudas');
-    }
-  };
+  //     if (response.ok) {
+  //       toast.success(
+  //         `Deudas eliminadas exitosamente: ${data.debts_deleted} deudas pendientes eliminadas`
+  //       );
+  //     } else {
+  //       toast.error(data.detail || 'Error al eliminar deudas');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error al eliminar deudas:', error);
+  //     toast.error('Error al eliminar deudas');
+  //   }
+  // };
 
   return (
     <>
@@ -176,23 +192,60 @@ const Measures = () => {
         </div>
       ) : (
         <div className=''>
-          <MeasureTable
+          {/* Botón para crear nueva medición */}
+          <div className='flex justify-between py-3 flex-shrink-0'>
+            <Typography className='text-center mb-2' variant='h3' color='black'>
+              Mediciones
+            </Typography>
+
+            <div className='flex gap-2 items-center'>
+              <Select
+                label='Seleccionar medición'
+                value={selectedMeasure}
+                onChange={(val) => {
+                  setSelectedMeasure(val);
+                }}
+              >
+                {data.map((el, index) => (
+                  <Option key={index} value={el.period}>
+                    {el.period}
+                  </Option>
+                ))}
+              </Select>
+              <Button className='w-60' onClick={handleOpenModal}>
+                NUEVA MEDICIÓN
+              </Button>
+            </div>
+          </div>
+
+          {/* <MeasureTable
             tableData={data}
-            onCreate={handleCreateMeasure}
+            // onCreate={handleCreateMeasure}
             onView={handleViewMeasure}
             onEdit={handleEditMeasure}
             onDelete={handleDeleteMeasure}
             onViewReadings={handleViewReadings}
-            onGenerateDebts={handleGenerateDebts}
-            onDeleteDebts={handleDeleteDebts}
-          />
+            // onGenerateDebts={handleGenerateDebts}
+            // onDeleteDebts={handleDeleteDebts}
+          /> */}
         </div>
       )}
 
+      {/*  This is important  */}
       <MeasureReadingsModal
-        open={openReadingsModal}
-        onClose={handleCloseReadingsModal}
+        // open={openReadingsModal}
+        // onClose={handleCloseReadingsModal}
         measure={selectedMeasure}
+      />
+
+      <NewMeasureModalForm
+        openModalState={openModal}
+        handleCloseModal={handleOpenModal}
+        onSubmit={(data) => {
+          // if (onCreate) {
+          handleCreateMeasure(data);
+          // }
+        }}
       />
     </>
   );

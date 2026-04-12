@@ -1,7 +1,7 @@
 export interface MeasureType {
   id: number;
   measure_date: string;
-  period: string | null;
+  period: string;
   reader_name: string | null;
   status: string;
   total_meters: number;

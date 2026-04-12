@@ -98,6 +98,7 @@ export function Login() {
             <Input
               label='Usuario'
               icon={<User size={20} className='text-gray-400' />}
+              value='sergio.cardenas'
               containerProps={{
                 className: 'min-w-0',
               }}
@@ -118,6 +119,7 @@ export function Login() {
             <Input
               type='password'
               label='Contraseña'
+              value={'123456'}
               icon={<Lock size={20} className='text-gray-400' />}
               {...register('password', {
                 required: true,

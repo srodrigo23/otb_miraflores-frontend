@@ -38,8 +38,8 @@ interface MeasureType {
 }
 
 type MeasureReadingsModalProps = {
-  open: boolean;
-  onClose: () => void;
+  // open: boolean;
+  // onClose: () => void;
   measure: MeasureType | null;
 };
 
@@ -58,8 +58,8 @@ const STATUS_LABELS: { [key: string]: string } = {
 };
 
 const MeasureReadingsModal: React.FC<MeasureReadingsModalProps> = ({
-  open,
-  onClose,
+  // open,
+  // onClose,
   measure,
 }) => {
   const [readings, setReadings] = useState<MeterReadingType[]>([]);
@@ -67,11 +67,11 @@ const MeasureReadingsModal: React.FC<MeasureReadingsModalProps> = ({
 
   const apiLink = 'http://127.0.0.1:8000';
 
-  useEffect(() => {
-    if (open && measure) {
-      fetchReadings();
-    }
-  }, [open, measure]);
+  // useEffect(() => {
+  //   if (open && measure) {
+  //     fetchReadings();
+  //   }
+  // }, [open, measure]);
 
   const fetchReadings = async () => {
     if (!measure) return;
@@ -114,7 +114,7 @@ const MeasureReadingsModal: React.FC<MeasureReadingsModalProps> = ({
   };
 
   return (
-    <Dialog open={open} handler={onClose} size="xl">
+    <>
       <DialogHeader>
         <div className="flex flex-col gap-1">
           <Typography variant="h4">
@@ -263,12 +263,12 @@ const MeasureReadingsModal: React.FC<MeasureReadingsModalProps> = ({
         )}
       </DialogBody>
 
-      <DialogFooter>
+      {/* <DialogFooter>
         <Button variant="text" color="blue-gray" onClick={onClose}>
           Cerrar
         </Button>
-      </DialogFooter>
-    </Dialog>
+      </DialogFooter> */}
+    </>
   );
 };
 
