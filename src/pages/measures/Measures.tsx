@@ -1,9 +1,6 @@
-import { CSSProperties, useEffect, useState } from 'react';
-// import MeasureTable from '../../components/tables/MeasureTable';
-import MeasureReadingsModal from '../../components/modals/MeasureReadingsModal';
+import { CSSProperties, useState } from 'react';
+import MeasureReadingsTable from '../../components/tables/MeasureReadingsTable';
 import { ClipLoader } from 'react-spinners';
-import { toast } from 'react-toastify';
-import { MeasureType } from '../../interfaces/measuresIterfaces';
 import NewMeasureModalForm from '../../components/forms/NewMeasureModalForm';
 
 import {
@@ -12,6 +9,8 @@ import {
   Select, Option
 } from '@material-tailwind/react';
 
+import { useMeasuresData } from '../../hooks/useMeasuresData';
+
 const override: CSSProperties = {
   display: 'block',
   margin: '0 auto',
@@ -19,69 +18,81 @@ const override: CSSProperties = {
 };
 
 const Measures = () => {
-  const [data, setData] = useState<MeasureType[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedMeasure, setSelectedMeasure] = useState<string | undefined>('');
-  // const [openReadingsModal, setOpenReadingsModal] = useState(false);
-
-  const apiLink = 'http://127.0.0.1:8000/measures';
 
   // Modal para nueva medición
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(!openModal);
 
-  // Cargar datos de mediciones,
-  const fetchMeasures = () => {
-    setLoading(true);
-    fetch(apiLink, {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setData(json);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-        toast.error('Error al cargar las mediciones');
-      });
-  };
+  const {data:measuresData = [], isLoading:loadingMeasuresData} = useMeasuresData()
 
-  useEffect(() => {
-    fetchMeasures();
-  }, []);
+  // const fetchReadings = async () => {
+  //   if (!measure) return;
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(`${apiLink}/${measure.id}/meter-readings`);
+  //     const data = await response.json();
+  //     // setReadings(data);
+  //   } catch (error) {
+  //     console.error('Error al cargar lecturas:', error);
+  //     toast.error('Error al cargar las lecturas de medidores');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  useEffect(()=>{
-    if (data.length > 0) {
-      setSelectedMeasure(data[1].period)
-    }
-  }, [data])
+  // const fetchMeasures = () => {
+  //   setLoading(true);
+  //   fetch(apiLink, {
+  //     method: 'GET',
+  //   })
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       setData(json);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setLoading(false);
+  //       toast.error('Error al cargar las mediciones');
+  //     });
+  // };
+
+  // useEffect(() => {
+  //   fetchMeasures();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (data.length > 0) {
+  //     const initialPos = 0
+  //     setSelectedMeasure(data[initialPos].period);
+  //   }
+  // }, [data]);
 
   // Handler para crear nueva medición
-  const handleCreateMeasure = (formData: any) => {
-    fetch(apiLink, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        measure_date: formData.measureDate,
-        period: formData.period,
-        reader_name: formData.readerName,
-        notes: formData.notes,
-      }),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        fetchMeasures();
-        toast.success('Medición creada exitosamente');
-      })
-      .catch((error) => {
-        console.error('Error al crear medición:', error);
-        toast.error('Error al crear la medición');
-      });
-  };
+  // const handleCreateMeasure = (formData: any) => {
+  //   fetch(apiLink, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       measure_date: formData.measureDate,
+  //       period: formData.period,
+  //       reader_name: formData.readerName,
+  //       notes: formData.notes,
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then(() => {
+  //       fetchMeasures();
+  //       toast.success('Medición creada exitosamente');
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error al crear medición:', error);
+  //       toast.error('Error al crear la medición');
+  //     });
+  // };
 
   // Handler para ver detalles
   // const handleViewMeasure = (measure: MeasureType) => {
@@ -180,10 +191,10 @@ const Measures = () => {
 
   return (
     <>
-      {loading ? (
+      {loadingMeasuresData ? (
         <div className='flex justify-center items-center py-20'>
           <ClipLoader
-            loading={loading}
+            loading={loadingMeasuresData}
             cssOverride={override}
             size={150}
             aria-label='Loading Spinner'
@@ -192,59 +203,47 @@ const Measures = () => {
         </div>
       ) : (
         <div className=''>
-          {/* Botón para crear nueva medición */}
           <div className='flex justify-between py-3 flex-shrink-0'>
             <Typography className='text-center mb-2' variant='h3' color='black'>
               Mediciones
             </Typography>
 
             <div className='flex gap-2 items-center'>
-              <Select
-                label='Seleccionar medición'
-                value={selectedMeasure}
-                onChange={(val) => {
-                  setSelectedMeasure(val);
-                }}
-              >
-                {data.map((el, index) => (
-                  <Option key={index} value={el.period}>
-                    {el.period}
-                  </Option>
-                ))}
-              </Select>
+              {!loadingMeasuresData ? (
+                <Select
+                  label='Seleccionar medición'
+                  value={measuresData[3]?.period }
+                  onChange={(val) => {
+                    setSelectedMeasure(val);
+                  }}
+                >
+                  {measuresData?.map((el, index) => (
+                    <Option key={index} value={el.period}>
+                      {el.period}
+                    </Option>
+                  ))}
+                </Select>
+              ) : (
+                <>Cargando</>
+              )}
+
               <Button className='w-60' onClick={handleOpenModal}>
                 NUEVA MEDICIÓN
               </Button>
             </div>
           </div>
-
-          {/* <MeasureTable
-            tableData={data}
-            // onCreate={handleCreateMeasure}
-            onView={handleViewMeasure}
-            onEdit={handleEditMeasure}
-            onDelete={handleDeleteMeasure}
-            onViewReadings={handleViewReadings}
-            // onGenerateDebts={handleGenerateDebts}
-            // onDeleteDebts={handleDeleteDebts}
-          /> */}
         </div>
       )}
 
-      {/*  This is important  */}
-      <MeasureReadingsModal
-        // open={openReadingsModal}
-        // onClose={handleCloseReadingsModal}
-        measure={selectedMeasure}
-      />
+      {
+        // <MeasureReadingsTable measure={''}/>
+      }
 
       <NewMeasureModalForm
         openModalState={openModal}
         handleCloseModal={handleOpenModal}
         onSubmit={(data) => {
-          // if (onCreate) {
-          handleCreateMeasure(data);
-          // }
+          // handleCreateMeasure(data);
         }}
       />
     </>
