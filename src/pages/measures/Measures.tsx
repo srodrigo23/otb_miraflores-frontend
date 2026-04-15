@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useState, useEffect } from 'react';
 import MeasureReadingsTable from '../../components/tables/MeasureReadingsTable';
 import { ClipLoader } from 'react-spinners';
 import NewMeasureModalForm from '../../components/forms/NewMeasureModalForm';
@@ -9,6 +9,8 @@ import {
   Select, Option
 } from '@material-tailwind/react';
 
+import { MeasureType } from '../../interfaces/measuresIterfaces';
+
 import { useMeasuresData } from '../../hooks/useMeasuresData';
 
 const override: CSSProperties = {
@@ -18,13 +20,13 @@ const override: CSSProperties = {
 };
 
 const Measures = () => {
-  const [selectedMeasure, setSelectedMeasure] = useState<string | undefined>('');
+  const [selectedMeasure, setSelectedMeasure] = useState<MeasureType|null>(null);
 
   // Modal para nueva medición
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(!openModal);
 
-  const {data:measuresData = [], isLoading:loadingMeasuresData} = useMeasuresData()
+  const {data:measuresData = [], isLoading:loadingMeasuresData} = useMeasuresData()  
 
   // const fetchReadings = async () => {
   //   if (!measure) return;
@@ -58,9 +60,11 @@ const Measures = () => {
   //     });
   // };
 
-  // useEffect(() => {
-  //   fetchMeasures();
-  // }, []);
+  useEffect(() => {
+    if(measuresData.length>0){
+      setSelectedMeasure(measuresData[0])
+    }
+  }, [measuresData]);
 
   // useEffect(() => {
   //   if (data.length > 0) {
@@ -189,6 +193,10 @@ const Measures = () => {
   //   }
   // };
 
+  const getMeasureByPeriod = (period:string='')=>{
+    return measuresData.filter((measure) => measure.period === period)[0];
+  }
+
   return (
     <>
       {loadingMeasuresData ? (
@@ -209,24 +217,22 @@ const Measures = () => {
             </Typography>
 
             <div className='flex gap-2 items-center'>
-              {!loadingMeasuresData ? (
-                <Select
-                  label='Seleccionar medición'
-                  value={measuresData[3]?.period }
-                  onChange={(val) => {
-                    setSelectedMeasure(val);
-                  }}
-                >
-                  {measuresData?.map((el, index) => (
-                    <Option key={index} value={el.period}>
-                      {el.period}
-                    </Option>
-                  ))}
-                </Select>
-              ) : (
-                <>Cargando</>
-              )}
-
+              <Select
+                label='Seleccionar medición'
+                value={selectedMeasure?.period}
+                onChange={(val) => {
+                  const measureToChange = getMeasureByPeriod(val);
+                  if (measureToChange) {
+                    setSelectedMeasure(measureToChange);
+                  }
+                }}
+              >
+                {measuresData?.map((el, index) => (
+                  <Option key={index} value={el.period}>
+                    {el.period}
+                  </Option>
+                ))}
+              </Select>
               <Button className='w-60' onClick={handleOpenModal}>
                 NUEVA MEDICIÓN
               </Button>
@@ -234,10 +240,20 @@ const Measures = () => {
           </div>
         </div>
       )}
-
-      {
-        // <MeasureReadingsTable measure={''}/>
-      }
+      {loadingMeasuresData ? (
+        <div className='flex justify-center items-center py-20'>
+          <ClipLoader
+            loading={loadingMeasuresData}
+            cssOverride={override}
+            size={150}
+            aria-label='Loading Spinner'
+            data-testid='loader'
+          />
+        </div>
+      ) : (
+        <></>
+        // <MeasureReadingsTable measure={selectedMeasure} />
+      )}
 
       <NewMeasureModalForm
         openModalState={openModal}

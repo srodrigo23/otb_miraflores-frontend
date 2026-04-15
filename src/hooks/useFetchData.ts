@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const useFetchData = <T = unknown>(url: string) => {
+const useFetchData = <T> (url: string) => {
   const [data, setData] = useState<T>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
