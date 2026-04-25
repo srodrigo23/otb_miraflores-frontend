@@ -4,20 +4,16 @@ export interface MeasureType {
   period: string;
   reader_name: string | null;
   status: string;
+
   total_meters: number;
   meters_read: number;
   meters_pending: number;
   notes: string | null;
+
   created_at: string;
   updated_at: string;
-  //Temporal comented
-  // readings: 
 }
-export interface MeasureReadingsType {
-  id: number;
-  measure_date: string;
-  period: string | null;
-  reader_name: string | null;
+export interface MeasureReadingsType extends MeasureType {
   readings: MeterReadingType[];
 }
 
@@ -32,9 +28,11 @@ interface MeterReadingType {
   notes: string | null;
   created_at: string;
   updated_at: string;
-  neighbor_first_name: string | null;
-  neighbor_second_name: string | null;
-  neighbor_last_name: string | null;
-  neighbor_ci: string | null;
   meter_number: string | null;
+  
+  // neighbor_first_name: string | null;
+  // neighbor_second_name: string | null;
+  // neighbor_last_name: string | null;
+  // neighbor_ci: string | null;
+  
 }

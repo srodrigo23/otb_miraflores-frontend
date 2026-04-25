@@ -252,7 +252,7 @@ const Measures = () => {
         </div>
       ) : (
         <></>
-        // <MeasureReadingsTable measure={selectedMeasure} />
+        // {/* <MeasureReadingsTable measure={selectedMeasure} /> */}
       )}
 
       <NewMeasureModalForm
