@@ -4,13 +4,13 @@ import {
   // DialogHeader,
   // DialogBody,
   // DialogFooter,
-  Button,
+  // Button,
   Typography,
-  Chip,
+  // Chip,
 } from '@material-tailwind/react';
-// import { ClipLoader } from 'react-spinners';
+import { ClipLoader } from 'react-spinners';
 // import { toast } from 'react-toastify';
-import { color } from '@material-tailwind/react/types/components/alert';
+// import { color } from '@material-tailwind/react/types/components/alert';
 
 
 // interface MeasureType {
@@ -21,8 +21,8 @@ import { color } from '@material-tailwind/react/types/components/alert';
 //   readings: MeterReadingType[];
 // }
 
-import { MeasureReadingsType } from '../../interfaces/measuresIterfaces';
-
+import { MeasureType } from '../../interfaces/measuresIterfaces';
+import { useMeasureReadings } from '../../hooks/useMeasureReadings';
 // const STATUS_COLORS: { [key: string]: color } = {
 //   normal: 'green',
 //   estimated: 'amber',
@@ -37,17 +37,11 @@ import { MeasureReadingsType } from '../../interfaces/measuresIterfaces';
 //   meter_error: 'Error Medidor',
 // };
 
-const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({ measure }) => {
+const MeasureReadingsTable: React.FC<{measure:MeasureType|null}> = ({ measure }) => {
   // const [readings, setReadings] = useState<MeterReadingType[]>([]);
   // const [loading, setLoading] = useState(false);
 
-  // const apiLink = 'http://127.0.0.1:8000';
-
-  // useEffect(() => {
-  //   if (open && measure) {
-  //     fetchReadings();
-  //   }
-  // }, [open, measure]);
+  const { data:readings = [], isLoading:loading, error } = useMeasureReadings(measure?.id || 0);
 
   // const fetchReadings = async () => {
   //   if (!measure) return;
@@ -93,7 +87,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
     <>
       <>
         <div className='flex flex-col gap-1 border rounded-lg my-5 p-5'>
-          <Button className='w-fit' color='blue'>
+          {/* <Button className='w-fit' color='blue'>
             Imprimir detalle
           </Button>
           <div className=''>
@@ -103,7 +97,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
             <Typography className='text-center' variant='h5'>
               MARZO - ABRIL (2026)
             </Typography>
-          </div>
+          </div> */}
 
           <div className='grid'>
             {measure && (
@@ -119,34 +113,34 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                 </Typography>
               </div>
             )}
-            <div className='mb-4'>
+            {/* <div className='mb-4'>
               <Typography variant='small' color='blue-gray'>
-                Total de lecturas: {measure?.readings.length}
+                Total de lecturas: {readings.length}
               </Typography>
             </div>
 
             <div className='mb-4'>
               <Typography variant='small' color='blue-gray'>
-                Numero de observaciones: {measure?.readings.length}
+                Numero de observaciones: {readings.length}
               </Typography>
             </div>
 
             <div className='mb-4'>
               <Typography variant='small' color='blue-gray'>
-                Total de lecturas: {measure?.readings.length}
+                Total de lecturas: {readings.length}
               </Typography>
-            </div>
+            </div> */}
           </div>
         </div>
       </>
 
       <div className='h-[600px] overflow-y-auto'>
         {
-          // loading ? (
-          //   <div className='flex justify-center items-center py-20'>
-          //     <ClipLoader size={50} />
-          //   </div>
-          // ) : (
+          error ? (
+            <div className='flex justify-center items-center py-20'>
+              <ClipLoader size={50} />
+            </div>
+          ) : (
           <>
             <div className='overflow-auto border border-blue-gray-100 rounded-lg'>
               <table className='w-full min-w-max table-auto text-left'>
@@ -220,7 +214,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {measure?.readings.length === 0 ? (
+                  {readings.length === 0 ? (
                     <tr>
                       <td colSpan={8} className='p-4 text-center'>
                         <Typography variant='small' color='gray'>
@@ -229,8 +223,8 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                       </td>
                     </tr>
                   ) : (
-                    measure?.readings.map((reading, index) => {
-                      const isLast = index === measure?.readings.length - 1;
+                    readings.map((reading, index) => {
+                      const isLast = index === readings.length - 1;
                       const classes = isLast
                         ? 'p-3'
                         : 'p-3 border-b border-blue-gray-50';
@@ -250,7 +244,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                               'Nombre'
                             </Typography>
                           </td>
-                          <td className={classes}>
+                          {/* <td className={classes}>
                             <Typography
                               variant='small'
                               color='blue-gray'
@@ -258,7 +252,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                             >
                               {reading.neighbor_ci || '-'}
                             </Typography>
-                          </td>
+                          </td> */}
                           <td className={classes}>
                             <Typography
                               variant='small'
@@ -286,7 +280,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                               color={STATUS_COLORS[reading.status]}
                             /> */}
                           </td>
-                          <td className={classes}>
+                          {/* <td className={classes}>
                             {reading.has_anomaly ? (
                               <Chip size='sm' value='Sí' color='red' />
                             ) : (
@@ -294,8 +288,8 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                                 No
                               </Typography>
                             )}
-                          </td>
-                          <td className={classes}>
+                          </td> */}
+                          {/* <td className={classes}>
                             <Typography
                               variant='small'
                               color='blue-gray'
@@ -312,7 +306,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                             >
                               {reading.notes || '-'}
                             </Typography>
-                          </td>
+                          </td> */}
                         </tr>
                       );
                     })
@@ -321,7 +315,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
               </table>
             </div>
           </>
-          // )
+          )
         }
       </div>
 
