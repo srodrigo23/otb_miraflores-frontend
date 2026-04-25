@@ -16,17 +16,18 @@ import { useMeasuresData } from '../../hooks/useMeasuresData';
 const override: CSSProperties = {
   display: 'block',
   margin: '0 auto',
-  borderColor: 'red',
+  borderColor: 'yellow',
 };
 
 const Measures = () => {
-  const [selectedMeasure, setSelectedMeasure] = useState<MeasureType|null>(null);
+  
+  const {data:measuresData = [], isLoading:loadingMeasuresData} = useMeasuresData()  
+  const [selectedMeasure, setSelectedMeasure] = useState<MeasureType | null>(
+    null,
+  );
 
-  // Modal para nueva medición
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(!openModal);
-
-  const {data:measuresData = [], isLoading:loadingMeasuresData} = useMeasuresData()  
 
   // const fetchReadings = async () => {
   //   if (!measure) return;
@@ -240,7 +241,7 @@ const Measures = () => {
           </div>
         </div>
       )}
-      {loadingMeasuresData ? (
+      {!selectedMeasure?(
         <div className='flex justify-center items-center py-20'>
           <ClipLoader
             loading={loadingMeasuresData}
@@ -251,8 +252,7 @@ const Measures = () => {
           />
         </div>
       ) : (
-        <></>
-        // {/* <MeasureReadingsTable measure={selectedMeasure} /> */}
+        <MeasureReadingsTable measure={selectedMeasure} />
       )}
 
       <NewMeasureModalForm
