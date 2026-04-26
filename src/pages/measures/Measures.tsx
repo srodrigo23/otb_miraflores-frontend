@@ -67,13 +67,6 @@ const Measures = () => {
     }
   }, [measuresData]);
 
-  // useEffect(() => {
-  //   if (data.length > 0) {
-  //     const initialPos = 0
-  //     setSelectedMeasure(data[initialPos].period);
-  //   }
-  // }, [data]);
-
   // Handler para crear nueva medición
   // const handleCreateMeasure = (formData: any) => {
   //   fetch(apiLink, {
@@ -97,20 +90,6 @@ const Measures = () => {
   //       console.error('Error al crear medición:', error);
   //       toast.error('Error al crear la medición');
   //     });
-  // };
-
-  // Handler para ver detalles
-  // const handleViewMeasure = (measure: MeasureType) => {
-  //   // TODO: Implementar vista de detalles
-  //   console.log('Ver medición:', measure);
-  //   toast.info('Función de vista de detalles en desarrollo');
-  // };
-
-  // Handler para editar
-  // const handleEditMeasure = (measure: MeasureType) => {
-  //   // TODO: Implementar edición
-  //   console.log('Editar medición:', measure);
-  //   toast.info('Función de edición en desarrollo');
   // };
 
   // Handler para eliminar
@@ -218,22 +197,32 @@ const Measures = () => {
             </Typography>
 
             <div className='flex gap-2 items-center'>
-              <Select
-                label='Seleccionar medición'
-                value={selectedMeasure?.period}
-                onChange={(val) => {
-                  const measureToChange = getMeasureByPeriod(val);
-                  if (measureToChange) {
-                    setSelectedMeasure(measureToChange);
-                  }
-                }}
-              >
-                {measuresData?.map((el, index) => (
-                  <Option key={index} value={el.period}>
-                    {el.period}
-                  </Option>
-                ))}
-              </Select>
+              {measuresData.length > 0 ? (
+                <Select
+                  label='Seleccionar medición'
+                  value={selectedMeasure?.period}
+                  onChange={(val) => {
+                    const measureToChange = getMeasureByPeriod(val);
+                    if (measureToChange) {
+                      setSelectedMeasure(measureToChange);
+                    }
+                  }}
+                >
+                  {measuresData?.map((el, index) => (
+                    <Option key={index} value={el.period}>
+                      {el.period}
+                    </Option>
+                  ))}
+                </Select>
+              ) : (
+                <Typography
+                  className='text-center h-fit mr-5 text-xl font-bold'
+                  // variant='h5'
+                  color='red'
+                >
+                  No hay mediciones
+                </Typography>
+              )}
               <Button className='w-60' onClick={handleOpenModal}>
                 NUEVA MEDICIÓN
               </Button>
@@ -241,7 +230,7 @@ const Measures = () => {
           </div>
         </div>
       )}
-      {!selectedMeasure?(
+      {!selectedMeasure ? (
         <div className='flex justify-center items-center py-20'>
           <ClipLoader
             loading={loadingMeasuresData}
@@ -258,9 +247,9 @@ const Measures = () => {
       <NewMeasureModalForm
         openModalState={openModal}
         handleCloseModal={handleOpenModal}
-        onSubmit={(data) => {
-          // handleCreateMeasure(data);
-        }}
+        // onSubmit={(data) => {
+        //   handleCreateMeasure(data);
+        // }}
       />
     </>
   );

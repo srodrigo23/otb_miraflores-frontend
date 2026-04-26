@@ -13,6 +13,6 @@ export const useMeasureReadings = (idMeasure:number)=>{
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     })
-  }, [])
+  }, [idMeasure])
   return { data, isLoading, error }
 }
