@@ -12,6 +12,7 @@ import {
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { getTodayDate } from '../../utils/dates';
+// import useFormNewMeasure from '../../hooks/useFormNewMeasure';
 
 type InputsNewMeasureForm = {
   measureDate: string;
@@ -23,13 +24,13 @@ type InputsNewMeasureForm = {
 type NewMeasureModalFormType = {
   openModalState: boolean;
   handleCloseModal: () => void;
-  // onSubmit: (data: InputsNewMeasureForm) => void;
+  onSubmit: (data: InputsNewMeasureForm) => void;
 };
 
 const NewMeasureModalForm: React.FC<NewMeasureModalFormType> = ({
   openModalState,
   handleCloseModal,
-  // onSubmit,
+  onSubmit,
 }) => {
   const {
     register,
@@ -47,8 +48,10 @@ const NewMeasureModalForm: React.FC<NewMeasureModalFormType> = ({
     setSelectedPeriod(Math.floor(selectedMonth / 2));
   }, [selectedPeriod, selectedDate]);
 
+  // const {handleSubmit:handleSubmitLocalMethod, loading} = useFormNewMeasure()
+
   const onSubmitMethod: SubmitHandler<InputsNewMeasureForm> = (data) => {
-    // onSubmit(data);
+    onSubmit(data);
     reset();
     handleCloseModal();
   };

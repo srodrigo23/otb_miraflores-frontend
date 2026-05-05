@@ -68,29 +68,30 @@ const Measures = () => {
   }, [measuresData]);
 
   // Handler para crear nueva medición
-  // const handleCreateMeasure = (formData: any) => {
-  //   fetch(apiLink, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       measure_date: formData.measureDate,
-  //       period: formData.period,
-  //       reader_name: formData.readerName,
-  //       notes: formData.notes,
-  //     }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then(() => {
-  //       fetchMeasures();
-  //       toast.success('Medición creada exitosamente');
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error al crear medición:', error);
-  //       toast.error('Error al crear la medición');
-  //     });
-  // };
+  const apiLink = ""
+  const handleCreateMeasure = (formData: any) => {
+    fetch(apiLink, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        measure_date: formData.measureDate,
+        period: formData.period,
+        reader_name: formData.readerName,
+        notes: formData.notes,
+      }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        // fetchMeasures();
+        // toast.success('Medición creada exitosamente');
+      })
+      .catch((error) => {
+        console.error('Error al crear medición:', error);
+        // toast.error('Error al crear la medición');
+      });
+  };
 
   // Handler para eliminar
   // const handleDeleteMeasure = (measure: MeasureType) => {
@@ -247,9 +248,9 @@ const Measures = () => {
       <NewMeasureModalForm
         openModalState={openModal}
         handleCloseModal={handleOpenModal}
-        // onSubmit={(data) => {
-        //   handleCreateMeasure(data);
-        // }}
+        onSubmit={(data) => {
+          handleCreateMeasure(data);
+        }}
       />
     </>
   );
