@@ -16,17 +16,18 @@ import { useMeasuresData } from '../../hooks/useMeasuresData';
 const override: CSSProperties = {
   display: 'block',
   margin: '0 auto',
-  borderColor: 'red',
+  borderColor: 'yellow',
 };
 
 const Measures = () => {
-  const [selectedMeasure, setSelectedMeasure] = useState<MeasureType|null>(null);
+  
+  const {data:measuresData = [], isLoading:loadingMeasuresData} = useMeasuresData()  
+  const [selectedMeasure, setSelectedMeasure] = useState<MeasureType | null>(
+    null,
+  );
 
-  // Modal para nueva medición
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(!openModal);
-
-  const {data:measuresData = [], isLoading:loadingMeasuresData} = useMeasuresData()  
 
   // const fetchReadings = async () => {
   //   if (!measure) return;
@@ -66,51 +67,31 @@ const Measures = () => {
     }
   }, [measuresData]);
 
-  // useEffect(() => {
-  //   if (data.length > 0) {
-  //     const initialPos = 0
-  //     setSelectedMeasure(data[initialPos].period);
-  //   }
-  // }, [data]);
-
   // Handler para crear nueva medición
-  // const handleCreateMeasure = (formData: any) => {
-  //   fetch(apiLink, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       measure_date: formData.measureDate,
-  //       period: formData.period,
-  //       reader_name: formData.readerName,
-  //       notes: formData.notes,
-  //     }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then(() => {
-  //       fetchMeasures();
-  //       toast.success('Medición creada exitosamente');
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error al crear medición:', error);
-  //       toast.error('Error al crear la medición');
-  //     });
-  // };
-
-  // Handler para ver detalles
-  // const handleViewMeasure = (measure: MeasureType) => {
-  //   // TODO: Implementar vista de detalles
-  //   console.log('Ver medición:', measure);
-  //   toast.info('Función de vista de detalles en desarrollo');
-  // };
-
-  // Handler para editar
-  // const handleEditMeasure = (measure: MeasureType) => {
-  //   // TODO: Implementar edición
-  //   console.log('Editar medición:', measure);
-  //   toast.info('Función de edición en desarrollo');
-  // };
+  const apiLink = ""
+  const handleCreateMeasure = (formData: any) => {
+    fetch(apiLink, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        measure_date: formData.measureDate,
+        period: formData.period,
+        reader_name: formData.readerName,
+        notes: formData.notes,
+      }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        // fetchMeasures();
+        // toast.success('Medición creada exitosamente');
+      })
+      .catch((error) => {
+        console.error('Error al crear medición:', error);
+        // toast.error('Error al crear la medición');
+      });
+  };
 
   // Handler para eliminar
   // const handleDeleteMeasure = (measure: MeasureType) => {
@@ -217,22 +198,32 @@ const Measures = () => {
             </Typography>
 
             <div className='flex gap-2 items-center'>
-              <Select
-                label='Seleccionar medición'
-                value={selectedMeasure?.period}
-                onChange={(val) => {
-                  const measureToChange = getMeasureByPeriod(val);
-                  if (measureToChange) {
-                    setSelectedMeasure(measureToChange);
-                  }
-                }}
-              >
-                {measuresData?.map((el, index) => (
-                  <Option key={index} value={el.period}>
-                    {el.period}
-                  </Option>
-                ))}
-              </Select>
+              {measuresData.length > 0 ? (
+                <Select
+                  label='Seleccionar medición'
+                  value={selectedMeasure?.period}
+                  onChange={(val) => {
+                    const measureToChange = getMeasureByPeriod(val);
+                    if (measureToChange) {
+                      setSelectedMeasure(measureToChange);
+                    }
+                  }}
+                >
+                  {measuresData?.map((el, index) => (
+                    <Option key={index} value={el.period}>
+                      {el.period}
+                    </Option>
+                  ))}
+                </Select>
+              ) : (
+                <Typography
+                  className='text-center h-fit mr-5 text-xl font-bold'
+                  // variant='h5'
+                  color='red'
+                >
+                  No hay mediciones
+                </Typography>
+              )}
               <Button className='w-60' onClick={handleOpenModal}>
                 NUEVA MEDICIÓN
               </Button>
@@ -240,7 +231,7 @@ const Measures = () => {
           </div>
         </div>
       )}
-      {loadingMeasuresData ? (
+      {!selectedMeasure ? (
         <div className='flex justify-center items-center py-20'>
           <ClipLoader
             loading={loadingMeasuresData}
@@ -251,15 +242,14 @@ const Measures = () => {
           />
         </div>
       ) : (
-        <></>
-        // {/* <MeasureReadingsTable measure={selectedMeasure} /> */}
+        <MeasureReadingsTable measure={selectedMeasure} />
       )}
 
       <NewMeasureModalForm
         openModalState={openModal}
         handleCloseModal={handleOpenModal}
         onSubmit={(data) => {
-          // handleCreateMeasure(data);
+          handleCreateMeasure(data);
         }}
       />
     </>

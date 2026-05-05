@@ -17,22 +17,22 @@ export interface MeasureReadingsType extends MeasureType {
   readings: MeterReadingType[];
 }
 
-interface MeterReadingType {
+export interface MeterReadingType {
   id: number;
   meter_id: number;
   measure_id: number;
   current_reading: number;
-  reading_date: string;
-  status: string;
-  has_anomaly: boolean;
+  // reading_date: string;
+  // status: string;
+  // has_anomaly: boolean;
   notes: string | null;
+  meter_number: string | null;
   created_at: string;
   updated_at: string;
-  meter_number: string | null;
   
-  // neighbor_first_name: string | null;
-  // neighbor_second_name: string | null;
-  // neighbor_last_name: string | null;
+  neighbor_first_name: string | null;
+  neighbor_second_name: string | null;
+  neighbor_last_name: string | null;
   // neighbor_ci: string | null;
   
 }

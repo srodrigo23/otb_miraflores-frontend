@@ -1,73 +1,39 @@
-// import { useEffect, useState } from 'react';
+
 import {
-  // Dialog,
-  // DialogHeader,
-  // DialogBody,
-  // DialogFooter,
-  Button,
   Typography,
-  Chip,
+  Button, Chip
 } from '@material-tailwind/react';
-// import { ClipLoader } from 'react-spinners';
-// import { toast } from 'react-toastify';
-import { color } from '@material-tailwind/react/types/components/alert';
+import { ClipLoader } from 'react-spinners';
 
+import { PrinterIcon } from '@phosphor-icons/react';
 
-// interface MeasureType {
-//   id: number;
-//   measure_date: string;
-//   period: string | null;
-//   reader_name: string | null;
-//   readings: MeterReadingType[];
-// }
+import {
+  MeasureType,
+  MeterReadingType,
+} from '../../interfaces/measuresIterfaces';
+import { useMeasureReadings } from '../../hooks/useMeasureReadings';
 
-import { MeasureReadingsType } from '../../interfaces/measuresIterfaces';
+const STATUS_COLORS: { [key: string]: color } = {
+  normal: 'green',
+  estimated: 'amber',
+  not_read: 'red',
+  meter_error: 'red',
+};
 
-// const STATUS_COLORS: { [key: string]: color } = {
-//   normal: 'green',
-//   estimated: 'amber',
-//   not_read: 'red',
-//   meter_error: 'red',
-// };
+const STATUS_LABELS: { [key: string]: string } = {
+  normal: 'Normal',
+  estimated: 'Estimado',
+  not_read: 'No Leído',
+  meter_error: 'Error Medidor',
+};
 
-// const STATUS_LABELS: { [key: string]: string } = {
-//   normal: 'Normal',
-//   estimated: 'Estimado',
-//   not_read: 'No Leído',
-//   meter_error: 'Error Medidor',
-// };
+const MeasureReadingsTable: React.FC<{measure:MeasureType|null}> = ({ measure }) => {
+  
+  const { data:readings = [], isLoading:loading } = useMeasureReadings(measure?.id || 0);
 
-const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({ measure }) => {
-  // const [readings, setReadings] = useState<MeterReadingType[]>([]);
-  // const [loading, setLoading] = useState(false);
-
-  // const apiLink = 'http://127.0.0.1:8000';
-
-  // useEffect(() => {
-  //   if (open && measure) {
-  //     fetchReadings();
-  //   }
-  // }, [open, measure]);
-
-  // const fetchReadings = async () => {
-  //   if (!measure) return;
-
-  //   setLoading(true);
-  //   try {
-  //     const response = await fetch(`${apiLink}/measures/${measure.id}/meter-readings`);
-  //     const data = await response.json();
-  //     setReadings(data);
-  //   } catch (error) {
-  //     console.error('Error al cargar lecturas:', error);
-  //     toast.error('Error al cargar las lecturas de medidores');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const getFullName = (reading: MeterReadingType) => {
-  //   return `${reading.neighbor_first_name || ''} ${reading.neighbor_second_name || ''} ${reading.neighbor_last_name || ''}`.trim();
-  // };
+  const getFullName = (reading: MeterReadingType) => {
+    return `${reading.neighbor_last_name || ''} ${reading.neighbor_first_name || ''} ${reading.neighbor_second_name || ''}`.trim();
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -78,75 +44,94 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
     });
   };
 
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('es-BO', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  // const formatDateTime = (dateString: string) => {
+  //   const date = new Date(dateString);
+  //   return date.toLocaleString('es-BO', {
+  //     year: 'numeric',
+  //     month: '2-digit',
+  //     day: '2-digit',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   });
+  // };
 
   return (
     <>
       <>
         <div className='flex flex-col gap-1 border rounded-lg my-5 p-5'>
-          <Button className='w-fit' color='blue'>
-            Imprimir detalle
-          </Button>
           <div className=''>
-            <Typography className='text-center' variant='h3'>
-              PERIODO
-            </Typography>
             <Typography className='text-center' variant='h5'>
               MARZO - ABRIL (2026)
             </Typography>
           </div>
+          {/* <Typography variant='small' color='gray' className='font-normal'>
+            Estado: {measure?.status}
+          </Typography> */}
 
           <div className='grid'>
             {measure && (
-              <div className='mb-4'>
-                <Typography
-                  variant='small'
-                  color='gray'
-                  className='font-normal'
-                >
-                  Medición: {formatDate(measure.measure_date)} -{' '}
-                  {measure.period || 'Sin período'}
-                  {measure.reader_name && ` - Lector: ${measure.reader_name}`}
-                </Typography>
+              <div className='flex justify-between'>
+                <div className='flex flex-col items-center'>
+                  <Typography
+                    variant='small'
+                    color='gray'
+                    className='font-bold'
+                  >
+                    Periodo
+                  </Typography>
+                  <Typography variant='small' color='gray' className='text-2xl'>
+                    {measure.period}
+                  </Typography>
+                </div>
+                <div className='flex flex-col items-center'>
+                  <Typography
+                    variant='small'
+                    color='gray'
+                    className='font-bold'
+                  >
+                    Total de lecturas
+                  </Typography>
+                  <Typography variant='small' color='gray' className='text-2xl'>
+                    {readings.length}
+                  </Typography>
+                </div>
+
+                <div className='flex flex-col items-center'>
+                  <Typography
+                    variant='small'
+                    color='gray'
+                    className='font-bold'
+                  >
+                    Núm. de observaciones:
+                  </Typography>
+                  <Typography variant='small' color='gray' className='text-2xl'>
+                    {readings.filter((reading) => reading.notes !== '').length}
+                  </Typography>
+                </div>
+                <div className='flex flex-col items-center'>
+                  <Typography
+                    variant='small'
+                    color='gray'
+                    className='font-bold'
+                  >
+                    Fecha de Medición
+                  </Typography>
+                  <Typography variant='small' color='gray' className='text-2xl'>
+                    {formatDate(measure.measure_date)}
+                  </Typography>
+                </div>
               </div>
             )}
-            <div className='mb-4'>
-              <Typography variant='small' color='blue-gray'>
-                Total de lecturas: {measure?.readings.length}
-              </Typography>
-            </div>
-
-            <div className='mb-4'>
-              <Typography variant='small' color='blue-gray'>
-                Numero de observaciones: {measure?.readings.length}
-              </Typography>
-            </div>
-
-            <div className='mb-4'>
-              <Typography variant='small' color='blue-gray'>
-                Total de lecturas: {measure?.readings.length}
-              </Typography>
-            </div>
           </div>
         </div>
       </>
 
       <div className='h-[600px] overflow-y-auto'>
-        {
-          // loading ? (
-          //   <div className='flex justify-center items-center py-20'>
-          //     <ClipLoader size={50} />
-          //   </div>
-          // ) : (
+        {loading ? (
+          <div className='flex justify-center items-center py-20'>
+            <ClipLoader size={50} />
+          </div>
+        ) : (
           <>
             <div className='overflow-auto border border-blue-gray-100 rounded-lg'>
               <table className='w-full min-w-max table-auto text-left'>
@@ -158,7 +143,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                         color='blue-gray'
                         className='font-bold'
                       >
-                        ID
+                        Núm.
                       </Typography>
                     </th>
                     <th className='border-b border-blue-gray-100 bg-blue-gray-50 p-3'>
@@ -167,14 +152,9 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                         color='blue-gray'
                         className='font-bold'
                       >
-                        Nombre de vecino
+                        Apellidos y Nombre
                       </Typography>
                     </th>
-                    {/* <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-3">
-                      <Typography variant="small" color="blue-gray" className="font-bold">
-                        CI
-                      </Typography>
-                    </th> */}
                     <th className='border-b border-blue-gray-100 bg-blue-gray-50 p-3'>
                       <Typography
                         variant='small'
@@ -217,10 +197,19 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                         Observaciones
                       </Typography>
                     </th>
+                    <th className='border-b border-blue-gray-100 bg-blue-gray-50 p-3'>
+                      <Typography
+                        variant='small'
+                        color='blue-gray'
+                        className='font-bold'
+                      >
+                        Acciones
+                      </Typography>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {measure?.readings.length === 0 ? (
+                  {readings.length === 0 ? (
                     <tr>
                       <td colSpan={8} className='p-4 text-center'>
                         <Typography variant='small' color='gray'>
@@ -229,12 +218,11 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                       </td>
                     </tr>
                   ) : (
-                    measure?.readings.map((reading, index) => {
-                      const isLast = index === measure?.readings.length - 1;
+                    readings.map((reading, index) => {
+                      const isLast = index === readings.length - 1;
                       const classes = isLast
                         ? 'p-3'
                         : 'p-3 border-b border-blue-gray-50';
-
                       return (
                         <tr
                           key={reading.id}
@@ -246,8 +234,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                               color='blue-gray'
                               className='font-normal'
                             >
-                              {/* {getFullName(reading)} */}
-                              'Nombre'
+                              {index+1}
                             </Typography>
                           </td>
                           <td className={classes}>
@@ -256,7 +243,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                               color='blue-gray'
                               className='font-normal'
                             >
-                              {reading.neighbor_ci || '-'}
+                              {getFullName(reading)}
                             </Typography>
                           </td>
                           <td className={classes}>
@@ -278,15 +265,13 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                             </Typography>
                           </td>
                           <td className={classes}>
-                            {/* <Chip
+                            <Chip
                               size='sm'
-                              value={
-                                STATUS_LABELS[reading.status] || reading.status
-                              }
-                              color={STATUS_COLORS[reading.status]}
-                            /> */}
+                              value={STATUS_LABELS['estimated']}
+                              color={STATUS_COLORS['estimated']}
+                            />
                           </td>
-                          <td className={classes}>
+                          {/* <td className={classes}>
                             {reading.has_anomaly ? (
                               <Chip size='sm' value='Sí' color='red' />
                             ) : (
@@ -294,8 +279,8 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                                 No
                               </Typography>
                             )}
-                          </td>
-                          <td className={classes}>
+                          </td> */}
+                          {/* <td className={classes}>
                             <Typography
                               variant='small'
                               color='blue-gray'
@@ -312,7 +297,7 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
                             >
                               {reading.notes || '-'}
                             </Typography>
-                          </td>
+                          </td> */}
                         </tr>
                       );
                     })
@@ -321,15 +306,8 @@ const MeasureReadingsTable: React.FC<{measure: MeasureReadingsType | null}> = ({
               </table>
             </div>
           </>
-          // )
-        }
+        )}
       </div>
-
-      {/* <DialogFooter>
-        <Button variant="text" color="blue-gray" onClick={onClose}>
-          Cerrar
-        </Button>
-      </DialogFooter> */}
     </>
   );
 };

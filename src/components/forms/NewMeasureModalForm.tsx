@@ -1,14 +1,18 @@
+import { useEffect, useState } from 'react';
 import {
   Input,
   DialogBody,
   DialogFooter,
   Button,
   Dialog,
-  Typography,
+  DialogHeader,
   Textarea,
+  Select, Option
 } from '@material-tailwind/react';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { getTodayDate } from '../../utils/dates';
+// import useFormNewMeasure from '../../hooks/useFormNewMeasure';
 
 type InputsNewMeasureForm = {
   measureDate: string;
@@ -35,6 +39,17 @@ const NewMeasureModalForm: React.FC<NewMeasureModalFormType> = ({
     formState: { errors },
   } = useForm<InputsNewMeasureForm>();
 
+  const periods = ["ENERO-FEBRERO", "MARZO-ABRIL", "MAYO-JUNIO", "JULIO-AGOSTO", "SEPTIEMBRE-OCTUBRE", "NOVIEMBRE-DICIEMBRE"]  
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayDate())
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(0)
+
+  useEffect(() => {
+    const selectedMonth = new Date(`${selectedDate} 00:00:00`).getMonth();
+    setSelectedPeriod(Math.floor(selectedMonth / 2));
+  }, [selectedPeriod, selectedDate]);
+
+  // const {handleSubmit:handleSubmitLocalMethod, loading} = useFormNewMeasure()
+
   const onSubmitMethod: SubmitHandler<InputsNewMeasureForm> = (data) => {
     onSubmit(data);
     reset();
@@ -46,84 +61,68 @@ const NewMeasureModalForm: React.FC<NewMeasureModalFormType> = ({
     handleCloseModal();
   };
 
-  // Obtener la fecha actual en formato YYYY-MM-DD para el campo de fecha
-  const getTodayDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  // Obtener el periodo actual (formato YYYY-MM)
-  const getCurrentPeriod = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    return `${year}-${month}`;
-  };
-
   return (
-    <Dialog open={openModalState} handler={handleClose}>
+    <Dialog
+      open={openModalState}
+      handler={handleClose}
+      size='xs'
+      dismiss={{ escapeKey: false, outsidePress: false }}
+    >
       <DialogBody>
         <form
-          className='flex flex-col gap-5 mx-4'
+          className='flex flex-col gap-5'
           onSubmit={handleSubmit(onSubmitMethod)}
         >
-          <Typography variant='h2' color='black'>
-            Nueva Medición
-          </Typography>
+          <DialogHeader className='justify-center'>Nueva Medición</DialogHeader>
+          <Input
+            type='date'
+            label='Fecha de Medición'
+            defaultValue={selectedDate}
+            crossOrigin={undefined}
+            {...register('measureDate', { required: true })}
+            onChange={(event) => {   
+              setSelectedDate(event.target.value);
+            }}
+          />
+          {errors.measureDate && (
+            <span className='text-red-400 text-xs'>Campo requerido</span>
+          )}
 
-          <div className='flex gap-5'>
-            <div className='flex-1'>
-              <Input
-                type='date'
-                label='Fecha de Medición'
-                defaultValue={getTodayDate()}
-                crossOrigin={undefined}
-                {...register('measureDate', { required: true })}
-              />
-              {errors.measureDate && (
-                <span className='text-red-400 text-xs'>Campo requerido</span>
-              )}
-            </div>
+          <Select
+            label='Periodo'
+            value={periods[selectedPeriod]}
+            onChange={(val) => {
+              // const measureToChange = getMeasureByPeriod(val);
+              // if (measureToChange) {
+              //   setSelectedMeasure(measureToChange);
+              // }
+            }}
+          >
+            {periods.map((period, index) => (
+              <Option key={index} value={period}>
+                {`${index + 1}.- ${period}`}
+              </Option>
+            ))}
+          </Select>
 
-            <div className='flex-1'>
-              <Input
-                label='Periodo (ej: 2025-01)'
-                defaultValue={getCurrentPeriod()}
-                placeholder='YYYY-MM'
-                crossOrigin={undefined}
-                {...register('period')}
-              />
-            </div>
-          </div>
+          <Input
+            label='Nombre del Responsable'
+            crossOrigin={undefined}
+            {...register('readerName')}
+          />
+          <Textarea label='Notas u Observaciones' {...register('notes')} />
 
-          <div>
-            <Input
-              label='Nombre del Responsable'
-              crossOrigin={undefined}
-              {...register('readerName')}
-            />
-          </div>
-
-          <div>
-            <Textarea
-              label='Notas u Observaciones'
-              {...register('notes')}
-            />
-          </div>
-
-          <DialogFooter className='px-0'>
+          <DialogFooter className='px-0 py-0'>
             <Button
-              variant='text'
+              variant='outlined'
               color='red'
               onClick={handleClose}
               className='mr-1'
+              size='sm'
             >
               <span>Cancelar</span>
             </Button>
-            <Button variant='gradient' color='green' type='submit'>
+            <Button type='submit' size='sm'>
               <span>Crear Medición</span>
             </Button>
           </DialogFooter>
