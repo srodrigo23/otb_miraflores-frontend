@@ -13,6 +13,7 @@ import {
   BanknotesIcon,
 } from '@heroicons/react/24/outline';
 import NewCollectDebtModalForm from '../forms/NewCollectDebtModalForm';
+import NewPaymentModalForm from '../forms/NewPaymentModalForm';
 
 interface CollectDebtType {
   id: number;
@@ -85,6 +86,11 @@ const CollectDebtTable: React.FC<CollectDebtTableProps> = ({
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(!openModal);
 
+
+  const [openNewPaymentModal, setOpenNewPaymentModal] = useState<boolean>(false)
+  const handleNewPaymentModal = () => setOpenNewPaymentModal(!openNewPaymentModal)
+
+
   // Ordenar datos
   const sortedData = useMemo(() => {
     const sorted = [...tableData].sort((a, b) => {
@@ -145,6 +151,12 @@ const CollectDebtTable: React.FC<CollectDebtTableProps> = ({
       {/* Botón para crear nueva recaudación */}
       <div className='flex mb-4 justify-end'>
         <Button onClick={handleOpenModal}>NUEVA RECAUDACIÓN</Button>
+      </div>
+
+      <div className='flex mb-4 justify-end'>
+        <Button onClick={handleNewPaymentModal} color='yellow'>
+          Nuevo Pago
+        </Button>
       </div>
 
       {/* Tabla con scroll interno */}
@@ -241,8 +253,12 @@ const CollectDebtTable: React.FC<CollectDebtTableProps> = ({
                   <td className={classes}>
                     <Chip
                       size='sm'
-                      value={STATUS_LABELS[collectDebt.status] || collectDebt.status}
-                      color={(STATUS_COLORS[collectDebt.status] as any) || 'gray'}
+                      value={
+                        STATUS_LABELS[collectDebt.status] || collectDebt.status
+                      }
+                      color={
+                        (STATUS_COLORS[collectDebt.status] as any) || 'gray'
+                      }
                     />
                   </td>
                   <td className={classes}>
@@ -335,6 +351,12 @@ const CollectDebtTable: React.FC<CollectDebtTableProps> = ({
             onCreate(data);
           }
         }}
+      />
+
+      <NewPaymentModalForm 
+        openModalState={openNewPaymentModal} 
+        handleCloseModal={handleNewPaymentModal} 
+        onSubmit={()=>{}}
       />
 
       {/* Controles de paginación */}
