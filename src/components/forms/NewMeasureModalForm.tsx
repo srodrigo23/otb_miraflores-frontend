@@ -7,7 +7,7 @@ import {
   Dialog,
   DialogHeader,
   Textarea,
-  Select, Option
+  Select, Option, Typography
 } from '@material-tailwind/react';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -70,47 +70,62 @@ const NewMeasureModalForm: React.FC<NewMeasureModalFormType> = ({
     >
       <DialogBody>
         <form
-          className='flex flex-col gap-5'
+          className='flex flex-col gap-3'
           onSubmit={handleSubmit(onSubmitMethod)}
         >
-          <DialogHeader className='justify-center'>Nueva Medición</DialogHeader>
-          <Input
-            type='date'
-            label='Fecha de Medición'
-            defaultValue={selectedDate}
-            crossOrigin={undefined}
-            {...register('measureDate', { required: true })}
-            onChange={(event) => {   
-              setSelectedDate(event.target.value);
-            }}
-          />
-          {errors.measureDate && (
-            <span className='text-red-400 text-xs'>Campo requerido</span>
-          )}
+          <DialogHeader className='flex flex-col py-0'>
+            <Typography variant='h3' color='black'>
+              Nueva Medición
+            </Typography>
+            <Typography color='black'>Gestión - {new Date().getFullYear()}</Typography>
+          </DialogHeader>
+          <div className='flex flex-col sm:flex-row  gap-3'>
+            <Input
+              type='date'
+              label='Fecha de Medición'
+              defaultValue={selectedDate}
+              crossOrigin={undefined}
+              {...register('measureDate', { required: true })}
+              onChange={(event) => {
+                setSelectedDate(event.target.value);
+              }}
+            />
+            {errors.measureDate && (
+              <span className='text-red-400 text-xs'>Campo requerido</span>
+            )}
 
-          <Select
-            label='Periodo'
-            value={periods[selectedPeriod]}
-            onChange={(val) => {
-              // const measureToChange = getMeasureByPeriod(val);
-              // if (measureToChange) {
-              //   setSelectedMeasure(measureToChange);
-              // }
-            }}
-          >
-            {periods.map((period, index) => (
-              <Option key={index} value={period}>
-                {`${index + 1}.- ${period}`}
-              </Option>
-            ))}
-          </Select>
+            <Select
+              label='Periodo'
+              value={periods[selectedPeriod]}
+              onChange={(val) => {
+                // const measureToChange = getMeasureByPeriod(val);
+                // if (measureToChange) {
+                //   setSelectedMeasure(measureToChange);
+                // }
+              }}
+            >
+              {periods.map((period, index) => (
+                <Option key={index} value={period}>
+                  {`${index + 1}.- ${period}`}
+                </Option>
+              ))}
+            </Select>
+          </div>
 
-          <Input
-            label='Nombre del Responsable'
-            crossOrigin={undefined}
-            {...register('readerName')}
-          />
-          <Textarea label='Notas u Observaciones' {...register('notes')} />
+          <div>
+            <Input
+              label='Nombre del Responsable'
+              crossOrigin={undefined}
+              {...register('readerName', { required: true })}
+            />
+            {errors.readerName && (
+              <span className='text-red-400 text-xs pl-2'>
+                Nombre requerido
+              </span>
+            )}
+          </div>
+
+          <Textarea label='Observaciones' {...register('notes')} />
 
           <DialogFooter className='px-0 py-0'>
             <Button
