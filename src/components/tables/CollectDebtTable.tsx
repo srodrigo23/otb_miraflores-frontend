@@ -13,7 +13,7 @@ import {
   BanknotesIcon,
 } from '@heroicons/react/24/outline';
 import NewCollectDebtModalForm from '../forms/NewCollectDebtModalForm';
-import NewPaymentModalForm from '../forms/NewPaymentModalForm';
+import NewPaymentModalForm from '../forms/newPaymentModalForm';
 
 interface CollectDebtType {
   id: number;
