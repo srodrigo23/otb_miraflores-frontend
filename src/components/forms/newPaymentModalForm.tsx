@@ -5,7 +5,7 @@ import {
   DialogFooter,
   Button,
   Dialog,
-  Typography,
+  // Typography,
   // Textarea,
   DialogHeader
 } from '@material-tailwind/react';
@@ -31,13 +31,13 @@ type NewPaymentModalFormType = {
 };
 
 // Styles (minimalista)
-const containerStyle: React.CSSProperties = {
-  display: 'flex',
-  gap: 24,
-  alignItems: 'flex-start',
-  flexWrap: 'nowrap', // keep form and preview side-by-side on wide screens
-  justifyContent: 'space-between',
-};
+// const containerStyle: React.CSSProperties = {
+//   display: 'flex',
+//   gap: 24,
+//   alignItems: 'flex-start',
+//   flexWrap: 'nowrap', // keep form and preview side-by-side on wide screens
+//   justifyContent: 'space-between',
+// };
 
 // const formStyle: React.CSSProperties = {
 //   flex: '1 1 520px',
@@ -48,37 +48,37 @@ const containerStyle: React.CSSProperties = {
 //   boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
 // };
 
-const fieldStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 6,
-  marginBottom: 8,
-};
+// const fieldStyle: React.CSSProperties = {
+//   display: 'flex',
+//   flexDirection: 'column',
+//   gap: 6,
+//   marginBottom: 8,
+// };
 
-const inputStyle: React.CSSProperties = {
-  padding: '8px 10px',
-  borderRadius: 6,
-  border: '1px solid #ddd',
-  fontSize: 14,
-};
+// const inputStyle: React.CSSProperties = {
+//   padding: '8px 10px',
+//   borderRadius: 6,
+//   border: '1px solid #ddd',
+//   fontSize: 14,
+// };
 
-const previewStyle: React.CSSProperties = {
-  flex: '0 0 340px',
-  width: 340,
-  background: '#fafafa',
-  padding: 12,
-  borderRadius: 8,
-  border: '1px solid #e6e6e6',
-  boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
-  fontFamily: 'Arial, Helvetica, sans-serif',
-};
+// const previewStyle: React.CSSProperties = {
+//   flex: '0 0 340px',
+//   width: 340,
+//   background: '#fafafa',
+//   padding: 12,
+//   borderRadius: 8,
+//   border: '1px solid #e6e6e6',
+//   boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+//   fontFamily: 'Arial, Helvetica, sans-serif',
+// };
 
-const receiptBoxStyle: React.CSSProperties = {
-  background: '#fff',
-  padding: 12,
-  borderRadius: 6,
-  border: '1px solid #eee',
-};
+// const receiptBoxStyle: React.CSSProperties = {
+//   background: '#fff',
+//   padding: 12,
+//   borderRadius: 6,
+//   border: '1px solid #eee',
+// };
 const gestion_principal = 'SEP-OCT / 2025';
 const getInitialState = (): FormState => {
   const now = new Date();
@@ -104,10 +104,10 @@ const getInitialState = (): FormState => {
 const NewPaymentModalForm: React.FC<NewPaymentModalFormType> = ({
   openModalState,
   handleCloseModal,
-  onSubmit,
+  // onSubmit,
 }) => {
   const [form, setForm] = useState<FormState>(getInitialState());
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;

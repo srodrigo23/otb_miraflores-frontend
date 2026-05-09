@@ -97,7 +97,7 @@ const NewMeasureModalForm: React.FC<NewMeasureModalFormType> = ({
             <Select
               label='Periodo'
               value={periods[selectedPeriod]}
-              onChange={(val) => {
+              onChange={() => {
                 // const measureToChange = getMeasureByPeriod(val);
                 // if (measureToChange) {
                 //   setSelectedMeasure(measureToChange);

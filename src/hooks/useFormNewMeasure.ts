@@ -1,14 +1,14 @@
 import { useState } from "react";
 
-const useFormNewMeasure = (callback)=>{
+const useFormNewMeasure = ()=>{
   const [loading, setLoading] = 
   useState<boolean>(false);
-  const handleSubmit = async (event) =>{
+  const handleSubmit = async () =>{
     if(event) event.preventDefault();
     setLoading(true);
     try{
       
-      await callback()
+      // await callback()
 
     }catch(error){
 

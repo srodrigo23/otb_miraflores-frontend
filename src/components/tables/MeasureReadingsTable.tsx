@@ -1,11 +1,33 @@
 
 import {
   Typography,
-  Button, Chip
+  // Button, 
+  Chip
 } from '@material-tailwind/react';
 import { ClipLoader } from 'react-spinners';
 
-import { PrinterIcon } from '@phosphor-icons/react';
+// import { PrinterIcon } from '@phosphor-icons/react';
+
+type color =
+  | 'blue-gray'
+  | 'gray'
+  | 'brown'
+  | 'deep-orange'
+  | 'orange'
+  | 'amber'
+  | 'yellow'
+  | 'lime'
+  | 'light-green'
+  | 'green'
+  | 'teal'
+  | 'cyan'
+  | 'light-blue'
+  | 'blue'
+  | 'indigo'
+  | 'deep-purple'
+  | 'purple'
+  | 'pink'
+  | 'red';
 
 import {
   MeasureType,

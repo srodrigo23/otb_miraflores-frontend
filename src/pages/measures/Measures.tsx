@@ -26,6 +26,9 @@ const Measures = () => {
     null,
   );
 
+  /** 
+   * Code for new measure 
+  */
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(!openModal);
 
