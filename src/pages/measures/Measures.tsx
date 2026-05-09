@@ -19,6 +19,13 @@ const override: CSSProperties = {
   borderColor: 'yellow',
 };
 
+type FormNewMeasureType = {
+  measureDate: string,
+  period: string,
+  readerName: string,
+  notes: string,
+};
+
 const Measures = () => {
   
   const {data:measuresData = [], isLoading:loadingMeasuresData} = useMeasuresData()  
@@ -29,8 +36,8 @@ const Measures = () => {
   /** 
    * Code for new measure 
   */
-  const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => setOpenModal(!openModal);
+  const [openNewMeasureModal, setOpenNewMeasureModal] = useState(false);
+  const handleOpenModal = () => setOpenNewMeasureModal(!openNewMeasureModal);
 
   // const fetchReadings = async () => {
   //   if (!measure) return;
@@ -72,7 +79,7 @@ const Measures = () => {
 
   // Handler para crear nueva medición
   const apiLink = ""
-  const handleCreateMeasure = (formData: any) => {
+  const handleCreateMeasure = (formData: FormNewMeasureType) => {
     fetch(apiLink, {
       method: 'POST',
       headers: {
@@ -249,7 +256,7 @@ const Measures = () => {
       )}
 
       <NewMeasureModalForm
-        openModalState={openModal}
+        openModalState={openNewMeasureModal}
         handleCloseModal={handleOpenModal}
         onSubmit={(data) => {
           handleCreateMeasure(data);

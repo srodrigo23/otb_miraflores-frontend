@@ -1,10 +1,11 @@
 import { useState } from "react";
 
 const useFormNewMeasure = ()=>{
-  const [loading, setLoading] = 
-  useState<boolean>(false);
+  
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleSubmit = async () =>{
-    if(event) event.preventDefault();
+    // if(event) event.preventDefault();
     setLoading(true);
     try{
       

@@ -11,8 +11,8 @@ import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 
 import { NeighborType } from '../../interfaces/neighborsInterfaces';
-
-import { config } from '../../config';
+import { useNeighborsData } from '../../hooks/useNeighborsData';
+import { apiLink } from '../../config';
 
 const override: CSSProperties = {
   display: 'block',
@@ -21,10 +21,7 @@ const override: CSSProperties = {
 };
 
 const Neighbors = () => {
-  const [data, setData] = useState<NeighborType[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const apiLink = `${JSON.parse(config.production)?config.frontURL_PROD:config.frontURL_DEV}/neighbors`;
+  const {data:neighborsData=[], isLoading} = useNeighborsData();
 
   // Modal para editar vecino
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -43,27 +40,6 @@ const Neighbors = () => {
   const [neighborToView, setNeighborToView] = useState<NeighborType | null>(
     null
   );
-
-  // Cargar datos de vecinos
-  const fetchNeighbors = () => {
-    setLoading(true);
-    fetch(apiLink, {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setData(json.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    fetchNeighbors();
-  }, []);
 
   // Handlers para editar
   const handleEditNeighbor = (neighbor: NeighborType) => {
@@ -97,7 +73,7 @@ const Neighbors = () => {
       .then((response) => response.json())
       .then(() => {
         // Recargar la lista de vecinos
-        fetchNeighbors();
+        // fetchNeighbors();
         handleCloseEditModal();
         toast.success('Vecino actualizado exitosamente');
       })
@@ -127,7 +103,7 @@ const Neighbors = () => {
     })
       .then(() => {
         // Recargar la lista de vecinos
-        fetchNeighbors();
+        // fetchNeighbors();
         handleCloseDeleteModal();
         toast.success('Vecino eliminado exitosamente');
       })
@@ -157,7 +133,7 @@ const Neighbors = () => {
       .then((response) => response.json())
       .then(() => {
         // Recargar la lista de vecinos
-        fetchNeighbors();
+        // fetchNeighbors();
         toast.success('Vecino creado exitosamente');
       })
       .catch((error) => {
@@ -179,10 +155,10 @@ const Neighbors = () => {
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <div className='flex justify-center items-center py-20'>
           <ClipLoader
-            loading={loading}
+            loading={isLoading}
             cssOverride={override}
             size={150}
             aria-label='Loading Spinner'
@@ -192,7 +168,7 @@ const Neighbors = () => {
       ) : (
         <>
           <NeighborTable
-            tableData={data}
+            tableData={neighborsData}
             onEdit={handleEditNeighbor}
             onDelete={handleDeleteNeighbor}
             onCreate={handleCreateNeighbor}

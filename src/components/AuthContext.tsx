@@ -1,7 +1,8 @@
 import { useState, createContext, useContext, useEffect, ReactNode } from "react";
 import useFetchData from "../hooks/useFetchData";
 
-import { config } from "../config";
+// import { config } from "../config";
+import { apiLink } from "../config";
 
 interface User {
     userName: string
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }: {children: ReactNode}) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const apiUserActive = `${JSON.parse(config.production)?config.frontURL_PROD:config.frontURL_DEV}/me`;
+    const apiUserActive = `${apiLink}/me`;
     const { execute } = useFetchData(apiUserActive);
     
     const checkActiveUser = async () => {

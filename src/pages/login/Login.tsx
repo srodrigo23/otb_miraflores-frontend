@@ -12,7 +12,7 @@ import { useState } from "react"
 
 import { Droplets, User, Lock, LogIn} from "lucide-react";
 import useFetchData from "../../hooks/useFetchData";
-import { config } from '../../config';
+import { apiLink } from "../../config";
 
 type Inputs = {
   username: string
@@ -32,13 +32,13 @@ export function Login() {
   
   const [loginError, setLoginError] = useState<string>("")
 
-  const apiLinkLogin = `${JSON.parse(config.production)?config.frontURL_PROD:config.frontURL_DEV}/login`;
+  const apiLinkLogin = `${apiLink}/login`;
   const { execute } = useFetchData(apiLinkLogin);
 
   const onSubmit: SubmitHandler<Inputs> = async ({ username, password }) => {
     const result = await execute({
       method: 'POST',
-      credentials: 'include',
+      // credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });

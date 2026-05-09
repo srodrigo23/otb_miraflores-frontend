@@ -11,7 +11,7 @@ const useFetchData = <T> (url: string) => {
     try {
       const response = await fetch(url, options);
       const json = await response.json();
-      setData(json);
+      setData(json.data);
       return { ok: response.ok, data: json };
     } catch (err) {
       setError(err);
