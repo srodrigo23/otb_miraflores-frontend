@@ -43,7 +43,8 @@ const TopNavBar: React.FC<TopNavBarProps> = ({pathName}) => {
   ];
 
   return (
-    <nav className='fixed top-0 left-0 w-full z-20 bg-black text-white py-3 flex justify-between px-7'>
+    // fixed top-0 left-0 w-full z-20
+    <nav className=' bg-black text-white py-3 flex justify-between px-7'>
       <span className="font-bold">OTB MIRAFLORES</span>
 
       <div className='flex flex-row gap-10'>

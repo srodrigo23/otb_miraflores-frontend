@@ -1,8 +1,17 @@
 import { CSSProperties } from 'react';
 
 import { useState } from 'react';
-import { Card, Chip, List, ListItem, Typography, Button, Input} from '@material-tailwind/react';
-import { MagnifyingGlassIcon, ChevronUpDownIcon, PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import {
+  Card,
+  Chip,
+  List,
+  ListItem,
+  Typography,
+  Button,
+  Input,
+  IconButton,
+} from '@material-tailwind/react';
+import { MagnifyingGlassIcon, PencilIcon} from '@heroicons/react/24/outline';
 
 
 import EditNeighborModalForm from '../../components/forms/EditNeighborModalForm';
@@ -162,51 +171,174 @@ const Neighbors = () => {
           />
         </div>
       ) : (
-        <div className='flex flex-row'>
-          <NeighborTable
+        <>
+          <div className='flex justify-between items-center px-4'>
+            <Typography variant='h2' className='py-4'>
+              Detalle General de Vecinos
+            </Typography>
+            <Button
+              className='h-fit'
+              // onClick={handleOpenModal}
+            >
+              NUEVO VECINO
+            </Button>
+          </div>
+
+          <div className='flex flex-row gap-3 px-3'>
+            {/* <NeighborTable
             tableData={neighborsData}
             onEdit={handleEditNeighbor}
             onDelete={handleDeleteNeighbor}
             onCreate={handleCreateNeighbor}
             onView={handleViewNeighbor}
-          />
-          <div className='w-fit  border rounded-md'>
-            <div className='flex w-full md:w-96 pt-4 px-4 pb-1'>
-              <Input
-                label='Buscar vecino'
-                icon={<MagnifyingGlassIcon className='h-5 w-5' />}
-                // value={searchTerm}
-                // onChange={(e) => setSearchTerm(e.target.value)}
-                crossOrigin={undefined}
-              />
+          /> */}
+            <div className='w-1/3 border rounded-md'>
+              <div className='flex pt-4 px-4 pb-1'>
+                <Input
+                  label='Buscar vecino'
+                  icon={<MagnifyingGlassIcon className='h-5 w-5' />}
+                  // value={searchTerm}
+                  // onChange={(e) => setSearchTerm(e.target.value)}
+                  crossOrigin={undefined}
+                />
+              </div>
+
+              <Card className='overflow-y-auto h-screen'>
+                <List className='gap-0'>
+                  {neighborsData.map((neighbor, index) => {
+                    return (
+                      <ListItem
+                        className='flex justify-between items-center border-t py-1'
+                        selected={index == 0}
+                      >
+                        <p className='flex gap-4 items-center'>
+                          <span className='text-sm'>{index + 1}</span>
+                          <Typography
+                            variant='paragraph'
+                            className='font-semibold text-sm'
+                          >
+                            {`${neighbor.last_name} ${neighbor.first_name} ${neighbor.second_name}`}
+                          </Typography>
+                        </p>
+                        <Chip value={123} color='red' />
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Card>
             </div>
 
-            <Card className='overflow-y-auto h-screen'>
-              <List className='gap-0'>
-                {neighborsData.map((neighbor, index) => {
-                  return (
-                    <ListItem
-                      className='flex justify-between items-center border-t py-1'
-                      selected={index == 0}
-                    >
-                      <p className='flex gap-4 items-center'>
-                        <span className='text-sm'>{index + 1}</span>
-                        <Typography
-                          variant='paragraph'
-                          className='font-semibold text-sm'
-                        >
-                          {`${neighbor.last_name} ${neighbor.first_name} ${neighbor.second_name}`}
-                        </Typography>
-                      </p>
+            <div className='w-2/3 border rounded-md py-3'>
+              <div className='flex justify-center '>
+                <div className='border rounded-md p-4 w-3/4'>
+                  <div className='flex justify-between pb-3'>
+                    <Typography variant='h4'>Datos personales</Typography>
+                    <IconButton size='sm' variant='outlined' color='blue-gray'>
+                      <PencilIcon className='h-5 w-5' />
+                    </IconButton>
+                  </div>
 
-                      <Chip value={123} color='red' />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            </Card>
+                  <div className='grid grid-cols-1 lg:grid-cols-5 gap-2 items-center '>
+                    <div className='flex col-span-1 justify-start lg:justify-end'>
+                      <Typography variant='h6' color='black'>
+                        Nombres:
+                      </Typography>
+                    </div>
+                    <div className='col-span-4'>
+                      <Input
+                        value={'JUAN'}
+                        disabled
+                        // crossOrigin={undefined}
+                      />
+                    </div>
+                    <div className='flex col-span-1 justify-start lg:justify-end'>
+                      <Typography variant='h6' color='black'>
+                        Apellidos:
+                      </Typography>
+                    </div>
+                    <div className='col-span-4'>
+                      <Input
+                        defaultValue={'ACNO'}
+                        disabled
+                        crossOrigin={undefined}
+                        // {...register('lastName', { required: true })}
+                      />
+                    </div>
+                    <div className='flex col-span-1 justify-start lg:justify-end'>
+                      <Typography variant='h6' color='black'>
+                        Ci:
+                      </Typography>
+                    </div>
+                    <div className='flex col-span-4 justify-end'>
+                      <Input
+                        defaultValue={''}
+                        disabled
+                        crossOrigin={undefined}
+                        // {...register('ci', { required: true })}
+                      />
+                    </div>
+                    <div className='flex col-span-1 justify-start lg:justify-end'>
+                      <Typography variant='h6' color='black'>
+                        Celular:
+                      </Typography>
+                    </div>
+                    <div className='flex col-span-4 justify-end'>
+                      <Input
+                        type='number'
+                        inputMode='numeric'
+                        disabled
+                        className='appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+                        crossOrigin={undefined}
+                        // {...register('phonenumber', { required: true })}
+                      />
+                    </div>
+                    <div className='flex col-span-1 justify-start lg:justify-end'>
+                      <Typography variant='h6' color='black'>
+                        Correo:
+                      </Typography>
+                    </div>
+                    <div className='flex col-span-4 justify-end'>
+                      <Input
+                        disabled
+                        defaultValue={''}
+                        crossOrigin={undefined}
+                        // {...register('email')}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className='flex gap-5'>
+                <div className='flex-1'>
+                  {/* {errors.firstName && (
+                    <span className='text-red-400 text-xs'>
+                      Campo requerido
+                    </span>
+                  )} */}
+                </div>
+
+                <div className='flex-1'></div>
+              </div>
+
+              <div>
+                {/* {errors.lastName && (
+                  <span className='text-red-400 text-xs'>Campo requerido</span>
+                )} */}
+              </div>
+
+              <div className='flex gap-5'>
+                <div className='flex-1'>
+                  {/* {errors.ci && (
+                    <span className='text-red-400 text-xs'>
+                      Campo requerido
+                    </span>
+                  )} */}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       <EditNeighborModalForm

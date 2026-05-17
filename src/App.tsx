@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import TopNavBar from './components/navigation/TopNavBar'
+import { Typography } from '@material-tailwind/react'
 
 function App() {
 
@@ -19,7 +20,7 @@ function App() {
   return (
     <>
       <ToastContainer
-        position="top-right"
+        position='top-right'
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
@@ -28,11 +29,11 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme='light'
       />
-      <div 
-        // className='h-dvh flex flex-col lg:grid lg:grid-cols-12 bg-gray-50'
-        >
+      <div
+      // className='h-dvh flex flex-col lg:grid lg:grid-cols-12 bg-gray-50'
+      >
         {/* Mobile Header */}
         {/* <div className="lg:hidden bg-gradient-to-r from-blue-600 to-blue-800 p-4 flex items-center justify-between shadow-lg z-20">
           <h1 className="text-white font-bold text-lg">OTB MIRAFLORES</h1>
@@ -67,18 +68,22 @@ function App() {
         </div> */}
 
         {/* Main Content */}
-        <TopNavBar pathName={pathname}/>
-        <div 
-          // className="lg:col-span-9 xl:col-span-10 flex-1 overflow-y-auto bg-white lg:border-l lg:shadow-inner"
-          className='h-screen'
-          >
-          <div className="mx-auto container pt-16  w-screen">
-            <Outlet/>
+
+        <div
+        // className="lg:col-span-9 xl:col-span-10 flex-1 overflow-y-auto bg-white lg:border-l lg:shadow-inner"
+        // className='h-screen'
+        >
+          <TopNavBar pathName={pathname} />
+          <div className='mx-auto container h-max pb-5'>
+            <Outlet />
+          </div>
+          <div className='bg-black h-10 text-white flex justify-center items-center'>
+            <Typography variant='h5'>Kratos Software</Typography>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default App
