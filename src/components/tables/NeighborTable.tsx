@@ -2,24 +2,28 @@ import { useState, useMemo } from 'react';
 import { Typography, Input, IconButton, Button} from '@material-tailwind/react';
 import { MagnifyingGlassIcon, ChevronUpDownIcon, PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import NewNeighborModalForm from '../forms/NewNeighborModalForm';
-
 import { NeighborTableProps } from '../../types/NeighborsTypes';
-
 
 type SortField = 'id' | 'last_name' | 'first_name' | 'ci' | 'phone_number' | 'email';
 type SortOrder = 'asc' | 'desc';
 
 const TABLE_HEAD = [
   { label: 'Num.', field: 'id' as SortField, sortable: true },
-  { label: 'Apellidos', field: 'last_name' as SortField, sortable: true },
-  { label: 'Nombres', field: 'first_name' as SortField, sortable: true },
-  { label: 'CI', field: 'ci' as SortField, sortable: true },
-  { label: 'Celular', field: 'phone_number' as SortField, sortable: true },
+  { label: 'Nombre Completo', field: 'Name' as SortField, sortable: true },
+  { label: 'Ultimo Consumo', field: 'lastConsumption' as SortField, sortable: true },
+  // { label: 'Nombres', field: 'first_name' as SortField, sortable: true },
+  // { label: 'CI', field: 'ci' as SortField, sortable: true },
+  // { label: 'Celular', field: 'phone_number' as SortField, sortable: true },
   // { label: 'Correo', field: 'email' as SortField, sortable: true },
-  { label: 'Acciones', field: null, sortable: false },
+  // { label: 'Acciones', field: null, sortable: false },
 ];
 
-const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDelete, onCreate, onView }) => {
+const NeighborTable: React.FC<NeighborTableProps> = ({ 
+  tableData, 
+  onEdit, 
+  onDelete, 
+  onCreate, 
+  onView }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('id');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -73,12 +77,12 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
   };
 
   return (
-    <div className='flex flex-col h-screen'>
+    <div className='flex flex-col h-screen w-1/2'>
       {/* Campo de búsqueda */}
       <div className='flex justify-between py-3 px-5 flex-shrink-0'>
-        <Typography className='text-center mb-2' variant='h3' color='black'>
+        {/* <Typography className='text-center mb-2' variant='h3' color='black'>
           Vecinos
-        </Typography>
+        </Typography> */}
 
         <div className='flex mb-4 justify-center gap-3'>
           <div className='flex w-full md:w-96'>
@@ -91,9 +95,9 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
             />
             {/* <div className='flex gap-5 px-10 justify-end'>  </div>*/}
           </div>
-          <Button className='' onClick={handleOpenModal}>
+          {/* <Button className='' onClick={handleOpenModal}>
             NUEVO VECINO
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -142,22 +146,22 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                   first_name,
                   second_name,
                   last_name,
-                  ci,
-                  phone_number,
-                  email,
+                  // ci,
+                  // phone_number,
+                  // email,
                 },
-                index
+                index,
               ) => {
                 const isLast = index === sortedData.length - 1;
-                const classes = isLast ? '' : 'border-b border-blue-gray-50';
+                const classes = isLast ? '' : 'border-b border-blue-gray-50 py-3';
                 const neighbor = {
                   id,
                   first_name,
                   second_name,
                   last_name,
-                  ci,
-                  phone_number,
-                  email,
+                  // ci,
+                  // phone_number,
+                  // email,
                 };
 
                 return (
@@ -171,7 +175,7 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                         {id}
                       </Typography>
                     </td>
-                    <td className={classes}>
+                    {/* <td className={classes}>
                       <Typography
                         variant='small'
                         color='blue-gray'
@@ -179,23 +183,17 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                       >
                         {last_name}
                       </Typography>
-                    </td>
+                    </td> */}
                     <td className={classes}>
                       <Typography
                         variant='small'
                         color='blue-gray'
                         className='font-normal'
                       >
-                        {`${first_name} ${second_name}`}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant='small'
-                        color='blue-gray'
-                        className='font-medium text-center'
-                      >
-                        {ci}
+                        <a className='cursor-pointer'>
+                          {' '}
+                          {`${last_name} ${first_name} ${second_name}`}
+                        </a>
                       </Typography>
                     </td>
                     <td className={classes}>
@@ -204,9 +202,27 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                         color='blue-gray'
                         className='font-normal text-center'
                       >
-                        {phone_number}
+                        0
                       </Typography>
                     </td>
+                    {/* <td className={classes}>
+                      <Typography
+                        variant='small'
+                        color='blue-gray'
+                        className='font-medium text-center'
+                      >
+                        {ci}
+                      </Typography>
+                    </td> */}
+                    {/* <td className={classes}>
+                      <Typography
+                        variant='small'
+                        color='blue-gray'
+                        className='font-normal text-center'
+                      >
+                        {phone_number}
+                      </Typography>
+                    </td> */}
                     {/* <td className={classes}>
                       <Typography
                         variant='small'
@@ -216,7 +232,7 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                         {email}
                       </Typography>
                     </td> */}
-                    <td className={classes}>
+                    {/* <td className={classes}>
                       <div className='flex gap-2 justify-center'>
                         {onView && (
                           <IconButton
@@ -252,10 +268,10 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
                           </IconButton>
                         )}
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 );
-              }
+              },
             )}
           </tbody>
         </table>
@@ -270,10 +286,10 @@ const NeighborTable: React.FC<NeighborTableProps> = ({ tableData, onEdit, onDele
           }
         }}
       />
-      
+
       <div className='flex items-center justify-between border-t border-blue-gray-100 p-4 flex-shrink-0'>
         <Typography variant='small' color='blue-gray' className='font-normal'>
-          Total: {filteredData.length}{' '}vecinos
+          Total: {filteredData.length} vecinos
         </Typography>
       </div>
     </div>

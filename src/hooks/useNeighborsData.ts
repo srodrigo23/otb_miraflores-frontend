@@ -16,5 +16,10 @@ export const useNeighborsData = () => {
     });
   }, []);
 
-  return { data, isLoading, error }
+  const refetch = () => execute({
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  return { data, isLoading, error, refetch }
 }

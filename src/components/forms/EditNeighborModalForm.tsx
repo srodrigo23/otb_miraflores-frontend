@@ -64,9 +64,7 @@ const EditNeighborModalForm: React.FC<EditNeighborModalFormType> = ({
   }, [neighbor, reset]);
 
   const onSubmitMethod: SubmitHandler<InputsEditNeighborForm> = (data) => {
-    console.log(data);
     onSubmit(data);
-    handleCloseModal();
   };
 
   return (
