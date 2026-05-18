@@ -72,9 +72,10 @@ function App() {
         <div
         // className="lg:col-span-9 xl:col-span-10 flex-1 overflow-y-auto bg-white lg:border-l lg:shadow-inner"
         // className='h-screen'
+          className='flex flex-col'
         >
           <TopNavBar pathName={pathname} />
-          <div className='mx-auto container h-max pb-5'>
+          <div className='mx-auto container pb-5'>
             <Outlet />
           </div>
           <div className='bg-black h-10 text-white flex justify-center items-center'>

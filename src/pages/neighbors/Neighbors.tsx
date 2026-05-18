@@ -11,7 +11,7 @@ import {
   Input,
   IconButton,
 } from '@material-tailwind/react';
-import { MagnifyingGlassIcon, PencilIcon} from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, PencilIcon, CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 
 
 import EditNeighborModalForm from '../../components/forms/EditNeighborModalForm';
@@ -158,6 +158,8 @@ const Neighbors = () => {
     setNeighborToView(null);
   };
 
+  const [edit, setEdit] = useState<boolean>(false)
+
   return (
     <>
       {isLoading ? (
@@ -195,7 +197,7 @@ const Neighbors = () => {
             <div className='w-1/3 border rounded-md'>
               <div className='flex pt-4 px-4 pb-1'>
                 <Input
-                  label='Buscar vecino'
+                  label='Buscar ...'
                   icon={<MagnifyingGlassIcon className='h-5 w-5' />}
                   // value={searchTerm}
                   // onChange={(e) => setSearchTerm(e.target.value)}
@@ -228,14 +230,36 @@ const Neighbors = () => {
               </Card>
             </div>
 
-            <div className='w-2/3 border rounded-md py-3'>
-              <div className='flex justify-center '>
-                <div className='border rounded-md p-4 w-3/4'>
+            <div className='flex flex-col gap-2 w-2/3 border rounded-md py-3'>
+              {/* Form  to show user data */}
+              <div className='flex justify-center items-center h-1/3'>
+                <div className='border rounded-md p-4 w-4/5 xl:w-3/4 h-fit'>
                   <div className='flex justify-between pb-3'>
                     <Typography variant='h4'>Datos personales</Typography>
-                    <IconButton size='sm' variant='outlined' color='blue-gray'>
-                      <PencilIcon className='h-5 w-5' />
-                    </IconButton>
+                    {!edit ? (
+                      <IconButton
+                        size='sm'
+                        variant='outlined'
+                        color='blue-gray'
+                        onClick={() => setEdit(true)}
+                      >
+                        <PencilIcon className='h-5 w-5' />
+                      </IconButton>
+                    ) : (
+                      <div className='flex gap-1'>
+                        <IconButton
+                          size='sm'
+                          variant='filled'
+                          color='red'
+                          onClick={() => setEdit(false)}
+                        >
+                          <XMarkIcon className='h-5 w-5' />
+                        </IconButton>
+                        <IconButton size='sm' variant='filled' color='green'>
+                          <CheckIcon className='h-5 w-5' />
+                        </IconButton>
+                      </div>
+                    )}
                   </div>
 
                   <div className='grid grid-cols-1 lg:grid-cols-5 gap-2 items-center '>
@@ -247,7 +271,7 @@ const Neighbors = () => {
                     <div className='col-span-4'>
                       <Input
                         value={'JUAN'}
-                        disabled
+                        disabled={!edit}
                         // crossOrigin={undefined}
                       />
                     </div>
@@ -259,7 +283,7 @@ const Neighbors = () => {
                     <div className='col-span-4'>
                       <Input
                         defaultValue={'ACNO'}
-                        disabled
+                        disabled={!edit}
                         crossOrigin={undefined}
                         // {...register('lastName', { required: true })}
                       />
@@ -272,7 +296,7 @@ const Neighbors = () => {
                     <div className='flex col-span-4 justify-end'>
                       <Input
                         defaultValue={''}
-                        disabled
+                        disabled={!edit}
                         crossOrigin={undefined}
                         // {...register('ci', { required: true })}
                       />
@@ -286,7 +310,7 @@ const Neighbors = () => {
                       <Input
                         type='number'
                         inputMode='numeric'
-                        disabled
+                        disabled={!edit}
                         className='appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                         crossOrigin={undefined}
                         // {...register('phonenumber', { required: true })}
@@ -299,7 +323,7 @@ const Neighbors = () => {
                     </div>
                     <div className='flex col-span-4 justify-end'>
                       <Input
-                        disabled
+                        disabled={!edit}
                         defaultValue={''}
                         crossOrigin={undefined}
                         // {...register('email')}
@@ -308,32 +332,25 @@ const Neighbors = () => {
                   </div>
                 </div>
               </div>
-
-              <div className='flex gap-5'>
-                <div className='flex-1'>
-                  {/* {errors.firstName && (
-                    <span className='text-red-400 text-xs'>
-                      Campo requerido
-                    </span>
-                  )} */}
+              <div className='h-1/3 mx-2'>
+                <div className='grid grid-rows-1 grid-cols-2 h-full gap-2'>
+                  <div className=' border rounded-xl'>
+                    <Typography className='p-3' variant='h5'>
+                      Deudas Activas
+                    </Typography>
+                  </div>
+                  <div className=' border rounded-xl'>
+                    <Typography className='p-3' variant='h5'>
+                      Pagos Realizados
+                    </Typography>
+                  </div>
                 </div>
-
-                <div className='flex-1'></div>
               </div>
-
-              <div>
-                {/* {errors.lastName && (
-                  <span className='text-red-400 text-xs'>Campo requerido</span>
-                )} */}
-              </div>
-
-              <div className='flex gap-5'>
-                <div className='flex-1'>
-                  {/* {errors.ci && (
-                    <span className='text-red-400 text-xs'>
-                      Campo requerido
-                    </span>
-                  )} */}
+              <div className='h-1/3 mx-2 border rounded-xl'>
+                <div className=' '>
+                  <Typography className='p-3' variant='h5'>
+                    Historial de Consumo
+                  </Typography>
                 </div>
               </div>
             </div>
