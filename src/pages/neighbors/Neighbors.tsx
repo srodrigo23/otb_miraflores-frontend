@@ -9,9 +9,11 @@ import {
   Typography,
   Button,
   Input,
-  IconButton,
+  IconButton,Tabs, TabsHeader, Tab,
+  TabsBody,
+  TabPanel
 } from '@material-tailwind/react';
-import { MagnifyingGlassIcon, PencilIcon, CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, PencilIcon, CheckIcon, XMarkIcon, ChartBarIcon, CreditCardIcon, BanknotesIcon} from '@heroicons/react/24/outline';
 
 
 import EditNeighborModalForm from '../../components/forms/EditNeighborModalForm';
@@ -31,6 +33,22 @@ const override: CSSProperties = {
   display: 'block',
   margin: '0 auto',
   borderColor: 'red',
+};
+
+const DebtsComponentNeighborPage =()=>{
+  return(
+    <div className='h-full bg-red-300'>
+      Table A
+    </div>
+  )
+}
+
+const PaymentsComponentNeighborPage = () => {
+  return <>Table B</>;
+};
+
+const ConsumptionComponentNeighborPage = () => {
+  return <>Table C</>;
 };
 
 const Neighbors = () => {
@@ -159,6 +177,27 @@ const Neighbors = () => {
   };
 
   const [edit, setEdit] = useState<boolean>(false)
+
+  const dataTabs = [
+    {
+      label: 'Deudas',
+      value: 'debts',
+      component: <DebtsComponentNeighborPage />,
+      icon: <BanknotesIcon className='w-4 h-4' />,
+    },
+    {
+      label: 'Pagos',
+      value: 'payments',
+      component: <PaymentsComponentNeighborPage />,
+      icon: <CreditCardIcon className='w-4 h-4' />,
+    },
+    {
+      label: 'Consumo',
+      value: 'comsumption history',
+      component: <ConsumptionComponentNeighborPage />,
+      icon: <ChartBarIcon className='w-4 h-4' />,
+    },
+  ];
 
   return (
     <>
@@ -332,26 +371,31 @@ const Neighbors = () => {
                   </div>
                 </div>
               </div>
-              <div className='h-1/3 mx-2'>
-                <div className='grid grid-rows-1 grid-cols-2 h-full gap-2'>
-                  <div className=' border rounded-xl'>
-                    <Typography className='p-3' variant='h5'>
-                      Deudas Activas
-                    </Typography>
-                  </div>
-                  <div className=' border rounded-xl'>
-                    <Typography className='p-3' variant='h5'>
-                      Pagos Realizados
-                    </Typography>
-                  </div>
-                </div>
-              </div>
+
               <div className='h-1/3 mx-2 border rounded-xl'>
-                <div className=' '>
-                  <Typography className='p-3' variant='h5'>
-                    Historial de Consumo
-                  </Typography>
-                </div>
+                <Tabs value='debts' className='h-full flex flex-col'>
+                  <TabsHeader>
+                    {dataTabs.map(({ label, value, icon }) => {
+                      return (
+                        <Tab key={value} value={value}>
+                          <div className='flex items-center gap-2'>
+                            {icon}
+                            <span className='font-semibold text-sm'>
+                              {label}
+                            </span>
+                          </div>
+                        </Tab>
+                      );
+                    })}
+                  </TabsHeader>
+                  <TabsBody className='bg-yellow-300 flex-1 overflow-y-auto'>
+                    {dataTabs.map(({ value, component }) => (
+                      <TabPanel key={value} value={value} className='h-full'>
+                        {component}
+                      </TabPanel>
+                    ))}
+                  </TabsBody>
+                </Tabs>
               </div>
             </div>
           </div>
