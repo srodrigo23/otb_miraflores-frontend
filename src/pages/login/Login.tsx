@@ -38,7 +38,6 @@ export function Login() {
   const onSubmit: SubmitHandler<Inputs> = async ({ username, password }) => {
     const result = await execute({
       method: 'POST',
-      // credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });
@@ -52,8 +51,8 @@ export function Login() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#E3F3FA]">
-        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[#0B81B7] border-r-transparent"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200">
+        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-gray-900 border-r-transparent"></div>
       </div>
     );
   }
@@ -63,17 +62,11 @@ export function Login() {
   }
 
   return (
-    <div className='min-h-screen flex items-center justify-center  p-4 relative overflow-hidden bg-[#E3F3FA]'>
-      {/* Decorative circles */}
-      {/* <div className="absolute top-10 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-      <div className="absolute top-0 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-      <div className="absolute bottom-10 left-20 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div> */}
-
-      <Card className='relative z-10 w-full max-w-sm px-8 py-12 bg-white/95 backdrop-blur-sm shadow-2xl border-0'>
-        {/* Logo minimalista */}
+    <div className='min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-gray-200'>
+      <Card className='w-full max-w-sm px-8 py-12 bg-white shadow-2xl border-0'>
         <div className='mb-10'>
-          <div className='w-16 h-16 mx-auto mb-6  rounded-2xl flex items-center justify-center shadow-lg bg-[#0B81B7] text-white'>
-            <Droplets className='h-7 w-7 text-primary-foreground' />
+          <div className='w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center shadow-lg bg-gray-900 text-white'>
+            <Droplets className='h-7 w-7' />
           </div>
           <Typography
             variant='h5'
@@ -81,27 +74,28 @@ export function Login() {
           >
             OTB Miraflores
           </Typography>
+          <Typography
+            variant='small'
+            className='text-center text-gray-500 mt-1'
+          >
+            Sistema Centralizado
+          </Typography>
         </div>
 
         <form className='space-y-5' onSubmit={handleSubmit(onSubmit)}>
-          {/* Error minimalista */}
           {loginError && (
-            <div className='bg-red-50 border-l-4 border-red-500 p-3 animate-shake'>
+            <div className='bg-red-50 border-l-4 border-red-500 p-3'>
               <Typography variant='small' className='text-red-700 text-center'>
                 {loginError}
               </Typography>
             </div>
           )}
 
-          {/* Input Usuario */}
           <div>
             <Input
               label='Usuario'
               icon={<User size={20} className='text-gray-400' />}
-              value='sergio.cardenas'
-              containerProps={{
-                className: 'min-w-0',
-              }}
+              containerProps={{ className: 'min-w-0' }}
               {...register('username', {
                 required: true,
                 onChange: () => setLoginError(''),
@@ -114,12 +108,10 @@ export function Login() {
             )}
           </div>
 
-          {/* Input Contraseña */}
           <div>
             <Input
               type='password'
               label='Contraseña'
-              value={'123456'}
               icon={<Lock size={20} className='text-gray-400' />}
               {...register('password', {
                 required: true,
@@ -134,16 +126,12 @@ export function Login() {
           </div>
 
           <Button
-            className='bg-[#0B81B7] flex justify-center items-center gap-3'
+            className='bg-gray-900 text-white hover:bg-gray-800 flex items-center justify-center gap-3'
             fullWidth
             type='submit'
           >
-            {
-              <>
-                <LogIn size={20} className='' />
-                Iniciar Session
-              </>
-            }
+            <LogIn size={20} />
+            Iniciar Sesión
           </Button>
         </form>
       </Card>
