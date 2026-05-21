@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import TopNavBar from './components/navigation/TopNavBar'
+import { Footer } from './components/shared/Footer'
 
 function App() {
 
@@ -35,12 +36,7 @@ function App() {
         <div className='mx-auto container w-full pb-5 lg:flex-1 lg:min-h-0'>
           <Outlet />
         </div>
-        <div className='bg-gray-900 text-gray-400 text-xs border-t border-gray-800 px-4 sm:px-6 lg:px-8'>
-          <div className='flex flex-col sm:flex-row items-center justify-between h-10 gap-1'>
-            <span>© {new Date().getFullYear()} OTB Miraflores</span>
-            <span>Powered by <span className='text-gray-300 font-medium'>Kratos Software</span></span>
-          </div>
-        </div>
+        <Footer/>
       </div>
     </>
   );
