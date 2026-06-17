@@ -1,7 +1,8 @@
 import { useMemo } from "react";
-import { Input, Card, List, ListItem, Typography, Chip, IconButton } from "@material-tailwind/react";
+import { Input, List, ListItem, Typography, Chip, IconButton } from "@material-tailwind/react";
 import { MagnifyingGlassIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import { NeighborType } from "../../interfaces/neighborsInterfaces";
+import { UserPlusIcon, UserIcon } from '@heroicons/react/24/outline';
 
 interface NeighborListProps {
   neighborsData: NeighborType[];
@@ -27,56 +28,80 @@ export const NeighborList: React.FC<NeighborListProps> = ({
   }, [searchTerm, neighborsData])
 
   return (
-    <div className='relative w-full lg:w-1/3'>
+    <div className=''>
       <div className='flex gap-2'>
         <Input
-          label='Buscar ...'
+          label='Buscar vecino'
           icon={<MagnifyingGlassIcon className='h-5 w-5' />}
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           crossOrigin={undefined}
         />
         {searchTerm && (
-          <IconButton variant="gradient" color="cyan" size="md" onClick={() => onSearchChange('')}>
-            <XMarkIcon className="w-5 h-5" />
+          <IconButton
+            variant='gradient'
+            color='cyan'
+            size='md'
+            onClick={() => onSearchChange('')}
+          >
+            <XMarkIcon className='w-5 h-5' />
           </IconButton>
         )}
+        <IconButton
+          variant='gradient'
+          color='black'
+          size='md'
+          // onClick={() => onSearchChange('')}
+        >
+          <UserPlusIcon className='w-5 h-5' />
+        </IconButton>
       </div>
 
-      {searchTerm && (
-        <Card className='absolute z-20 overflow-y-auto max-h-60 w-full mt-1'>
-          {filteredData.length > 0 ? (
-            <List className='gap-0'>
+      {
+        // searchTerm && (
+        // absolute z-20  w-full mt-1 max-h-60  max-h-screen
+        <div className='overflow-y-auto max-h-screen'>
+          
+          {
+          filteredData.length > 0 ? (
+            <List className='w-full px-0 '>
               {filteredData.map((neighbor, index) => (
                 <ListItem
                   key={neighbor.id}
-                  className='flex justify-between items-center border-t py-1'
+                  className='flex gap-3 bg-blue-gray-50 '
                   selected={neighborSelected?.id === neighbor.id}
-                  onClick={() => {
-                    onSearchChange('')
-                    onSelectNeighbor(neighbor);
-                  }}
+                  // onClick={() => {
+                  //   onSearchChange('');
+                  //   onSelectNeighbor(neighbor);
+                  // }}
                 >
-                  <p className='flex gap-4 items-center'>
-                    <span className='text-sm'>{index + 1}</span>
-                    <Typography
-                      variant='paragraph'
-                      className='font-semibold text-sm'
-                    >
-                      {`${neighbor.last_name} ${neighbor.first_name} ${neighbor.second_name}`}
-                    </Typography>
-                  </p>
-                  <Chip value={123} color='red' />
+                  <span className='border rounded-full p-2 bg-blue-gray-200'>
+                    <UserIcon className='w-5 h-5' />
+                  </span>
+                  <div className='flex flex-1 justify-between w-max'>
+                    <p className='flex flex-col'>
+                      {/* <span className='text-sm'>{index + 1}</span> */}
+                      <Typography variant='lead' className='font-semibold'>
+                        {`${neighbor.last_name}`}
+                      </Typography>
+                      <Typography variant='small'>
+                        {`${neighbor.first_name} ${neighbor.second_name}`}
+                      </Typography>
+                    </p>
+                    <Chip value={123} color='blue' />
+                  </div>
                 </ListItem>
               ))}
             </List>
           ) : (
             <div className='flex items-center justify-center h-16'>
-              <Typography variant="h5">No existe este nombre</Typography>
+              <Typography variant='h5'>No existe este nombre</Typography>
             </div>
-          )}
-        </Card>
-      )}
+          )
+          }
+        </div>
+        // )
+      }
     </div>
   );
 };
