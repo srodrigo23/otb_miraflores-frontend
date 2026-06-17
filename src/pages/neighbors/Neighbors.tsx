@@ -16,7 +16,9 @@ import { NeighborType } from '../../interfaces/neighborsInterfaces';
 
 const Neighbors = () => {
 
-  const { data: neighborsData = [], isLoading: loading, refetch } = useNeighborsData();
+  const { data: neighborsData = [], isLoading: loading, 
+    // refetch 
+  } = useNeighborsData();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNeighbor, setSelectedNeighbor] = useState<NeighborType | null>(null);
 

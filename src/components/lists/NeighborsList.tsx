@@ -17,7 +17,7 @@ export const NeighborList: React.FC<NeighborListProps> = ({
   searchTerm,
   onSearchChange,
   neighborSelected,
-  onSelectNeighbor,
+  // onSelectNeighbor,
 }) => {
 
   const filteredData = useMemo(() => {
@@ -67,7 +67,7 @@ export const NeighborList: React.FC<NeighborListProps> = ({
             <List className='w-full px-0 '>
               {filteredData.map((neighbor, index) => (
                 <ListItem
-                  key={neighbor.id}
+                  key={`${neighbor.id}-${index}`}
                   className='flex gap-3 bg-blue-gray-50 '
                   selected={neighborSelected?.id === neighbor.id}
                   // onClick={() => {

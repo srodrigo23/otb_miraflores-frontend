@@ -13,7 +13,7 @@ import {
   BanknotesIcon,
 } from '@heroicons/react/24/outline';
 import NewCollectDebtModalForm from '../forms/NewCollectDebtModalForm';
-import NewPaymentModalForm from '../forms/newPaymentModalForm';
+// import NewPaymentModalForm from '../forms/newPaymentModalForm';
 
 interface CollectDebtType {
   id: number;
@@ -94,8 +94,8 @@ const CollectDebtTable: React.FC<CollectDebtTableProps> = ({
   // Ordenar datos
   const sortedData = useMemo(() => {
     const sorted = [...tableData].sort((a, b) => {
-      let aValue = a[sortField];
-      let bValue = b[sortField];
+      const aValue = a[sortField];
+      const bValue = b[sortField];
 
       if (typeof aValue === 'string' && typeof bValue === 'string') {
         return sortOrder === 'asc'
@@ -353,11 +353,11 @@ const CollectDebtTable: React.FC<CollectDebtTableProps> = ({
         }}
       />
 
-      <NewPaymentModalForm 
+      {/* <NewPaymentModalForm 
         openModalState={openNewPaymentModal} 
         handleCloseModal={handleNewPaymentModal} 
         onSubmit={()=>{}}
-      />
+      /> */}
 
       {/* Controles de paginación */}
       <div className='flex items-center justify-between border-t border-blue-gray-100 p-4'>

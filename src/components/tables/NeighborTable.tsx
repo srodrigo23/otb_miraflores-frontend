@@ -1,6 +1,10 @@
 import { useState, useMemo } from 'react';
-import { Typography, Input, IconButton, Button} from '@material-tailwind/react';
-import { MagnifyingGlassIcon, ChevronUpDownIcon, PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { Typography, Input, 
+  // IconButton, Button
+} from '@material-tailwind/react';
+import { MagnifyingGlassIcon, ChevronUpDownIcon, 
+  // PencilIcon, TrashIcon, EyeIcon 
+} from '@heroicons/react/24/outline';
 import NewNeighborModalForm from '../forms/NewNeighborModalForm';
 import { NeighborTableProps } from '../../types/NeighborsTypes';
 
@@ -20,10 +24,11 @@ const TABLE_HEAD = [
 
 const NeighborTable: React.FC<NeighborTableProps> = ({ 
   tableData, 
-  onEdit, 
-  onDelete, 
+  // onEdit, 
+  // onDelete, 
   onCreate, 
-  onView }) => {
+  // onView
+ }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('id');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -154,15 +159,16 @@ const NeighborTable: React.FC<NeighborTableProps> = ({
               ) => {
                 const isLast = index === sortedData.length - 1;
                 const classes = isLast ? '' : 'border-b border-blue-gray-50 py-3';
-                const neighbor = {
-                  id,
-                  first_name,
-                  second_name,
-                  last_name,
-                  // ci,
-                  // phone_number,
-                  // email,
-                };
+                
+                // const neighbor = {
+                //   id,
+                //   first_name,
+                //   second_name,
+                //   last_name,
+                //   // ci,
+                //   // phone_number,
+                //   // email,
+                // };
 
                 return (
                   <tr key={id} className='hover:bg-blue-gray-50/50'>

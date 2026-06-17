@@ -20,8 +20,12 @@ type SortField =
 type SortOrder = 'asc' | 'desc';
 
 const DebtsTable = () => {
-  const [sortField, setSortField] = useState<SortField>('num');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [sortField, 
+    // setSortField
+  ] = useState<SortField>('num');
+  const [sortOrder, 
+    // setSortOrder
+  ] = useState<SortOrder>('asc');
   const TABLE_HEAD = [
     {
       label: 'Num.',
@@ -87,20 +91,20 @@ const DebtsTable = () => {
     },
   ];
 
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('asc');
-    }
-  };
+  // const handleSort = (field: SortField) => {
+  //   if (sortField === field) {
+  //     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  //   } else {
+  //     setSortField(field);
+  //     setSortOrder('asc');
+  //   }
+  // };
 
   // Ordenar datos
   const sortedData = useMemo(() => {
     const sorted = [...TABLE_BODY].sort((a, b) => {
-      let aValue = a[sortField];
-      let bValue = b[sortField];
+      const aValue = a[sortField];
+      const bValue = b[sortField];
 
       // if (sortField === 'first_name') {
       //   aValue = `${a.first_name} ${a.second_name}`;
@@ -135,8 +139,8 @@ const DebtsTable = () => {
                     ? 'cursor-pointer hover:bg-blue-gray-100 transition-colors'
                     : ''
                 }`}
-                onClick={() =>
-                  head.sortable && head.field && handleSort(head.field)
+                onClick={() =>{}
+                  // head.sortable && head.field && handleSort(head.field)
                 }
               >
                 <div className='flex justify-center items-center gap-2'>
