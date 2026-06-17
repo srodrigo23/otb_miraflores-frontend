@@ -28,8 +28,8 @@ export const NeighborList: React.FC<NeighborListProps> = ({
   }, [searchTerm, neighborsData])
 
   return (
-    <div className=''>
-      <div className='flex gap-2'>
+    <div className='h-full flex flex-col min-h-0'>
+      <div className='flex gap-2 flex-shrink-0'>
         <Input
           label='Buscar vecino'
           icon={<MagnifyingGlassIcon className='h-5 w-5' />}
@@ -60,7 +60,7 @@ export const NeighborList: React.FC<NeighborListProps> = ({
       {
         // searchTerm && (
         // absolute z-20  w-full mt-1 max-h-60  max-h-screen
-        <div className='overflow-y-auto max-h-screen'>
+        <div className='overflow-y-auto flex-1 min-h-0'>
           
           {
           filteredData.length > 0 ? (

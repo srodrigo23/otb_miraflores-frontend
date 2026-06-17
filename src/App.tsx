@@ -31,12 +31,16 @@ function App() {
         pauseOnHover
         theme='light'
       />
-      <div className='lg:h-screen flex flex-col'>
+      <div className='flex flex-col h-screen overflow-hidden w-full bg-gray-50 '>
         <TopNavBar pathName={pathname} />
-        <div className='mx-auto container w-full pb-5 lg:flex-1 lg:min-h-0'>
-          <Outlet />
-        </div>
-        <Footer/>
+        {/* lg:min-h-0 */}
+        <main className='flex-1 overflow-y-auto'>
+          
+            <Outlet />
+          
+        </main>
+
+        <Footer />
       </div>
     </>
   );
