@@ -12,6 +12,7 @@ export const useNeighborsData = () => {
   useEffect(() => {
     execute({
       method: 'GET',
+      credentials:'include',
       headers: { 'Content-Type': 'application/json' },
     });
   }, []);

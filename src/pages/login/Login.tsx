@@ -13,18 +13,14 @@ import { useState } from "react"
 import { Droplets, User, Lock, LogIn} from "lucide-react";
 import useFetchData from "../../hooks/useFetchData";
 import { apiLink } from "../../config";
-
-type Inputs = {
-  username: string
-  password: string
-}
+import type { InputsType } from "../../types/LoginTypes";
 
 export function Login() {
 
   const {
     register, handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>()
+  } = useForm<InputsType>()
 
   const navigate = useNavigate()
 
@@ -32,12 +28,14 @@ export function Login() {
   
   const [loginError, setLoginError] = useState<string>("")
 
-  const apiLinkLogin = `${apiLink}/login`;
+  const apiLinkLogin = `${apiLink}/auth/login`;
+
   const { execute } = useFetchData(apiLinkLogin);
 
-  const onSubmit: SubmitHandler<Inputs> = async ({ username, password }) => {
+  const onSubmit: SubmitHandler<InputsType> = async ({ username, password }) => {
     const result = await execute({
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });
