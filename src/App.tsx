@@ -35,11 +35,8 @@ function App() {
         <TopNavBar pathName={pathname} />
         {/* lg:min-h-0 */}
         <main className='flex-1 overflow-y-auto'>
-          
-            <Outlet />
-          
+          <Outlet />
         </main>
-
         <Footer />
       </div>
     </>

@@ -9,7 +9,7 @@ import { useNeighborsData } from '../../hooks/useNeighborsData';
 import { EditNeighborInfoForm } from '../../components/forms/EditNeighborInfoForm';
 import { NeighborList } from '../../components/lists/NeighborsList';
 import { NeighborDebtsPayments } from '../../components/NeighborDebtsPayments';
-import { LoaderAnimation } from '../../components/LoaderAnimation';
+import { LoaderAnimation } from '../../components/shared/LoaderAnimation';
 import { NeighborType } from '../../interfaces/neighborsInterfaces';
 
 

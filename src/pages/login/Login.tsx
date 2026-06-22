@@ -1,38 +1,36 @@
-import {
-  Card,
-  Input,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+import { Card, Input, Button, Typography } from '@material-tailwind/react';
 
-import { useForm, SubmitHandler } from "react-hook-form"
-import { useNavigate, Navigate } from "react-router-dom"
-import { useAuth } from "../../components/AuthContext"
-import { useState } from "react"
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useState } from 'react';
 
-import { Droplets, User, Lock, LogIn} from "lucide-react";
-import useFetchData from "../../hooks/useFetchData";
-import { apiLink } from "../../config";
-import type { InputsType } from "../../types/LoginTypes";
+import { Droplets, User, Lock, LogIn } from 'lucide-react';
+import useFetchData from '../../hooks/useFetchData';
+import { apiLink } from '../../config';
+import type { InputsType } from '../../types/LoginTypes';
 
 export function Login() {
-
   const {
-    register, handleSubmit,
+    register,
+    handleSubmit,
     formState: { errors },
-  } = useForm<InputsType>()
+  } = useForm<InputsType>();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { login, isAuthenticated, loading } = useAuth()
-  
-  const [loginError, setLoginError] = useState<string>("")
+  const { login, isAuthenticated, loading } = useAuth();
+
+  const [loginError, setLoginError] = useState<string>('');
 
   const apiLinkLogin = `${apiLink}/auth/login`;
 
   const { execute } = useFetchData(apiLinkLogin);
 
-  const onSubmit: SubmitHandler<InputsType> = async ({ username, password }) => {
+  const onSubmit: SubmitHandler<InputsType> = async ({
+    username,
+    password,
+  }) => {
     const result = await execute({
       method: 'POST',
       credentials: 'include',
@@ -49,14 +47,14 @@ export function Login() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200">
-        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-gray-900 border-r-transparent"></div>
+      <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200'>
+        <div className='inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-gray-900 border-r-transparent'></div>
       </div>
     );
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/vecinos" replace />;
+    return <Navigate to='/vecinos' replace />;
   }
 
   return (
