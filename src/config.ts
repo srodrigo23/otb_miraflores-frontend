@@ -2,7 +2,7 @@
 const config = {
   frontURL_PROD: import.meta.env.VITE_BACKEND_URL_PROD,
   frontURL_DEV: import.meta.env.VITE_BACKEND_URL_DEV,
-  production:import.meta.env.VITE_PROD,
+  environment: import.meta.env.VITE_ENVIRONMENT,
 }
 
-export const apiLink = `${JSON.parse(config.production)?config.frontURL_PROD:config.frontURL_DEV}`;
+export const apiLink = config.environment === "PRODUCTION"? "/api" : config.frontURL_DEV
