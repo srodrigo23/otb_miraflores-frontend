@@ -1,6 +1,6 @@
 
 
-export type InputsType = {
+export type LoginFormInputsType = {
   username: string
   password: string
 }

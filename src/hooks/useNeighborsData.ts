@@ -5,19 +5,18 @@ import { NeighborType } from "../interfaces/neighborsInterfaces"
 
 export const useNeighborsData = () => {
   
+  const { data, isLoading, error, execute } = useFetchData<NeighborType[]>();
   const apiLinkNeightbors = `${apiLink}/neighbors`
-  
-  const { data, isLoading, error, execute } = useFetchData<NeighborType[]>(apiLinkNeightbors);
 
   useEffect(() => {
-    execute({
+    execute(apiLinkNeightbors,{
       method: 'GET',
       credentials:'include',
       headers: { 'Content-Type': 'application/json' },
     });
   }, []);
 
-  const refetch = () => execute({
+  const refetch = () => execute(apiLinkNeightbors,{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });

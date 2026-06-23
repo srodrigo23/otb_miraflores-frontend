@@ -1,48 +1,37 @@
 import { Card, Input, Button, Typography } from '@material-tailwind/react';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { 
+  // useNavigate, 
+  Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useState } from 'react';
 
 import { Droplets, User, Lock, LogIn } from 'lucide-react';
-import useFetchData from '../../hooks/useFetchData';
-import { apiLink } from '../../config';
-import type { InputsType } from '../../types/LoginTypes';
+// import useFetchData from '../../hooks/useFetchData';
+// import { apiLink } from '../../config';
+import type { LoginFormInputsType } from '../../types/LoginTypes';
 
 export function Login() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InputsType>();
+  } = useForm<LoginFormInputsType>();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { login, isAuthenticated, loading } = useAuth();
-
   const [loginError, setLoginError] = useState<string>('');
 
-  const apiLinkLogin = `${apiLink}/auth/login`;
+  // const apiLinkLogin = `${apiLink}/auth/login`;
+  // const { execute } = useFetchData(apiLinkLogin);
 
-  const { execute } = useFetchData(apiLinkLogin);
-
-  const onSubmit: SubmitHandler<InputsType> = async ({
+  const onSubmit: SubmitHandler<LoginFormInputsType> = async ({
     username,
     password,
   }) => {
-    const result = await execute({
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-    if (result?.ok) {
-      login(result.data);
-      navigate('/vecinos');
-    } else {
-      setLoginError('Usuario o contraseña incorrectos');
-    }
+    await login(username, password);
   };
 
   if (loading) {

@@ -4,8 +4,6 @@ import './index.css';
 
 import { ThemeProvider } from '@material-tailwind/react';
 
-//import AuthLayout from './pages/login/AuthLayout.tsx';
-
 // import CheckNeighborDebts from './pages/checkDebts/CheckNeighborsDebts.tsx';
 import Neighbors from './pages/neighbors/Neighbors.tsx';
 import Meetings from './pages/meetings/Meetings.tsx';

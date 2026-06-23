@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-const useFetchData = <T> (url: string) => {
+const useFetchData = <T> () => {
   const [data, setData] = useState<T>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
 
-  const execute = async (options?: RequestInit) => {
+  const execute = async (url: string, options?: RequestInit) => {
     setIsLoading(true);
     setError(null);
     try {

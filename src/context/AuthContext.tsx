@@ -12,21 +12,13 @@ interface User {
   userName: string;
 }
 
-type AuthContextType = {
+const AuthContext = createContext<{
   isAuthenticated: boolean;
   user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
+  login: (username: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
   loading: boolean;
-};
-
-const AuthContext = createContext<AuthContextType>({
-  isAuthenticated: false,
-  user: null,
-  login: () => {},
-  logout: () => {},
-  loading: true,
-});
+} | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,13 +26,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   const apiUserActive = `${apiLink}/auth/me`;
-  const { execute } = useFetchData(apiUserActive);
+  const apiLogin = `${apiLink}/auth/login`;
+  const apiLogout = `${apiLink}/auth/logout`;
 
+  const { execute } = useFetchData();
+
+  useEffect(() => {
+    checkActiveUser();
+  },[]);
+  
   const checkActiveUser = async () => {
-    const result = await execute({
-      //   method: 'GET',
+    const result = await execute(apiUserActive,{
       credentials: 'include',
-      //   headers: { 'Content-Type': 'application/json' },
     });
     if (result?.ok && result.data) {
       setUser(result.data);
@@ -49,27 +46,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    checkActiveUser();
-  },[]);
-
-  const login = (userData: User) => {
-    setUser(userData);
-    setIsAuthenticated(true);
+  const login = async (username:string, password:string) => {
+    const result = await execute(apiLogin,{
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    if(result?.data){
+      setUser(result.data);
+      setIsAuthenticated(true);
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    const result = await execute(apiLogout, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if(result){
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, user, login, logout, loading }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context =  useContext(AuthContext)
+  if(!context) throw new Error(
+    'useAuth must be used  within AuthProvider'
+  )
+  return context
+};
